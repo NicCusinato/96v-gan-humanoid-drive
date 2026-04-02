@@ -116,3 +116,63 @@ This auto-links commits to Jira tickets via the GitHub for Jira integration.
 ---
 
 *See [RESEARCH_LOG.md](RESEARCH_LOG.md) for dated entries of decisions, results, and blockers.*
+
+
+---
+
+## Repo Structure
+
+```
+96v-gan-humanoid-drive/
+├── phase0/                        # Baseline & literature (Si 48V reference)
+│   ├── baseline_48v_si/           # PSIM schematics, MATLAB loss analysis
+│   ├── gait_data/                 # Humanoid gait torque/speed profiles
+│   ├── literature/                # Key papers, datasheets
+│   └── specs/                     # System-level requirements
+├── phase1/                        # 96V GaN inverter design & bring-up
+│   ├── firmware/                  # Embedded C, ISR, control loops
+│   ├── hardware/
+│   │   ├── ecad/                  # Altium/KiCad schematics & layout
+│   │   ├── mech/                  # Heatsink, enclosure CAD (Fusion/SolidWorks)
+│   │   └── ansys/                 # Thermal/EM FEA (one subfolder per study)
+│   ├── matlab/                    # Control analysis, loss models, plots
+│   ├── measurements/              # Bench measurement CSVs (tracked)
+│   └── simulation/                # PSIM schematics, LTspice
+├── phase2/                        # Hardware integration & mech leg assembly
+│   ├── hardware/
+│   │   ├── ecad/                  # Updated board revisions
+│   │   ├── mech/                  # Updated mechanical CAD
+│   │   └── ansys/                 # System-level thermal/structural FEA
+│   ├── measurements/
+│   ├── mechanical/                # Leg assembly integration files
+│   └── simulation/
+├── phase3/                        # Efficiency mapping & sensitivity
+│   ├── efficiency_maps/           # Sweep results, MATLAB post-processing
+│   ├── sensitivity/               # Parameter sensitivity studies
+│   └── writing/                   # Thesis chapter drafts
+├── phase4/                        # Motor co-design
+│   ├── measurements/
+│   ├── motor_fea/                 # Ansys Maxwell motor FEA
+│   └── winding/                   # Winding design files
+├── data_raw/                      # Raw experiment outputs (timestamped subfolders)
+├── notebooks/
+│   ├── RESEARCH_LOG.md            # Cross-domain experiment log (fill every run)
+│   └── DECISIONS.md               # Design decisions with rationale
+├── docs/                          # Figures, PDFs for thesis/reports
+├── .gitignore                     # MATLAB, PSIM, Altium, Ansys, CAD rules
+└── README.md
+```
+
+### Tool-to-folder mapping
+
+| Tool | Where files go |
+|---|---|
+| PSIM schematics | `phaseX/simulation/` |
+| MATLAB scripts/functions | `phaseX/matlab/` |
+| Embedded C / firmware | `phase1/firmware/` |
+| Altium / KiCad | `phaseX/hardware/ecad/<board_name>/` |
+| Fusion 360 / SolidWorks | `phaseX/hardware/mech/<assembly>/` |
+| Ansys (any solver) | `phaseX/hardware/ansys/<study_name>/` |
+| Raw data exports | `data_raw/YYYY-MM-DD_phaseX_<desc>/` |
+| Research log entries | `notebooks/RESEARCH_LOG.md` |
+| Design decisions | `notebooks/DECISIONS.md` |
