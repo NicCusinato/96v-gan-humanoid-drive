@@ -198,6 +198,65 @@ cython_debug/
 #  Cursor is an AI-powered code editor. `.cursorignore` specifies files/directories to
 #  exclude from AI features like autocomplete and code analysis. Recommended for sensitive data
 #  refer to https://docs.cursor.com/context/ignore-files
+
+# ============================================================
+# Project-specific: 96V GaN Humanoid Leg Drive
+# ============================================================
+
+# MATLAB compiled files and autosave
+*.mex*
+*.p
+*.mexw64
+*.mexa64
+slprj/
+*.slxc
+*.autosave
+codegen/
+
+# PSIM binary simulation files (not text-diffable)
+*.psimsch
+*.smv
+*.sch
+
+# LTspice raw output (keep .asc schematics, ignore large outputs)
+*.raw
+*.op.raw
+*.fra
+
+# Large simulation output / data exports
+*.csv
+!phase*/measurements/*.csv
+*.log
+*.fft
+
+# CAD binary files (Fusion 360 is cloud-versioned; don't commit binaries)
+*.f3d
+*.f3z
+*.step
+*.stp
+*.stl
+*.3mf
+
+# KiCad build outputs (keep source, ignore gerbers/fabrication outputs)
+fabrication/
+*.kicad_prl
+*-backups/
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# Large waveform / video files
+*.mp4
+*.avi
+*.wav
+*.png
+!docs/*.png
+!*/measurements/*.png
+
+# Windows/Mac OS cruft
+Thumbs.db
+.DS_Store
+desktop.ini
 .cursorignore
 .cursorindexingignore
 
