@@ -264,3 +264,55 @@ desktop.ini
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# ============================================================
+# Altium Designer
+# ============================================================
+# Project logs, history, and temp files
+**/ProjectLogs/
+**/History/
+**/__Previews/
+*.Rpt
+*.REP
+*.ipr
+*.tmp
+# Keep: .PrjPcb, .SchDoc, .PcbDoc, .SchLib, .PcbLib, .DbLib
+
+# ============================================================
+# Ansys Workbench / Electronics Desktop (HFSS, Maxwell, etc.)
+# ============================================================
+# Result databases and solver caches (very large)
+*.rst
+*.rth
+*.r###
+*_files/
+*_results/
+*.dsdb
+*.lock
+*.aedtresults/
+# Keep: *.wbpj, *.aedt (project files), setup_notes.md
+
+# ============================================================
+# SolidWorks
+# ============================================================
+*.swp
+*.sldasm~
+*.sldprt~
+*.slddrw~
+# Keep native: *.sldprt, *.sldasm, *.slddrw
+
+# ============================================================
+# PSIM (add binary schematic to ignore — track via exports)
+# ============================================================
+# Uncomment below if you want to track PSIM schematics via text export only:
+# *.psimsch
+# Currently kept tracked for diffing; autosaves still ignored:
+*.psimsch.bak
+
+# ============================================================
+# Simulink code generation output (keep models, ignore codegen)
+# ============================================================
+codegen/
+slprj/
+*.slxc
+
