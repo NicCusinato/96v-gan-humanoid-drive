@@ -35,7 +35,7 @@ class MinimalWBC:
         if self.torso_id == -1:
             raise ValueError("[ERROR] Could not find torso or base body in the robot model!")
 
-        self.target_pitch = 0.0  # Set target pitch to 0.0 rad (upright) by default for rock-solid stability
+        self.target_pitch = -0.05  # Slight backward pitch target to straighten hips and keep torso proud
 
         # --- Dynamic Kinematic Standing Balanced Pose Solver ---
         left_foot_body_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, "LFootBushing_GPF_1517_12")
@@ -190,8 +190,8 @@ class MinimalWBC:
         omega_global = mat.dot(omega_local)
         current_pitch_vel = omega_global[1]  # Y-component is global Y-axis pitch velocity!
         
-        # Boosted gains for rock-solid upright balance response
-        Kp, Kd = 250.0, 30.0
+        # Boosted gains for extremely stiff and push-resistant upright balance response
+        Kp, Kd = 400.0, 40.0
         acc_desired = Kp * (self.target_pitch - current_pitch) + Kd * (0.0 - current_pitch_vel)
         
         # 3. Get the Jacobians for the Torso and Feet
@@ -240,7 +240,7 @@ class MinimalWBC:
         # Exact relative CoM velocity projected from state space
         com_x_vel = J_com.dot(self.data.qvel)
         
-        Kp_com, Kd_com = 150.0, 15.0
+        Kp_com, Kd_com = 250.0, 25.0
         F_com = Kp_com * com_x_error - Kd_com * com_x_vel
         
         # Physical mass of the entire robot (moving translationally shifts the whole robot mass)
