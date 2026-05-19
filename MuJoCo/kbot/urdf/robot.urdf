@@ -1,0 +1,711 @@
+<?xml version="1.0" ?>
+<robot name="converted_robot">
+   <!--generated with mjcf_urdf_simple_converter (https://github.com/Yasu31/mjcf_urdf_simple_converter)-->
+   <link name="world">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.0"/>
+         <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <link name="base">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 1.5707999999999998"/>
+         <mass value="0.004188790204786391"/>
+         <inertia ixx="1.6755160819145565e-07" iyy="1.6755160819145565e-07" izz="1.6755160819145565e-07" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <link name="floating_base_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="fixed" name="floating_base">
+      <parent link="world"/>
+      <child link="floating_base_jointbody"/>
+      <origin xyz="0.0 0.0 0.76264403" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <joint type="fixed" name="floating_base_offset">
+      <parent link="floating_base_jointbody"/>
+      <child link="base"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="torso">
+      <inertial>
+         <origin xyz="-0.02592 0.003286 0.17054" rpy="0.0 0.0 0.0"/>
+         <mass value="12.606875"/>
+         <inertia ixx="0.369404" iyy="0.398554" izz="0.05807" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="torso.stl">
+         <origin xyz="-0.025747565333682516 0.003555468098097766 0.22412199728459972" rpy="0.0008593740330283817 -0.00022494356148783368 1.5716976053486924"/>
+         <geometry>
+            <mesh filename="meshes/torso.stl"/>
+         </geometry>
+      </visual>
+   </link>
+   <joint type="fixed" name="base2torso_fixed">
+      <parent link="base"/>
+      <child link="torso"/>
+      <origin xyz="0.0 0.025888 0.0" rpy="0.0 0.0 1.5707999999999998"/>
+   </joint>
+   <link name="KD_D_102L_L_Hip_Yoke_Drive">
+      <inertial>
+         <origin xyz="-0.004258 0.005667 -0.04038" rpy="0.0 0.0 0.0"/>
+         <mass value="0.550354"/>
+         <inertia ixx="0.00093" iyy="0.001251" izz="0.001328" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="KD_D_102L_L_Hip_Yoke_Drive.stl">
+         <origin xyz="4.3914299484087696e-05 0.010539982584437618 -0.047126583039270434" rpy="1.489508988039408 -0.8953002558528854 1.587550826110923"/>
+         <geometry>
+            <mesh filename="meshes/KD_D_102L_L_Hip_Yoke_Drive.stl"/>
+         </geometry>
+      </visual>
+   </link>
+   <link name="dof_left_hip_pitch_04_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="dof_left_hip_pitch_04">
+      <parent link="torso"/>
+      <child link="dof_left_hip_pitch_04_jointbody"/>
+      <origin xyz="0.030112 0.000852 -0.027644" rpy="-1.5707959999999999 0.0 1.5707959999999999"/>
+      <axis xyz="0.0 0.0 1.0"/>
+      <limit lower="-1.047198" upper="2.216568" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="dof_left_hip_pitch_04_offset">
+      <parent link="dof_left_hip_pitch_04_jointbody"/>
+      <child link="KD_D_102L_L_Hip_Yoke_Drive"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="L_Hip_Roll_RS03">
+      <inertial>
+         <origin xyz="-0.000136 -0.059376 0.026066" rpy="0.0 0.0 0.0"/>
+         <mass value="2.396969"/>
+         <inertia ixx="0.01035" iyy="0.003224" izz="0.010755" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="L_Hip_Roll_RS03.stl">
+         <origin xyz="-0.0009883078276069943 -0.0577850869660882 0.02769644379676059" rpy="2.5625496121829965 -1.5390725096082718 -0.9894198958725637"/>
+         <geometry>
+            <mesh filename="meshes/L_Hip_Roll_RS03.stl"/>
+         </geometry>
+      </visual>
+   </link>
+   <link name="dof_left_hip_roll_03_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="dof_left_hip_roll_03">
+      <parent link="KD_D_102L_L_Hip_Yoke_Drive"/>
+      <child link="dof_left_hip_roll_03_jointbody"/>
+      <origin xyz="-0.02825 0.03 -0.071" rpy="-3.1415923071795864 -1.5707959999999999 0.0"/>
+      <axis xyz="0.0 0.0 -1.0"/>
+      <limit lower="-0.20944" upper="2.268928" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="dof_left_hip_roll_03_offset">
+      <parent link="dof_left_hip_roll_03_jointbody"/>
+      <child link="L_Hip_Roll_RS03"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="KD_D_301L_L_Femur_Lower_Drive">
+      <inertial>
+         <origin xyz="0.001576 0.013392 -0.172799" rpy="0.0 0.0 0.0"/>
+         <mass value="2.349254"/>
+         <inertia ixx="0.015361" iyy="0.013924" izz="0.004011" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="KD_D_301L_L_Femur_Lower_Drive.stl">
+         <origin xyz="0.0009381023965015589 0.0017909649864645465 -0.11914015059344343" rpy="0.12936278299174953 -0.05479700156089384 -0.03928105279759307"/>
+         <geometry>
+            <mesh filename="meshes/KD_D_301L_L_Femur_Lower_Drive.stl"/>
+         </geometry>
+      </visual>
+   </link>
+   <link name="dof_left_hip_yaw_03_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="dof_left_hip_yaw_03">
+      <parent link="L_Hip_Roll_RS03"/>
+      <child link="dof_left_hip_yaw_03_jointbody"/>
+      <origin xyz="0.0 -0.143 0.02525" rpy="1.570796 0.0 3.1415923071795864"/>
+      <axis xyz="0.0 0.0 1.0"/>
+      <limit lower="-1.570796" upper="1.570796" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="dof_left_hip_yaw_03_offset">
+      <parent link="dof_left_hip_yaw_03_jointbody"/>
+      <child link="KD_D_301L_L_Femur_Lower_Drive"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="KD_D_401L_L_Shin_Drive">
+      <inertial>
+         <origin xyz="-0.024116 -0.104308 0.018559" rpy="0.0 0.0 0.0"/>
+         <mass value="1.684707"/>
+         <inertia ixx="0.014785" iyy="0.002991" izz="0.014664" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="KD_D_401L_L_Shin_Drive.stl">
+         <origin xyz="-0.02619676805300098 -0.08955782709961331 0.02032641513695641" rpy="1.5602923843736303 0.16991661383873513 -0.009273856268361858"/>
+         <geometry>
+            <mesh filename="meshes/KD_D_401L_L_Shin_Drive.stl"/>
+         </geometry>
+      </visual>
+   </link>
+   <link name="dof_left_knee_04_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="dof_left_knee_04">
+      <parent link="KD_D_301L_L_Femur_Lower_Drive"/>
+      <child link="dof_left_knee_04_jointbody"/>
+      <origin xyz="-0.021 0.021 -0.212" rpy="1.5707959999999999 2.220446049250313e-16 1.5707959999999999"/>
+      <axis xyz="0.0 0.0 1.0"/>
+      <limit lower="0.0" upper="2.70526" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="dof_left_knee_04_offset">
+      <parent link="dof_left_knee_04_jointbody"/>
+      <child link="KD_D_401L_L_Shin_Drive"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="LFootBushing_GPF_1517_12">
+      <inertial>
+         <origin xyz="-0.016549 0.031142 -0.012943" rpy="0.0 0.0 0.0"/>
+         <mass value="0.608966"/>
+         <inertia ixx="0.000377" iyy="0.00194" izz="0.001893" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="LFootBushing_GPF_1517_12.stl">
+         <origin xyz="-0.020727600042396124 0.033798663837542264 -0.01373243183762253" rpy="1.5717794825591445 -0.178916428089273 1.5214856553456566"/>
+         <geometry>
+            <mesh filename="meshes/LFootBushing_GPF_1517_12.stl"/>
+         </geometry>
+      </visual>
+   </link>
+   <link name="dof_left_ankle_02_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="dof_left_ankle_02">
+      <parent link="KD_D_401L_L_Shin_Drive"/>
+      <child link="dof_left_ankle_02_jointbody"/>
+      <origin xyz="-0.03 -0.29 0.00095" rpy="-3.1415923071795864 0.0 0.0"/>
+      <axis xyz="0.0 0.0 -1.0"/>
+      <limit lower="-1.134464" upper="0.261799" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="dof_left_ankle_02_offset">
+      <parent link="dof_left_ankle_02_jointbody"/>
+      <child link="LFootBushing_GPF_1517_12"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="KD_D_102R">
+      <inertial>
+         <origin xyz="-0.004258 -0.005667 -0.040379" rpy="0.0 0.0 0.0"/>
+         <mass value="0.550361"/>
+         <inertia ixx="0.00093" iyy="0.001251" izz="0.001328" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="KD_D_102R.stl">
+         <origin xyz="6.076870435459152e-05 -0.010479439124287098 -0.047117228116732794" rpy="-1.4819185641466674 -0.8970613971487448 -1.586086866608487"/>
+         <geometry>
+            <mesh filename="meshes/KD_D_102R.stl"/>
+         </geometry>
+      </visual>
+   </link>
+   <link name="dof_right_hip_pitch_04_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="dof_right_hip_pitch_04">
+      <parent link="torso"/>
+      <child link="dof_right_hip_pitch_04_jointbody"/>
+      <origin xyz="-0.081888 0.000852 -0.027644" rpy="1.5707959999999999 2.220446049250313e-16 1.5707959999999999"/>
+      <axis xyz="0.0 0.0 1.0"/>
+      <limit lower="-2.216568" upper="1.047198" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="dof_right_hip_pitch_04_offset">
+      <parent link="dof_right_hip_pitch_04_jointbody"/>
+      <child link="KD_D_102R"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="L_Hip_Roll_RS03_2">
+      <inertial>
+         <origin xyz="-0.000137 -0.059376 -0.026067" rpy="0.0 0.0 0.0"/>
+         <mass value="2.396917"/>
+         <inertia ixx="0.01035" iyy="0.003224" izz="0.010755" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="L_Hip_Roll_RS03_2.stl">
+         <origin xyz="-0.0009935418389624229 -0.05777329596912189 -0.027700740243464007" rpy="-0.5772316915832773 -1.5390985060031372 2.1504718011601343"/>
+         <geometry>
+            <mesh filename="meshes/L_Hip_Roll_RS03_2.stl"/>
+         </geometry>
+      </visual>
+   </link>
+   <link name="dof_right_hip_roll_03_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="dof_right_hip_roll_03">
+      <parent link="KD_D_102R"/>
+      <child link="dof_right_hip_roll_03_jointbody"/>
+      <origin xyz="-0.02825 -0.03 -0.071" rpy="0.0 -1.5707959999999999 0.0"/>
+      <axis xyz="0.0 0.0 1.0"/>
+      <limit lower="-2.268928" upper="0.20944" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="dof_right_hip_roll_03_offset">
+      <parent link="dof_right_hip_roll_03_jointbody"/>
+      <child link="L_Hip_Roll_RS03_2"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="KD_D_301R">
+      <inertial>
+         <origin xyz="-0.001577 0.013392 -0.172799" rpy="0.0 0.0 0.0"/>
+         <mass value="2.349261"/>
+         <inertia ixx="0.015362" iyy="0.013924" izz="0.004011" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="KD_D_301R.stl">
+         <origin xyz="-0.0009386561962801405 0.001783295896997561 -0.11916718167415323" rpy="0.12926065195711878 0.05508779075386494 0.03775353625364742"/>
+         <geometry>
+            <mesh filename="meshes/KD_D_301R.stl"/>
+         </geometry>
+      </visual>
+   </link>
+   <link name="dof_right_hip_yaw_03_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="dof_right_hip_yaw_03">
+      <parent link="L_Hip_Roll_RS03_2"/>
+      <child link="dof_right_hip_yaw_03_jointbody"/>
+      <origin xyz="0.0 -0.143 -0.02525" rpy="-1.570796 0.0 0.0"/>
+      <axis xyz="0.0 0.0 1.0"/>
+      <limit lower="-1.570796" upper="1.570796" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="dof_right_hip_yaw_03_offset">
+      <parent link="dof_right_hip_yaw_03_jointbody"/>
+      <child link="KD_D_301R"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="KD_D_401R">
+      <inertial>
+         <origin xyz="-0.024117 -0.10431 -0.018558" rpy="0.0 0.0 0.0"/>
+         <mass value="1.684717"/>
+         <inertia ixx="0.014785" iyy="0.002991" izz="0.014664" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="KD_D_401R.stl">
+         <origin xyz="-0.026194238059575603 -0.08958073757831114 -0.020330607651574028" rpy="1.5811842222901855 -0.16979940119414505 -0.009270973540264071"/>
+         <geometry>
+            <mesh filename="meshes/KD_D_401R.stl"/>
+         </geometry>
+      </visual>
+   </link>
+   <link name="dof_right_knee_04_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="dof_right_knee_04">
+      <parent link="KD_D_301R"/>
+      <child link="dof_right_knee_04_jointbody"/>
+      <origin xyz="0.021 0.021 -0.212" rpy="1.5707959999999999 2.220446049250313e-16 1.5707959999999999"/>
+      <axis xyz="0.0 0.0 -1.0"/>
+      <limit lower="-2.70526" upper="0.0" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="dof_right_knee_04_offset">
+      <parent link="dof_right_knee_04_jointbody"/>
+      <child link="KD_D_401R"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="RFootBushing_GPF_1517_12">
+      <inertial>
+         <origin xyz="-0.016546 -0.031136 -0.012942" rpy="0.0 0.0 0.0"/>
+         <mass value="0.608742"/>
+         <inertia ixx="0.000377" iyy="0.001939" izz="0.001892" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="RFootBushing_GPF_1517_12.stl">
+         <origin xyz="-0.020724748511274215 -0.033799846439350745 -0.013738278744756973" rpy="1.571672757247584 0.17874474649221628 1.6200444342874654"/>
+         <geometry>
+            <mesh filename="meshes/RFootBushing_GPF_1517_12.stl"/>
+         </geometry>
+      </visual>
+   </link>
+   <link name="dof_right_ankle_02_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="dof_right_ankle_02">
+      <parent link="KD_D_401R"/>
+      <child link="dof_right_ankle_02_jointbody"/>
+      <origin xyz="-0.03 -0.29 -0.00095" rpy="0.0 0.0 0.0"/>
+      <axis xyz="0.0 0.0 -1.0"/>
+      <limit lower="-0.261799" upper="1.134464" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="dof_right_ankle_02_offset">
+      <parent link="dof_right_ankle_02_jointbody"/>
+      <child link="RFootBushing_GPF_1517_12"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="KC_C_101R_ShldYokeDrive">
+      <inertial>
+         <origin xyz="0.003158 -0.007737 0.047375" rpy="0.0 0.0 0.0"/>
+         <mass value="0.56987"/>
+         <inertia ixx="0.001409" iyy="0.001159" izz="0.001309" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="KC_C_101R_ShldYokeDrive.stl">
+         <origin xyz="0.0015650193440328876 -0.0007620391718628573 0.05785183789578401" rpy="1.3786220896735086 -0.18077879598116087 -0.024862169001045875"/>
+         <geometry>
+            <mesh filename="meshes/KC_C_101R_ShldYokeDrive.stl"/>
+         </geometry>
+      </visual>
+   </link>
+   <link name="dof_right_shoulder_pitch_03_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="dof_right_shoulder_pitch_03">
+      <parent link="torso"/>
+      <child link="dof_right_shoulder_pitch_03_jointbody"/>
+      <origin xyz="-0.146888 0.000852 0.382856" rpy="0.0 -1.5707959999999999 0.0"/>
+      <axis xyz="0.0 0.0 -1.0"/>
+      <limit lower="-3.490658" upper="1.047198" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="dof_right_shoulder_pitch_03_offset">
+      <parent link="dof_right_shoulder_pitch_03_jointbody"/>
+      <child link="KC_C_101R_ShldYokeDrive"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="RS03_3">
+      <inertial>
+         <origin xyz="-0.004909 -0.041175 -0.029409" rpy="0.0 0.0 0.0"/>
+         <mass value="1.789232"/>
+         <inertia ixx="0.007176" iyy="0.001972" izz="0.007602" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="RS03_3.stl">
+         <origin xyz="-0.006922642981282124 -0.04622847029730761 -0.030885276063216217" rpy="2.8430812110219073 -1.5504671606150577 -1.3986988034574521"/>
+         <geometry>
+            <mesh filename="meshes/RS03_3.stl"/>
+         </geometry>
+      </visual>
+   </link>
+   <link name="dof_right_shoulder_roll_03_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="dof_right_shoulder_roll_03">
+      <parent link="KC_C_101R_ShldYokeDrive"/>
+      <child link="dof_right_shoulder_roll_03_jointbody"/>
+      <origin xyz="0.0 -0.02425 0.08" rpy="1.5707959996471867 1.570796 -3.5281311205892507e-10"/>
+      <axis xyz="0.0 0.0 1.0"/>
+      <limit lower="-1.658063" upper="0.436332" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="dof_right_shoulder_roll_03_offset">
+      <parent link="dof_right_shoulder_roll_03_jointbody"/>
+      <child link="RS03_3"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="KC_C_202R">
+      <inertial>
+         <origin xyz="0.003135 -0.003955 -0.099599" rpy="0.0 0.0 0.0"/>
+         <mass value="0.753224"/>
+         <inertia ixx="0.002457" iyy="0.002305" izz="0.000727" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="KC_C_202R.stl">
+         <origin xyz="-0.0006950431354024445 -0.0003256865143278846 -0.08199216811127877" rpy="-0.07866116571147021 0.04720794663103001 -0.010253451201711297"/>
+         <geometry>
+            <mesh filename="meshes/KC_C_202R.stl"/>
+         </geometry>
+      </visual>
+   </link>
+   <link name="dof_right_shoulder_yaw_02_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="dof_right_shoulder_yaw_02">
+      <parent link="RS03_3"/>
+      <child link="dof_right_shoulder_yaw_02_jointbody"/>
+      <origin xyz="-0.013 -0.1425 -0.03167" rpy="-1.570796 0.0 0.0"/>
+      <axis xyz="0.0 0.0 1.0"/>
+      <limit lower="-1.671886" upper="1.671886" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="dof_right_shoulder_yaw_02_offset">
+      <parent link="dof_right_shoulder_yaw_02_jointbody"/>
+      <child link="KC_C_202R"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="KC_C_401R_R_UpForearmDrive">
+      <inertial>
+         <origin xyz="0.015853 0.061198 0.015613" rpy="0.0 0.0 0.0"/>
+         <mass value="0.641859"/>
+         <inertia ixx="0.001302" iyy="0.000701" izz="0.001278" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="KC_C_401R_R_UpForearmDrive.stl">
+         <origin xyz="0.01501113867239124 0.04576672145032739 0.016608464412469735" rpy="1.6302933275973288 0.07025851611908607 -0.1374763108860484"/>
+         <geometry>
+            <mesh filename="meshes/KC_C_401R_R_UpForearmDrive.stl"/>
+         </geometry>
+      </visual>
+   </link>
+   <link name="dof_right_elbow_02_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="dof_right_elbow_02">
+      <parent link="KC_C_202R"/>
+      <child link="dof_right_elbow_02_jointbody"/>
+      <origin xyz="0.019 -0.01 -0.137" rpy="-1.5707959999999999 0.0 1.5707959999999999"/>
+      <axis xyz="0.0 0.0 1.0"/>
+      <limit lower="0.0" upper="2.478368" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="dof_right_elbow_02_offset">
+      <parent link="dof_right_elbow_02_jointbody"/>
+      <child link="KC_C_401R_R_UpForearmDrive"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="PRT0001">
+      <inertial>
+         <origin xyz="0.000357 3.1e-05 0.02739" rpy="0.0 0.0 0.0"/>
+         <mass value="0.462356"/>
+         <inertia ixx="0.000274" iyy="0.000266" izz="0.000406" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="PRT0001.stl">
+         <origin xyz="-0.00018593259942637484 1.745203290567474e-05 0.027653985407610174" rpy="-3.021965125022546 -1.5619684395710176 -0.0782443339997485"/>
+         <geometry>
+            <mesh filename="meshes/PRT0001.stl"/>
+         </geometry>
+      </visual>
+   </link>
+   <link name="dof_right_wrist_00_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="dof_right_wrist_00">
+      <parent link="KC_C_401R_R_UpForearmDrive"/>
+      <child link="dof_right_wrist_00_jointbody"/>
+      <origin xyz="0.01735 0.103 0.018" rpy="-1.5707959996471867 1.570796 3.5281311205892507e-10"/>
+      <axis xyz="0.0 0.0 -1.0"/>
+      <limit lower="-1.37881" upper="1.37881" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="dof_right_wrist_00_offset">
+      <parent link="dof_right_wrist_00_jointbody"/>
+      <child link="PRT0001"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="KD_C_101L_ShldYokeDrive">
+      <inertial>
+         <origin xyz="-0.003158 -0.007737 0.047374" rpy="0.0 0.0 0.0"/>
+         <mass value="0.569863"/>
+         <inertia ixx="0.001409" iyy="0.001159" izz="0.001309" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="KD_C_101L_ShldYokeDrive.stl">
+         <origin xyz="-0.0015720559775069746 -0.0007562280707835113 0.057845245219976055" rpy="1.3782572727930658 0.18057070857571578 0.024593699517314827"/>
+         <geometry>
+            <mesh filename="meshes/KD_C_101L_ShldYokeDrive.stl"/>
+         </geometry>
+      </visual>
+   </link>
+   <link name="dof_left_shoulder_pitch_03_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="dof_left_shoulder_pitch_03">
+      <parent link="torso"/>
+      <child link="dof_left_shoulder_pitch_03_jointbody"/>
+      <origin xyz="0.095112 0.000852 0.382856" rpy="0.0 1.570796 0.0"/>
+      <axis xyz="0.0 0.0 -1.0"/>
+      <limit lower="-1.047198" upper="3.490658" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="dof_left_shoulder_pitch_03_offset">
+      <parent link="dof_left_shoulder_pitch_03_jointbody"/>
+      <child link="KD_C_101L_ShldYokeDrive"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="RS03_4">
+      <inertial>
+         <origin xyz="0.004876 -0.041173 -0.029352" rpy="0.0 0.0 0.0"/>
+         <mass value="1.789191"/>
+         <inertia ixx="0.007175" iyy="0.001972" izz="0.007602" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="RS03_4.stl">
+         <origin xyz="0.0066870249963690755 -0.04620612117634428 -0.030261619968117683" rpy="-3.0312338723074594 -1.5532289722715629 -1.5505494287039536"/>
+         <geometry>
+            <mesh filename="meshes/RS03_4.stl"/>
+         </geometry>
+      </visual>
+   </link>
+   <link name="dof_left_shoulder_roll_03_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="dof_left_shoulder_roll_03">
+      <parent link="KD_C_101L_ShldYokeDrive"/>
+      <child link="dof_left_shoulder_roll_03_jointbody"/>
+      <origin xyz="0.0 -0.02425 0.08" rpy="1.5707959996471867 -1.5707959999999999 3.5281311205892507e-10"/>
+      <axis xyz="0.0 0.0 1.0"/>
+      <limit lower="-0.436332" upper="1.658063" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="dof_left_shoulder_roll_03_offset">
+      <parent link="dof_left_shoulder_roll_03_jointbody"/>
+      <child link="RS03_4"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="KD_C_301L_LowerBicepDrive">
+      <inertial>
+         <origin xyz="0.000333 -0.002948 -0.095705" rpy="0.0 0.0 0.0"/>
+         <mass value="0.866827"/>
+         <inertia ixx="0.002953" iyy="0.002777" izz="0.000923" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="KD_C_301L_LowerBicepDrive.stl">
+         <origin xyz="0.0006944684893560146 -0.0003178607617854564 -0.08202027029750347" rpy="-0.07869281663804494 -0.04729977612477354 0.00981667874178277"/>
+         <geometry>
+            <mesh filename="meshes/KD_C_301L_LowerBicepDrive.stl"/>
+         </geometry>
+      </visual>
+   </link>
+   <link name="dof_left_shoulder_yaw_02_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="dof_left_shoulder_yaw_02">
+      <parent link="RS03_4"/>
+      <child link="dof_left_shoulder_yaw_02_jointbody"/>
+      <origin xyz="0.013 -0.1425 -0.03075" rpy="-1.570796 0.0 0.0"/>
+      <axis xyz="0.0 0.0 1.0"/>
+      <limit lower="-1.671886" upper="1.671886" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="dof_left_shoulder_yaw_02_offset">
+      <parent link="dof_left_shoulder_yaw_02_jointbody"/>
+      <child link="KD_C_301L_LowerBicepDrive"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="KC_C_401L_Up_Forearm_Drive">
+      <inertial>
+         <origin xyz="0.015853 -0.061197 0.015921" rpy="0.0 0.0 0.0"/>
+         <mass value="0.641873"/>
+         <inertia ixx="0.001303" iyy="0.000701" izz="0.001278" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="KC_C_401L_Up_Forearm_Drive.stl">
+         <origin xyz="0.01501582762017823 -0.04574925693885708 0.016603137439112712" rpy="1.5115621842469733 0.06977003552971328 0.13728037267328053"/>
+         <geometry>
+            <mesh filename="meshes/KC_C_401L_Up_Forearm_Drive.stl"/>
+         </geometry>
+      </visual>
+   </link>
+   <link name="dof_left_elbow_02_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="dof_left_elbow_02">
+      <parent link="KD_C_301L_LowerBicepDrive"/>
+      <child link="dof_left_elbow_02_jointbody"/>
+      <origin xyz="-0.019 -0.01 -0.137" rpy="1.5707959999999999 2.220446049250313e-16 1.5707959999999999"/>
+      <axis xyz="0.0 0.0 1.0"/>
+      <limit lower="-2.478368" upper="0.0" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="dof_left_elbow_02_offset">
+      <parent link="dof_left_elbow_02_jointbody"/>
+      <child link="KC_C_401L_Up_Forearm_Drive"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="PRT0001_2">
+      <inertial>
+         <origin xyz="-0.000357 -3.1e-05 0.02739" rpy="0.0 0.0 0.0"/>
+         <mass value="0.462356"/>
+         <inertia ixx="0.000274" iyy="0.000266" izz="0.000406" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="PRT0001_2.stl">
+         <origin xyz="0.00018593203473807503 -1.7451507902629316e-05 0.027653985769974923" rpy="0.11961471806006374 -1.5619684780558933 3.0633633079692424"/>
+         <geometry>
+            <mesh filename="meshes/PRT0001_2.stl"/>
+         </geometry>
+      </visual>
+   </link>
+   <link name="dof_left_wrist_00_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="dof_left_wrist_00">
+      <parent link="KC_C_401L_Up_Forearm_Drive"/>
+      <child link="dof_left_wrist_00_jointbody"/>
+      <origin xyz="0.01735 -0.103 0.018" rpy="1.5707959996471867 -1.5707959999999999 3.5281311205892507e-10"/>
+      <axis xyz="0.0 0.0 -1.0"/>
+      <limit lower="-1.37881" upper="1.37881" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="dof_left_wrist_00_offset">
+      <parent link="dof_left_wrist_00_jointbody"/>
+      <child link="PRT0001_2"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="imu">
+      <inertial>
+         <origin xyz="-0.003012 0.0 0.002999" rpy="0.0 0.0 0.0"/>
+         <mass value="0.0057"/>
+         <inertia ixx="1e-06" iyy="1e-06" izz="2e-06" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="imu.stl">
+         <origin xyz="-0.0026496673836138057 4.844270272658882e-06 0.002999621073026043" rpy="-3.1390431943701054 -1.5707963267948966 0.0"/>
+         <geometry>
+            <mesh filename="meshes/imu.stl"/>
+         </geometry>
+      </visual>
+   </link>
+   <joint type="fixed" name="torso2imu_fixed">
+      <parent link="torso"/>
+      <child link="imu"/>
+      <origin xyz="-0.025422 -0.001897 0.440523" rpy="0.0 0.0 0.0"/>
+   </joint>
+</robot>

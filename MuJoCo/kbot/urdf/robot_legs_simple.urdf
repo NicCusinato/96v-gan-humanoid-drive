@@ -1,0 +1,187 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<robot name="converted_robot">
+   
+   <link name="world">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+         <mass value="0.0" />
+         <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0" ixz="0" iyz="0" />
+      </inertial>
+   </link>
+   <link name="base">
+      <inertial>
+         <origin xyz="0.0 0.0 0.76264403" rpy="0.0 0.0 0.0" />
+         <mass value="0.0" />
+         <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0" ixz="0" iyz="0" />
+      </inertial>
+   </link>
+   <joint type="fixed" name="floating_base">
+      <parent link="world" />
+      <child link="base" />
+      <origin xyz="0.0 0.0 0.76264403" rpy="0.0 0.0 0.0" />
+   </joint>
+   <link name="torso">
+      <inertial>
+         <origin xyz="-0.02592 0.003286 0.17054" rpy="0.0 0.0 0.0" />
+         <mass value="12.606875" />
+         <inertia ixx="0.369404" iyy="0.398554" izz="0.05807" ixy="0" ixz="0" iyz="0" />
+      </inertial>
+   <visual><origin xyz="-0.02592 0.003286 0.17054" rpy="0.0 0.0 0.0" /><geometry><box size="0.05 0.05 0.05" /></geometry><material name="simple_mat"><color rgba="0.2 0.6 0.8 1" /></material></visual></link>
+   <joint type="fixed" name="base2torso_fixed">
+      <parent link="base" />
+      <child link="torso" />
+      <origin xyz="0.0 0.025888 0.0" rpy="0.0 0.0 1.5707999999999998" />
+   </joint>
+   <link name="KD_D_102L_L_Hip_Yoke_Drive">
+      <inertial>
+         <origin xyz="-0.004258 0.005667 -0.04038" rpy="0.0 0.0 0.0" />
+         <mass value="0.550354" />
+         <inertia ixx="0.00093" iyy="0.001251" izz="0.001328" ixy="0" ixz="0" iyz="0" />
+      </inertial>
+      <visual><origin xyz="-0.004258 0.005667 -0.04038" rpy="0.0 0.0 0.0" /><geometry><box size="0.05 0.05 0.05" /></geometry><material name="simple_mat"><color rgba="0.2 0.6 0.8 1" /></material></visual></link>
+   <joint type="revolute" name="dof_left_hip_pitch_04">
+      <parent link="torso" />
+      <child link="KD_D_102L_L_Hip_Yoke_Drive" />
+      <origin xyz="0.030112 0.000852 -0.027644" rpy="-1.5707959999999999 0.0 1.5707959999999999" />
+      <axis xyz="0.0 0.0 1.0" />
+      <limit lower="-1.047198" upper="2.216568" effort="100" velocity="100" />
+   </joint>
+   <link name="L_Hip_Roll_RS03">
+      <inertial>
+         <origin xyz="-0.000136 -0.059376 0.026066" rpy="0.0 0.0 0.0" />
+         <mass value="2.396969" />
+         <inertia ixx="0.01035" iyy="0.003224" izz="0.010755" ixy="0" ixz="0" iyz="0" />
+      </inertial>
+      <visual><origin xyz="-0.000136 -0.059376 0.026066" rpy="0.0 0.0 0.0" /><geometry><box size="0.05 0.05 0.05" /></geometry><material name="simple_mat"><color rgba="0.2 0.6 0.8 1" /></material></visual></link>
+   <joint type="revolute" name="dof_left_hip_roll_03">
+      <parent link="KD_D_102L_L_Hip_Yoke_Drive" />
+      <child link="L_Hip_Roll_RS03" />
+      <origin xyz="-0.02825 0.03 -0.071" rpy="-3.1415923071795864 -1.5707959999999999 0.0" />
+      <axis xyz="0.0 0.0 -1.0" />
+      <limit lower="-0.20944" upper="2.268928" effort="100" velocity="100" />
+   </joint>
+   <link name="KD_D_301L_L_Femur_Lower_Drive">
+      <inertial>
+         <origin xyz="0.001576 0.013392 -0.172799" rpy="0.0 0.0 0.0" />
+         <mass value="2.349254" />
+         <inertia ixx="0.015361" iyy="0.013924" izz="0.004011" ixy="0" ixz="0" iyz="0" />
+      </inertial>
+      <visual><origin xyz="0.001576 0.013392 -0.172799" rpy="0.0 0.0 0.0" /><geometry><box size="0.05 0.05 0.05" /></geometry><material name="simple_mat"><color rgba="0.2 0.6 0.8 1" /></material></visual></link>
+   <joint type="revolute" name="dof_left_hip_yaw_03">
+      <parent link="L_Hip_Roll_RS03" />
+      <child link="KD_D_301L_L_Femur_Lower_Drive" />
+      <origin xyz="0.0 -0.143 0.02525" rpy="1.570796 0.0 3.1415923071795864" />
+      <axis xyz="0.0 0.0 1.0" />
+      <limit lower="-1.570796" upper="1.570796" effort="100" velocity="100" />
+   </joint>
+   <link name="KD_D_401L_L_Shin_Drive">
+      <inertial>
+         <origin xyz="-0.024116 -0.104308 0.018559" rpy="0.0 0.0 0.0" />
+         <mass value="1.684707" />
+         <inertia ixx="0.014785" iyy="0.002991" izz="0.014664" ixy="0" ixz="0" iyz="0" />
+      </inertial>
+      <visual><origin xyz="-0.024116 -0.104308 0.018559" rpy="0.0 0.0 0.0" /><geometry><box size="0.05 0.05 0.05" /></geometry><material name="simple_mat"><color rgba="0.2 0.6 0.8 1" /></material></visual></link>
+   <joint type="revolute" name="dof_left_knee_04">
+      <parent link="KD_D_301L_L_Femur_Lower_Drive" />
+      <child link="KD_D_401L_L_Shin_Drive" />
+      <origin xyz="-0.021 0.021 -0.212" rpy="1.5707959999999999 2.220446049250313e-16 1.5707959999999999" />
+      <axis xyz="0.0 0.0 1.0" />
+      <limit lower="0.0" upper="2.70526" effort="100" velocity="100" />
+   </joint>
+   <link name="LFootBushing_GPF_1517_12">
+      <inertial>
+         <origin xyz="-0.016549 0.031142 -0.012943" rpy="0.0 0.0 0.0" />
+         <mass value="0.608966" />
+         <inertia ixx="0.000377" iyy="0.00194" izz="0.001893" ixy="0" ixz="0" iyz="0" />
+      </inertial>
+      <visual><origin xyz="-0.016549 0.031142 -0.012943" rpy="0.0 0.0 0.0" /><geometry><box size="0.05 0.05 0.05" /></geometry><material name="simple_mat"><color rgba="0.2 0.6 0.8 1" /></material></visual></link>
+   <joint type="revolute" name="dof_left_ankle_02">
+      <parent link="KD_D_401L_L_Shin_Drive" />
+      <child link="LFootBushing_GPF_1517_12" />
+      <origin xyz="-0.03 -0.29 0.00095" rpy="-3.1415923071795864 0.0 0.0" />
+      <axis xyz="0.0 0.0 -1.0" />
+      <limit lower="-1.134464" upper="0.261799" effort="100" velocity="100" />
+   </joint>
+   <link name="KD_D_102R">
+      <inertial>
+         <origin xyz="-0.004258 -0.005667 -0.040379" rpy="0.0 0.0 0.0" />
+         <mass value="0.550361" />
+         <inertia ixx="0.00093" iyy="0.001251" izz="0.001328" ixy="0" ixz="0" iyz="0" />
+      </inertial>
+      <visual><origin xyz="-0.004258 -0.005667 -0.040379" rpy="0.0 0.0 0.0" /><geometry><box size="0.05 0.05 0.05" /></geometry><material name="simple_mat"><color rgba="0.2 0.6 0.8 1" /></material></visual></link>
+   <joint type="revolute" name="dof_right_hip_pitch_04">
+      <parent link="torso" />
+      <child link="KD_D_102R" />
+      <origin xyz="-0.081888 0.000852 -0.027644" rpy="1.5707959999999999 2.220446049250313e-16 1.5707959999999999" />
+      <axis xyz="0.0 0.0 1.0" />
+      <limit lower="-2.216568" upper="1.047198" effort="100" velocity="100" />
+   </joint>
+   <link name="L_Hip_Roll_RS03_2">
+      <inertial>
+         <origin xyz="-0.000137 -0.059376 -0.026067" rpy="0.0 0.0 0.0" />
+         <mass value="2.396917" />
+         <inertia ixx="0.01035" iyy="0.003224" izz="0.010755" ixy="0" ixz="0" iyz="0" />
+      </inertial>
+      <visual><origin xyz="-0.000137 -0.059376 -0.026067" rpy="0.0 0.0 0.0" /><geometry><box size="0.05 0.05 0.05" /></geometry><material name="simple_mat"><color rgba="0.2 0.6 0.8 1" /></material></visual></link>
+   <joint type="revolute" name="dof_right_hip_roll_03">
+      <parent link="KD_D_102R" />
+      <child link="L_Hip_Roll_RS03_2" />
+      <origin xyz="-0.02825 -0.03 -0.071" rpy="0.0 -1.5707959999999999 0.0" />
+      <axis xyz="0.0 0.0 1.0" />
+      <limit lower="-2.268928" upper="0.20944" effort="100" velocity="100" />
+   </joint>
+   <link name="KD_D_301R">
+      <inertial>
+         <origin xyz="-0.001577 0.013392 -0.172799" rpy="0.0 0.0 0.0" />
+         <mass value="2.349261" />
+         <inertia ixx="0.015362" iyy="0.013924" izz="0.004011" ixy="0" ixz="0" iyz="0" />
+      </inertial>
+      <visual><origin xyz="-0.001577 0.013392 -0.172799" rpy="0.0 0.0 0.0" /><geometry><box size="0.05 0.05 0.05" /></geometry><material name="simple_mat"><color rgba="0.2 0.6 0.8 1" /></material></visual></link>
+   <joint type="revolute" name="dof_right_hip_yaw_03">
+      <parent link="L_Hip_Roll_RS03_2" />
+      <child link="KD_D_301R" />
+      <origin xyz="0.0 -0.143 -0.02525" rpy="-1.570796 0.0 0.0" />
+      <axis xyz="0.0 0.0 1.0" />
+      <limit lower="-1.570796" upper="1.570796" effort="100" velocity="100" />
+   </joint>
+   <link name="KD_D_401R">
+      <inertial>
+         <origin xyz="-0.024117 -0.10431 -0.018558" rpy="0.0 0.0 0.0" />
+         <mass value="1.684717" />
+         <inertia ixx="0.014785" iyy="0.002991" izz="0.014664" ixy="0" ixz="0" iyz="0" />
+      </inertial>
+      <visual><origin xyz="-0.024117 -0.10431 -0.018558" rpy="0.0 0.0 0.0" /><geometry><box size="0.05 0.05 0.05" /></geometry><material name="simple_mat"><color rgba="0.2 0.6 0.8 1" /></material></visual></link>
+   <joint type="revolute" name="dof_right_knee_04">
+      <parent link="KD_D_301R" />
+      <child link="KD_D_401R" />
+      <origin xyz="0.021 0.021 -0.212" rpy="1.5707959999999999 2.220446049250313e-16 1.5707959999999999" />
+      <axis xyz="0.0 0.0 -1.0" />
+      <limit lower="-2.70526" upper="0.0" effort="100" velocity="100" />
+   </joint>
+   <link name="RFootBushing_GPF_1517_12">
+      <inertial>
+         <origin xyz="-0.016546 -0.031136 -0.012942" rpy="0.0 0.0 0.0" />
+         <mass value="0.608742" />
+         <inertia ixx="0.000377" iyy="0.001939" izz="0.001892" ixy="0" ixz="0" iyz="0" />
+      </inertial>
+      <visual><origin xyz="-0.016546 -0.031136 -0.012942" rpy="0.0 0.0 0.0" /><geometry><box size="0.05 0.05 0.05" /></geometry><material name="simple_mat"><color rgba="0.2 0.6 0.8 1" /></material></visual></link>
+   <joint type="revolute" name="dof_right_ankle_02">
+      <parent link="KD_D_401R" />
+      <child link="RFootBushing_GPF_1517_12" />
+      <origin xyz="-0.03 -0.29 -0.00095" rpy="0.0 0.0 0.0" />
+      <axis xyz="0.0 0.0 -1.0" />
+      <limit lower="-0.261799" upper="1.134464" effort="100" velocity="100" />
+   </joint>
+   <link name="imu">
+      <inertial>
+         <origin xyz="-0.003012 0.0 0.002999" rpy="0.0 0.0 0.0" />
+         <mass value="0.0057" />
+         <inertia ixx="1e-06" iyy="1e-06" izz="2e-06" ixy="0" ixz="0" iyz="0" />
+      </inertial>
+   <visual><origin xyz="-0.003012 0.0 0.002999" rpy="0.0 0.0 0.0" /><geometry><box size="0.05 0.05 0.05" /></geometry><material name="simple_mat"><color rgba="0.2 0.6 0.8 1" /></material></visual></link>
+   <joint type="fixed" name="torso2imu_fixed">
+      <parent link="torso" />
+      <child link="imu" />
+      <origin xyz="-0.025422 -0.001897 0.440523" rpy="0.0 0.0 0.0" />
+   </joint>
+</robot>
