@@ -63,6 +63,40 @@ try:
         
     saved_gait_data = False
 
+    def save_mat_data():
+        global saved_gait_data
+        if saved_gait_data or len(logged_data['time']) == 0:
+            return
+        # Structure into nested structs
+        mat_data = {
+            'gait_data': {
+                'time': np.array(logged_data['time']),
+                'mode_id': np.array(logged_data['mode_id']),
+                'mode_name': np.array(logged_data['mode_name'], dtype=object),
+                'joints': {}
+            }
+        }
+        for short_name in joint_names.keys():
+            mat_data['gait_data']['joints'][short_name] = {
+                'angle': np.array(logged_data[f'{short_name}_angle']),
+                'velocity': np.array(logged_data[f'{short_name}_velocity']),
+                'acceleration': np.array(logged_data[f'{short_name}_acceleration']),
+                'net_torque': np.array(logged_data[f'{short_name}_net_torque']),
+                'contact_torque': np.array(logged_data[f'{short_name}_contact_torque'])
+            }
+        
+        gait_data_dir = os.path.abspath(os.path.join(current_dir, "..", "phase0", "gait_data"))
+        os.makedirs(gait_data_dir, exist_ok=True)
+        mat_path = os.path.join(gait_data_dir, "squat_gait_data.mat")
+        
+        sio.savemat(mat_path, mat_data)
+        print(f"\n=======================================================")
+        print(f" >>> GAIT DATA EXPORTED SUCCESSFULLY! <<< ")
+        print(f" Saved to: {mat_path}")
+        print(f" Total recorded steps: {len(logged_data['time'])}")
+        print(f"=======================================================\n")
+        saved_gait_data = True
+
     # 4. Launch Passive Viewer Loop
     print("\nLaunching MuJoCo viewer (passive)...")
     with mujoco.viewer.launch_passive(wbc.model, wbc.data) as viewer:
@@ -132,35 +166,7 @@ try:
                 
             # Save gait data to .mat file at t = 10.0 seconds
             if current_time >= 10.0 and not saved_gait_data:
-                # Structure into nested structs
-                mat_data = {
-                    'gait_data': {
-                        'time': np.array(logged_data['time']),
-                        'mode_id': np.array(logged_data['mode_id']),
-                        'mode_name': np.array(logged_data['mode_name'], dtype=object),
-                        'joints': {}
-                    }
-                }
-                for short_name in joint_names.keys():
-                    mat_data['gait_data']['joints'][short_name] = {
-                        'angle': np.array(logged_data[f'{short_name}_angle']),
-                        'velocity': np.array(logged_data[f'{short_name}_velocity']),
-                        'acceleration': np.array(logged_data[f'{short_name}_acceleration']),
-                        'net_torque': np.array(logged_data[f'{short_name}_net_torque']),
-                        'contact_torque': np.array(logged_data[f'{short_name}_contact_torque'])
-                    }
-                
-                gait_data_dir = os.path.abspath(os.path.join(current_dir, "..", "phase0", "gait_data"))
-                os.makedirs(gait_data_dir, exist_ok=True)
-                mat_path = os.path.join(gait_data_dir, "squat_gait_data.mat")
-                
-                sio.savemat(mat_path, mat_data)
-                print(f"\n=======================================================")
-                print(f" >>> GAIT DATA EXPORTED SUCCESSFULLY! <<< ")
-                print(f" Saved to: {mat_path}")
-                print(f" Total recorded steps: {len(logged_data['time'])}")
-                print(f"=======================================================\n")
-                saved_gait_data = True
+                save_mat_data()
             
             step_count += 1
             if step_count == 1 or step_count % 50 == 0:
@@ -183,6 +189,9 @@ try:
             time_until_next_step = wbc.model.opt.timestep - (time.time() - step_start)
             if time_until_next_step > 0:
                 time.sleep(time_until_next_step)
+
+    # Save any remaining data upon viewer window closure
+    save_mat_data()
 
 except Exception as e:
     print(f"\n[ERROR] An exception occurred: {e}")

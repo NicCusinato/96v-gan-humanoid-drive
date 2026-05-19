@@ -323,7 +323,7 @@ class MinimalWBC:
         tau_torso_gravity = J_z * f_gravity_upward
         
         # 6. Compute Joint-Space Posture PD (maintains arms and knees stance compliance)
-        self.tau_pd = np.zeros(20)
+        self.tau_pd = np.zeros(self.model.nu)
         for i in range(self.model.nu):
             joint_id = self.model.actuator_trnid[i, 0]
             joint_name = mujoco.mj_id2name(self.model, mujoco.mjtObj.mjOBJ_JOINT, joint_id)

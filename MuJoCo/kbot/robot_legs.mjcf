@@ -1,3 +1,4 @@
+<?xml version='1.0' encoding='utf-8'?>
 <mujoco model="assy_forurdf">
   <default>
     <default class="robot">
@@ -65,13 +66,8 @@
   <worldbody>
     <body name="base" pos="0.00000000 0.00000000 0.76264403" quat="1 0 0 0" childclass="robot">
       <freejoint name="floating_base" />
-      <geom name="base_visual" pos="0 0 0" quat="0.7071054825112363 0.0 0.0 0.7071080798594735" material="base_material" type="sphere" size="0.01" class="visual" />
-      <!-- the torso origin out of the onshape to urdf exporter is wrong so we must fix it manually -->
       <body name="torso" pos="0 0.025888 0" quat="0.7071054825112363 0.0 0.0 0.7071080798594735">
-        <geom name="torso_origin" pos="0 0 0" quat="1 0 0 0" class="visual" type="sphere" size="0.01" material="green_material" />
         <inertial pos="-0.025920 0.003286 0.170540" quat="1.0 0.0 0.0 0.0" mass="12.606875" diaginertia="0.369404 0.398554 0.05807" />
-        <geom name="torso_visual" pos="0 0 0" quat="1.0 0.0 0.0 0.0" material="torso_material" type="mesh" mesh="torso.stl" class="visual" />
-          <geom name="torso_collision" type="box" size="0.12 0.15 0.08" pos="-0.025 0 0.1" class="collision" />
         <body name="KD_D_102L_L_Hip_Yoke_Drive" pos="0.030112 0.000852 -0.027644" quat="0.5000001633974483 -0.4999999999999733 -0.49999983660255165 0.4999999999999733">
           <joint name="dof_left_hip_pitch_04" type="hinge" ref="0.0" class="robstride_04" range="-1.047198 2.216568" axis="0 0 1" />
           <inertial pos="-0.004258 0.005667 -0.040380" quat="1.0 0.0 0.0 0.0" mass="0.550354" diaginertia="0.00093 0.001251 0.001328" />
@@ -84,12 +80,10 @@
               <joint name="dof_left_hip_yaw_03" type="hinge" ref="0.0" class="robstride_03" range="-1.570796 1.570796" axis="0 0 1" />
               <inertial pos="0.001576 0.013392 -0.172799" quat="1.0 0.0 0.0 0.0" mass="2.349254" diaginertia="0.015361 0.013924 0.004011" />
               <geom name="KD_D_301L_L_Femur_Lower_Drive_visual" pos="0 0 0" quat="1.0 0.0 0.0 0.0" material="torso_material" type="mesh" mesh="KD_D_301L_L_Femur_Lower_Drive.stl" class="visual" />
-              <geom name="L_femur_collision" type="capsule" fromto="0 0 0 0 0 -0.2" size="0.045" class="collision" />
               <body name="KD_D_401L_L_Shin_Drive" pos="-0.021000 0.021000 -0.212000" quat="0.5000001633974483 0.4999999999999733 0.49999983660255165 0.4999999999999733">
                 <joint name="dof_left_knee_04" type="hinge" ref="0.0" class="robstride_04" range="0 2.705260" axis="0 0 1" />
                 <inertial pos="-0.024116 -0.104308 0.018559" quat="1.0 0.0 0.0 0.0" mass="1.684707" diaginertia="0.014785 0.002991 0.014664" />
                 <geom name="KD_D_401L_L_Shin_Drive_visual" pos="0 0 0" quat="1.0 0.0 0.0 0.0" material="torso_material" type="mesh" mesh="KD_D_401L_L_Shin_Drive.stl" class="visual" />
-                <geom name="L_shin_collision" type="capsule" fromto="0 0 0 0 -0.29 0" size="0.035" class="collision" />
                 <body name="LFootBushing_GPF_1517_12" pos="-0.030000 -0.290000 0.000950" quat="-1.7320510330969933e-07 0.999999999999985 0.0 -0.0">
                   <joint name="dof_left_ankle_02" type="hinge" ref="0.0" class="robstride_02" range="-1.134464 0.261799" axis="0 0 -1" />
                   <inertial pos="-0.016549 0.031142 -0.012943" quat="1.0 0.0 0.0 0.0" mass="0.608966" diaginertia="0.000377 0.00194 0.001893" />
@@ -100,8 +94,8 @@
                   <geom name="LFootBushing_GPF_1517_12_visual_capsule_1" type="capsule" quat="1.000000 0.000000 0.000000 0.000000" fromto="-0.1127 0.038000 0.000954 0.055821 0.038000 0.000954" size="0.020000" material="torso_material" class="visual" />
                   <site name="left_foot" size="0.138 0.032 0.043" pos="-0.0290 0.038 -0.0150" type="box" />
                 </body>
-              </body>
-            </body>
+              <geom name="L_shin_collision" type="capsule" fromto="0 0 0 0 -0.29 0" size="0.035" class="collision" /></body>
+            <geom name="L_femur_collision" type="capsule" fromto="0 0 0 0 0 -0.2" size="0.045" class="collision" /></body>
           </body>
         </body>
         <body name="KD_D_102R" pos="-0.081888 0.000852 -0.027644" quat="0.5000001633974483 0.4999999999999733 0.49999983660255165 0.4999999999999733">
@@ -116,12 +110,10 @@
               <joint name="dof_right_hip_yaw_03" type="hinge" ref="0.0" class="robstride_03" range="-1.570796 1.570796" axis="0 0 1" />
               <inertial pos="-0.001577 0.013392 -0.172799" quat="1.0 0.0 0.0 0.0" mass="2.349261" diaginertia="0.015362 0.013924 0.004011" />
               <geom name="KD_D_301R_visual" pos="0 0 0" quat="1.0 0.0 0.0 0.0" material="torso_material" type="mesh" mesh="KD_D_301R.stl" class="visual" />
-              <geom name="R_femur_collision" type="capsule" fromto="0 0 0 0 0 -0.2" size="0.045" class="collision" />
               <body name="KD_D_401R" pos="0.021000 0.021000 -0.212000" quat="0.5000001633974483 0.4999999999999733 0.49999983660255165 0.4999999999999733">
                 <joint name="dof_right_knee_04" type="hinge" ref="0.0" class="robstride_04" range="-2.705260 0" axis="0 0 -1" />
                 <inertial pos="-0.024117 -0.104310 -0.018558" quat="1.0 0.0 0.0 0.0" mass="1.684717" diaginertia="0.014785 0.002991 0.014664" />
                 <geom name="KD_D_401R_visual" pos="0 0 0" quat="1.0 0.0 0.0 0.0" material="torso_material" type="mesh" mesh="KD_D_401R.stl" class="visual" />
-                <geom name="R_shin_collision" type="capsule" fromto="0 0 0 0 -0.29 0" size="0.035" class="collision" />
                 <body name="RFootBushing_GPF_1517_12" pos="-0.030000 -0.290000 -0.000950" quat="1.0 0.0 0.0 0.0">
                   <joint name="dof_right_ankle_02" type="hinge" ref="0.0" class="robstride_02" range="-0.261799 1.134464" axis="0 0 -1" />
                   <inertial pos="-0.016546 -0.031136 -0.012942" quat="1.0 0.0 0.0 0.0" mass="0.608742" diaginertia="0.000377 0.001939 0.001892" />
@@ -132,56 +124,15 @@
                   <geom name="RFootBushing_GPF_1517_12_visual_capsule_1" type="capsule" quat="1.000000 0.000000 0.000000 0.000000" fromto="-0.1127 -0.038000 0.000954 0.055821 -0.038000 0.000954" size="0.020000" material="torso_material" class="visual" />
                   <site name="right_foot" size="0.138 0.032 0.043" pos="-0.0290 -0.038 -0.0150" type="box" />
                 </body>
-              </body>
-            </body>
-          </body>
-        </body>
-        <body name="KC_C_101R_ShldYokeDrive" pos="-0.146888 0.000852 0.382856" quat="0.7071068967259818 0.0 -0.7071066656470943 0.0">
-          <inertial pos="0.003158 -0.007737 0.047375" quat="1.0 0.0 0.0 0.0" mass="0.569870" diaginertia="0.001409 0.001159 0.001309" />
-          <geom name="KC_C_101R_ShldYokeDrive_visual" pos="0 0 0" quat="1.0 0.0 0.0 0.0" material="torso_material" type="mesh" mesh="KC_C_101R_ShldYokeDrive.stl" class="visual" />
-          <body name="RS03_3" pos="0 -0.024250 0.080000" quat="0.5000001633974483 0.4999999999999733 0.4999999999999733 -0.49999983660255165">
-            <inertial pos="-0.004909 -0.041175 -0.029409" quat="1.0 0.0 0.0 0.0" mass="1.789232" diaginertia="0.007176 0.001972 0.007602" />
-            <geom name="RS03_3_visual" pos="0 0 0" quat="1.0 0.0 0.0 0.0" material="torso_material" type="mesh" mesh="RS03_3.stl" class="visual" />
-            <body name="KC_C_202R" pos="-0.013000 -0.142500 -0.031670" quat="0.7071068967259818 -0.7071066656470943 0.0 0.0">
-              <inertial pos="0.003135 -0.003955 -0.099599" quat="1.0 0.0 0.0 0.0" mass="0.753224" diaginertia="0.002457 0.002305 0.000727" />
-              <geom name="KC_C_202R_visual" pos="0 0 0" quat="1.0 0.0 0.0 0.0" material="torso_material" type="mesh" mesh="KC_C_202R.stl" class="visual" />
-              <body name="KC_C_401R_R_UpForearmDrive" pos="0.019000 -0.010000 -0.137000" quat="0.5000001633974483 -0.4999999999999733 -0.49999983660255165 0.4999999999999733">
-                <inertial pos="0.015853 0.061198 0.015613" quat="1.0 0.0 0.0 0.0" mass="0.641859" diaginertia="0.001302 0.000701 0.001278" />
-                <geom name="KC_C_401R_R_UpForearmDrive_visual" pos="0 0 0" quat="1.0 0.0 0.0 0.0" material="torso_material" type="mesh" mesh="KC_C_401R_R_UpForearmDrive.stl" class="visual" />
-                <body name="PRT0001" pos="0.017350 0.103000 0.018000" quat="0.5000001633974483 -0.4999999999999733 0.4999999999999733 0.49999983660255165">
-                  <inertial pos="0.000357 0.000031 0.027390" quat="1.0 0.0 0.0 0.0" mass="0.462356" diaginertia="0.000274 0.000266 0.000406" />
-                  <geom name="PRT0001_visual" pos="0 0 0" quat="1.0 0.0 0.0 0.0" material="torso_material" type="mesh" mesh="PRT0001.stl" class="visual" />
-                </body>
-              </body>
-            </body>
-          </body>
-        </body>
-        <body name="KD_C_101L_ShldYokeDrive" pos="0.095112 0.000852 0.382856" quat="0.7071068967259818 0.0 0.7071066656470943 0.0">
-          <inertial pos="-0.003158 -0.007737 0.047374" quat="1.0 0.0 0.0 0.0" mass="0.569863" diaginertia="0.001409 0.001159 0.001309" />
-          <geom name="KD_C_101L_ShldYokeDrive_visual" pos="0 0 0" quat="1.0 0.0 0.0 0.0" material="torso_material" type="mesh" mesh="KD_C_101L_ShldYokeDrive.stl" class="visual" />
-          <body name="RS03_4" pos="0 -0.024250 0.080000" quat="0.5000001633974483 0.4999999999999733 -0.4999999999999733 0.49999983660255165">
-            <inertial pos="0.004876 -0.041173 -0.029352" quat="1.0 0.0 0.0 0.0" mass="1.789191" diaginertia="0.007175 0.001972 0.007602" />
-            <geom name="RS03_4_visual" pos="0 0 0" quat="1.0 0.0 0.0 0.0" material="torso_material" type="mesh" mesh="RS03_4.stl" class="visual" />
-            <body name="KD_C_301L_LowerBicepDrive" pos="0.013000 -0.142500 -0.030750" quat="0.7071068967259818 -0.7071066656470943 0.0 0.0">
-              <inertial pos="0.000333 -0.002948 -0.095705" quat="1.0 0.0 0.0 0.0" mass="0.866827" diaginertia="0.002953 0.002777 0.000923" />
-              <geom name="KD_C_301L_LowerBicepDrive_visual" pos="0 0 0" quat="1.0 0.0 0.0 0.0" material="torso_material" type="mesh" mesh="KD_C_301L_LowerBicepDrive.stl" class="visual" />
-              <body name="KC_C_401L_Up_Forearm_Drive" pos="-0.019000 -0.010000 -0.137000" quat="0.5000001633974483 0.4999999999999733 0.49999983660255165 0.4999999999999733">
-                <inertial pos="0.015853 -0.061197 0.015921" quat="1.0 0.0 0.0 0.0" mass="0.641873" diaginertia="0.001303 0.000701 0.001278" />
-                <geom name="KC_C_401L_Up_Forearm_Drive_visual" pos="0 0 0" quat="1.0 0.0 0.0 0.0" material="torso_material" type="mesh" mesh="KC_C_401L_Up_Forearm_Drive.stl" class="visual" />
-                <body name="PRT0001_2" pos="0.017350 -0.103000 0.018000" quat="0.5000001633974483 0.4999999999999733 -0.4999999999999733 0.49999983660255165">
-                  <inertial pos="-0.000357 -0.000031 0.027390" quat="1.0 0.0 0.0 0.0" mass="0.462356" diaginertia="0.000274 0.000266 0.000406" />
-                  <geom name="PRT0001_2_visual" pos="0 0 0" quat="1.0 0.0 0.0 0.0" material="torso_material" type="mesh" mesh="PRT0001_2.stl" class="visual" />
-                </body>
-              </body>
-            </body>
+              <geom name="R_shin_collision" type="capsule" fromto="0 0 0 0 -0.29 0" size="0.035" class="collision" /></body>
+            <geom name="R_femur_collision" type="capsule" fromto="0 0 0 0 0 -0.2" size="0.045" class="collision" /></body>
           </body>
         </body>
         <body name="imu" pos="-0.025422 -0.001897 0.440523" quat="1.0 0.0 0.0 0.0">
           <inertial pos="-0.003012 0 0.002999" quat="1.0 0.0 0.0 0.0" mass="0.005700" diaginertia="1e-06 1e-06 2e-06" />
-          <geom name="imu_visual" pos="0 0 0" quat="1.0 0.0 0.0 0.0" material="imu_material" type="mesh" mesh="imu.stl" class="visual" />
           <site name="imu_site" quat="1.0 0.0 0.0 0.0" pos="0.0 0.0 0.0" />
         </body>
-      </body>
+      <geom name="pelvis_visual" type="box" size="0.06 0.12 0.04" pos="-0.025 0 0.0" material="torso_material" class="visual" /><geom name="torso_collision" type="box" size="0.12 0.15 0.08" pos="-0.025 0 0.1" class="collision" /></body>
       <site name="base_site" pos="0.0 0.0 0.0" quat="1 0 0 0" />
       <camera name="front_camera" mode="track" fovy="90.0" quat="4.329780281177467e-17 4.329780281177466e-17 0.7071067811865475 0.7071067811865476" pos="0.0 2.0 0.5" />
       <camera name="side_camera" mode="track" fovy="90.0" quat="-0.5 -0.4999999999999999 0.5 0.5000000000000001" pos="-2.0 0.0 0.5" />
@@ -199,7 +150,7 @@
     <motor name="dof_right_hip_yaw_03_ctrl" joint="dof_right_hip_yaw_03" class="robstride_03" />
     <motor name="dof_right_knee_04_ctrl" joint="dof_right_knee_04" class="robstride_04" />
     <motor name="dof_right_ankle_02_ctrl" joint="dof_right_ankle_02" class="robstride_02" />
-  </actuator>
+    </actuator>
 
   <contact />
 
