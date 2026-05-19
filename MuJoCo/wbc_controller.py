@@ -4,10 +4,12 @@ import json
 import os
 
 class MinimalWBC:
-    def __init__(self, xml_path, metadata_path=None):
+    def __init__(self, xml_path, metadata_path=None, knee_bend=0.45, target_pitch=-0.05):
         # Load model and initialize data
         self.model = mujoco.MjModel.from_xml_path(xml_path)
         self.data = mujoco.MjData(self.model)
+        self.knee_bend = knee_bend
+        self.target_pitch = target_pitch
         
         # Load joint metadata for posture control gains
         if metadata_path is None:
@@ -35,8 +37,6 @@ class MinimalWBC:
         if self.torso_id == -1:
             raise ValueError("[ERROR] Could not find torso or base body in the robot model!")
 
-        self.target_pitch = -0.05  # Slight backward pitch target to straighten hips and keep torso proud
-
         # --- Dynamic Kinematic Standing Balanced Pose Solver ---
         left_foot_body_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, "LFootBushing_GPF_1517_12")
         right_foot_body_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, "RFootBushing_GPF_1517_12")
@@ -51,7 +51,6 @@ class MinimalWBC:
 
         # Use an isolated data object to prevent simulation state corruption during solver sweep
         kin_data = mujoco.MjData(self.model)
-        knee_bend = 0.4  # Crouch bend angle
 
         def solve_flat_foot_ankles(hip_pitch, knee_bend_val):
             ankle_l = 0.0
@@ -103,14 +102,14 @@ class MinimalWBC:
         
         # Sweep hip pitch to align Center of Mass (CoM) perfectly over the foot centers
         for theta in np.linspace(-0.6, 0.6, 300):
-            ankle_l, ankle_r = solve_flat_foot_ankles(theta, knee_bend)
+            ankle_l, ankle_r = solve_flat_foot_ankles(theta, self.knee_bend)
             
             kin_data.qpos[leg_qpos_idx[0]] = theta
-            kin_data.qpos[leg_qpos_idx[3]] = knee_bend
+            kin_data.qpos[leg_qpos_idx[3]] = self.knee_bend
             kin_data.qpos[leg_qpos_idx[4]] = ankle_l
             
             kin_data.qpos[leg_qpos_idx[5]] = -theta
-            kin_data.qpos[leg_qpos_idx[8]] = -knee_bend
+            kin_data.qpos[leg_qpos_idx[8]] = -self.knee_bend
             kin_data.qpos[leg_qpos_idx[9]] = ankle_r
             
             # Make sure base is oriented at target pitch during CoM calculation
@@ -130,15 +129,15 @@ class MinimalWBC:
                 best_theta = theta
 
         # Resolve final optimal flat-foot ankles for the best hip pitch
-        best_ankle_l, best_ankle_r = solve_flat_foot_ankles(best_theta, knee_bend)
+        best_ankle_l, best_ankle_r = solve_flat_foot_ankles(best_theta, self.knee_bend)
         print(f"  [WBC] Optimal Hip Pitch: {best_theta:.4f} rad, Optimal Ankles: Left = {best_ankle_l:.4f} rad, Right = {best_ankle_r:.4f} rad")
         
         # Verify the solved CoM and support center match
         kin_data.qpos[leg_qpos_idx[0]] = best_theta
-        kin_data.qpos[leg_qpos_idx[3]] = knee_bend
+        kin_data.qpos[leg_qpos_idx[3]] = self.knee_bend
         kin_data.qpos[leg_qpos_idx[4]] = best_ankle_l
         kin_data.qpos[leg_qpos_idx[5]] = -best_theta
-        kin_data.qpos[leg_qpos_idx[8]] = -knee_bend
+        kin_data.qpos[leg_qpos_idx[8]] = -self.knee_bend
         kin_data.qpos[leg_qpos_idx[9]] = best_ankle_r
         # Make sure base is oriented at target pitch
         kin_data.qpos[3:7] = [np.cos(self.target_pitch/2), 0, np.sin(self.target_pitch/2), 0]
@@ -151,8 +150,8 @@ class MinimalWBC:
 
         # Compile dynamically calibrated crouch standing pose (20 DoFs)
         self.stand_target = [
-            best_theta, 0.0, 0.0, knee_bend, best_ankle_l,  # Left leg
-            -best_theta, 0.0, 0.0, -knee_bend, best_ankle_r,  # Right leg
+            best_theta, 0.0, 0.0, self.knee_bend, best_ankle_l,  # Left leg
+            -best_theta, 0.0, 0.0, -self.knee_bend, best_ankle_r,  # Right leg
             0.0, 0.0, 0.0, 0.0, 0.0,  # Right arm
             0.0, 0.0, 0.0, 0.0, 0.0   # Left arm
         ]
@@ -160,6 +159,23 @@ class MinimalWBC:
         # Expose foot body IDs for external diagnostics/monitoring
         self.left_foot_body_id = left_foot_body_id
         self.right_foot_body_id = right_foot_body_id
+
+        # Automatically pre-set joint position states in qpos
+        for i in range(self.model.nu):
+            joint_id = self.model.actuator_trnid[i, 0]
+            qpos_idx = self.model.jnt_qposadr[joint_id]
+            self.data.qpos[qpos_idx] = self.stand_target[i]
+            
+        self.data.qpos[3:7] = [np.cos(self.target_pitch/2), 0, np.sin(self.target_pitch/2), 0]
+        
+        # Solve for and set initial base tangent spawn height
+        spawn_height = self.solve_spawn_height()
+        self.data.qpos[2] = spawn_height
+        mujoco.mj_forward(self.model, self.data)
+        
+        # Define target torso relative height for active vertical stabilization
+        self.target_height = self.data.xpos[self.torso_id][2] - 0.5 * (self.data.xpos[self.left_foot_body_id][2] + self.data.xpos[self.right_foot_body_id][2])
+        print(f"  [WBC] Standing height target set to: {self.target_height:.4f} m (base spawn height: {spawn_height:.4f} m)")
 
     def get_pitch_from_quat(self, quat):
         # Convert quaternion [w, x, y, z] to rotation matrix
@@ -171,6 +187,39 @@ class MinimalWBC:
         up_vector = mat[:, 2]
         pitch = np.arcsin(np.clip(up_vector[0], -1.0, 1.0))
         return pitch
+
+    def solve_spawn_height(self):
+        """
+        Determines the correct base height (qpos[2]) so that the feet are tangent to the ground.
+        """
+        # Save current state base height
+        original_z = self.data.qpos[2]
+        
+        # Set base height to 1.0 for calculation
+        self.data.qpos[2] = 1.0
+        mujoco.mj_forward(self.model, self.data)
+        
+        local_foot_points = [
+            np.array([-0.06, 0.0, 0.0]),  # Heel
+            np.array([0.12, 0.0, 0.0]),   # Toe
+            np.array([0.0, -0.03, 0.0]),  # Left lateral edge
+            np.array([0.0, 0.03, 0.0])    # Right lateral edge
+        ]
+        
+        lowest_z = 100.0
+        for body_id in [self.left_foot_body_id, self.right_foot_body_id]:
+            pos = self.data.xpos[body_id]
+            mat = self.data.xmat[body_id].reshape(3, 3)
+            for p in local_foot_points:
+                p_glob = pos + mat.dot(p)
+                z_bottom = p_glob[2] - 0.02  # Capsule radius is 0.02
+                if z_bottom < lowest_z:
+                    lowest_z = z_bottom
+                    
+        # Solved base height is such that lowest_z reaches 0
+        solved_height = 1.0 - lowest_z
+        self.data.qpos[2] = original_z  # restore
+        return solved_height
 
     def compute_torques(self):
         # 1. Forward Kinematics & Dynamics (updates Jacobians, Gravity, Mass matrix)
@@ -190,8 +239,8 @@ class MinimalWBC:
         omega_global = mat.dot(omega_local)
         current_pitch_vel = omega_global[1]  # Y-component is global Y-axis pitch velocity!
         
-        # Boosted gains for extremely stiff and push-resistant upright balance response
-        Kp, Kd = 400.0, 40.0
+        # Compliant task gains to absorb perturbations in pitch rather than fight them
+        Kp, Kd = 100.0, 20.0  # Critically damped
         acc_desired = Kp * (self.target_pitch - current_pitch) + Kd * (0.0 - current_pitch_vel)
         
         # 3. Get the Jacobians for the Torso and Feet
@@ -215,11 +264,14 @@ class MinimalWBC:
         M_inv = np.zeros((self.model.nv, self.model.nv))
         mujoco.mj_solveM(self.model, self.data, M_inv, np.eye(self.model.nv))
         
-        # Physical Y-axis rotational inertia of the torso (for stance Y-axis pitch)
-        Lambda = self.model.body_inertia[self.torso_id][1]
+        # Physical mass of the entire robot
+        m_total = np.sum(self.model.body_mass)
+        
+        # Physical Whole-Body Inertia for pitch (rotation of total mass about the stance feet)
+        Lambda_pitch = m_total * (self.target_height ** 2)
         
         # Projected task force scaling
-        F_task = Lambda * acc_desired
+        F_task = Lambda_pitch * acc_desired
         
         # Compute joint torques projected using Jacobian Transpose
         self.tau_task = J_pitch * F_task
@@ -240,22 +292,34 @@ class MinimalWBC:
         # Exact relative CoM velocity projected from state space
         com_x_vel = J_com.dot(self.data.qvel)
         
-        Kp_com, Kd_com = 250.0, 25.0
+        # Compliant task gains to absorb perturbations sagittally
+        Kp_com, Kd_com = 60.0, 15.5  # Critically damped
         F_com = Kp_com * com_x_error - Kd_com * com_x_vel
         
-        # Physical mass of the entire robot (moving translationally shifts the whole robot mass)
-        Lambda_com = np.sum(self.model.body_mass)
+        # Physical Whole-Body Mass for translational CoM task
+        Lambda_com = m_total
         F_task_com = Lambda_com * F_com
         
         tau_task_com = J_com * F_task_com
         
-        # --- 5. Dynamic Whole-Body Torso Gravity Compensation ---
-        # Sum the total physical mass of the robot torso and base
-        m_total = np.sum(self.model.body_mass)
-        f_gravity_upward = m_total * 9.81
+        # --- 5. Dynamic Whole-Body Torso Gravity Compensation + Active Height Control ---
+        # Relative height task: maintain torso height relative to feet midpoint
+        z_curr = self.data.xpos[self.torso_id][2] - 0.5 * (self.data.xpos[self.left_foot_body_id][2] + self.data.xpos[self.right_foot_body_id][2])
         
         # Stance-consistent relative vertical Jacobian (Z-axis is row 2)
         J_z = jacp[2, :] - 0.5 * (jacp_l[2, :] + jacp_r[2, :])
+        z_vel = J_z.dot(self.data.qvel)
+        
+        # Compliant active vertical force to absorb vertical impact
+        Kp_z, Kd_z = 150.0, 24.5  # Critically damped
+        f_active_z = Kp_z * (self.target_height - z_curr) - Kd_z * z_vel
+        
+        # Physical Whole-Body Mass for vertical height task
+        Lambda_z = m_total
+        F_task_z = Lambda_z * f_active_z
+        
+        m_total = np.sum(self.model.body_mass)
+        f_gravity_upward = m_total * 9.81 + F_task_z
         tau_torso_gravity = J_z * f_gravity_upward
         
         # 6. Compute Joint-Space Posture PD (maintains arms and knees stance compliance)
@@ -268,10 +332,17 @@ class MinimalWBC:
             kp = float(meta['kp'])
             kd = float(meta['kd'])
             
-            # Boost leg posture joints slightly for stability
-            if 'ankle' in joint_name or 'hip' in joint_name or 'knee' in joint_name:
-                kp *= 1.5
-                kd *= 1.5
+            # Scale leg joint gains for backdrivability while maintaining damping ratio
+            if 'hip_pitch' in joint_name or 'knee' in joint_name or 'ankle' in joint_name:
+                kp_scale = 0.20
+                kd_scale = np.sqrt(kp_scale)
+                kp *= kp_scale
+                kd *= kd_scale
+            elif 'hip_roll' in joint_name or 'hip_yaw' in joint_name:
+                kp_scale = 0.50
+                kd_scale = np.sqrt(kp_scale)
+                kp *= kp_scale
+                kd *= kd_scale
                 
             qpos_idx = self.model.jnt_qposadr[joint_id]
             qvel_idx = self.model.jnt_dofadr[joint_id]
