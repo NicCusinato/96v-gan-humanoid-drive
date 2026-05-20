@@ -5,8 +5,15 @@ import os
 import numpy as np
 import scipy.io as sio
 
-# Import the modular controller
+# Import the modular controller and gait generator
 from wbc_controller import MinimalWBC
+from gait_generator import GaitGenerator, GaitMode
+
+# =====================================================================
+#  CHANGE THIS LINE TO SWITCH GAITS:
+#  GaitMode.STAND | GaitMode.SQUAT | GaitMode.WEIGHT_SHIFT | GaitMode.STEP_IN_PLACE
+# =====================================================================
+ACTIVE_GAIT = GaitMode.STEP_IN_PLACE
 
 # Set paths
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -73,12 +80,11 @@ def generate_legs_only_model():
         })
         torso_body.append(torso_collision)
         
-        # 5. Hide imu_visual geom in the imu body
+        # 5. Remove the entire IMU body (floating mass above the pelvis)
         imu_body = torso_body.find("body[@name='imu']")
         if imu_body is not None:
-            imu_visual = imu_body.find("geom[@name='imu_visual']")
-            if imu_visual is not None:
-                imu_body.remove(imu_visual)
+            torso_body.remove(imu_body)
+            print("Removed IMU body")
                 
         # 6. Inject capsule collisions for femurs and shins
         left_femur = torso_body.find(".//body[@name='KD_D_301L_L_Femur_Lower_Drive']")
@@ -135,6 +141,14 @@ def generate_legs_only_model():
                 motors_to_remove.append(motor)
         for motor in motors_to_remove:
             actuator.remove(motor)
+    
+    # 8. Remove IMU sensors (imu_acc, imu_gyro) that reference the deleted imu body/site
+    sensor = root.find("sensor")
+    if sensor is not None:
+        sensors_to_remove = [s for s in sensor if "imu" in s.attrib.get("name", "") or "imu" in s.attrib.get("site", "")]
+        for s in sensors_to_remove:
+            sensor.remove(s)
+            print(f"Removed sensor: {s.attrib.get('name', s.tag)}")
             
     # Write to robot_legs.mjcf
     robot_legs_path = os.path.join(current_dir, "kbot", "robot_legs.mjcf")
@@ -160,7 +174,9 @@ legs_scene_path = generate_legs_only_model()
 try:
     # 1. Instantiate the WBC from the separate file with lightly crouched knee_bend
     wbc = MinimalWBC(legs_scene_path, knee_bend=0.45)
+    gait_gen = GaitGenerator(mode=ACTIVE_GAIT)
     
+    print(f"Active gait mode: {ACTIVE_GAIT.name}")
     print(f"Zero-impact spawn height determined: z_base = {wbc.data.qpos[2]:.4f} m (exact flat tangent contact)")
 
     # Define joints of interest (hips, knees, and ankles for left and right legs)
@@ -227,12 +243,44 @@ try:
         
         gait_data_dir = os.path.abspath(os.path.join(current_dir, "..", "phase0", "gait_data"))
         os.makedirs(gait_data_dir, exist_ok=True)
-        mat_path = os.path.join(gait_data_dir, "squat_gait_data_legs.mat")
+        mat_path = os.path.join(gait_data_dir, f"{ACTIVE_GAIT.name.lower()}_gait_data_legs.mat")
+        csv_path = os.path.join(gait_data_dir, f"{ACTIVE_GAIT.name.lower()}_gait_data_legs.csv")
         
+        # Save MAT file
         sio.savemat(mat_path, mat_data)
+        
+        # Save CSV file
+        import csv
+        with open(csv_path, 'w', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            headers = ['time', 'mode_id']
+            for short_name in joint_names.keys():
+                headers.extend([
+                    f"{short_name}_angle",
+                    f"{short_name}_velocity",
+                    f"{short_name}_acceleration",
+                    f"{short_name}_net_torque",
+                    f"{short_name}_contact_torque"
+                ])
+            writer.writerow(headers)
+            
+            num_rows = len(logged_data['time'])
+            for idx in range(num_rows):
+                row = [logged_data['time'][idx], logged_data['mode_id'][idx]]
+                for short_name in joint_names.keys():
+                    row.extend([
+                        logged_data[f'{short_name}_angle'][idx],
+                        logged_data[f'{short_name}_velocity'][idx],
+                        logged_data[f'{short_name}_acceleration'][idx],
+                        logged_data[f'{short_name}_net_torque'][idx],
+                        logged_data[f'{short_name}_contact_torque'][idx]
+                    ])
+                writer.writerow(row)
+                
         print(f"\n=======================================================")
         print(f" >>> GAIT DATA EXPORTED SUCCESSFULLY! <<< ")
-        print(f" Saved to: {mat_path}")
+        print(f" Saved MAT to: {mat_path}")
+        print(f" Saved CSV to: {csv_path}")
         print(f" Total recorded steps: {len(logged_data['time'])}")
         print(f"=======================================================\n")
         saved_gait_data = True
@@ -248,15 +296,11 @@ try:
         while viewer.is_running():
             step_start = time.time()
             
-            # Squatting Gait Generation:
-            # Vary height target sinusoidally between 0.52m (deep squat) and 0.72m (standing) at 0.5 Hz
-            # Only start squatting after t=1.5s to allow base settling
             current_time = wbc.data.time
-            if current_time > 1.5:
-                freq = 0.5
-                omega = 2.0 * np.pi * freq
-                wbc.target_height = 0.62 + 0.10 * np.cos(omega * (current_time - 1.5))
-                
+            
+            # Get trajectory targets from the gait generator
+            targets = gait_gen.get_targets(current_time)
+            
             # Apply programmatic manual pushes (perturbations) to show absorption
             # Apply a 30 N push in +X direction for 0.15s starting at t=2.5s
             if 2.5 <= current_time <= 2.65:
@@ -271,22 +315,12 @@ try:
             else:
                 wbc.data.xfrc_applied[wbc.torso_id, :3] = [0.0, 0.0, 0.0]
                 
-            # Step the WBC controller and simulator
-            wbc.step()
+            # Step the WBC controller and simulator with the current trajectory targets
+            wbc.step(targets)
             
-            # Determine gait mode/segment
-            if current_time <= 1.5:
-                mode_id = 0
-                mode_name = "settling"
-            else:
-                omega = 2.0 * np.pi * 0.5
-                phase = omega * (current_time - 1.5)
-                if np.sin(phase) > 0:
-                    mode_id = 1
-                    mode_name = "squat_downwards"
-                else:
-                    mode_id = 2
-                    mode_name = "squat_upwards"
+            # Determine gait mode/segment from the trajectory targets
+            mode_name = ACTIVE_GAIT.name.lower()
+            mode_id = ACTIVE_GAIT.value
                     
             # Record current step data
             logged_data['time'].append(current_time)

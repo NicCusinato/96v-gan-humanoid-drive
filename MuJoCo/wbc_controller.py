@@ -221,7 +221,16 @@ class MinimalWBC:
         self.data.qpos[2] = original_z  # restore
         return solved_height
 
-    def compute_torques(self):
+    def compute_torques(self, gait_targets=None):
+        # Default to static stand if no targets provided
+        if gait_targets is None:
+            gait_targets = {
+                'com_offset': np.array([0.0, 0.0, 0.0]),
+                'torso_pitch': self.target_pitch
+            }
+        com_offset = gait_targets.get('com_offset', np.zeros(3))
+        target_pitch = gait_targets.get('torso_pitch', self.target_pitch)
+
         # 1. Forward Kinematics & Dynamics (updates Jacobians, Gravity, Mass matrix)
         mujoco.mj_forward(self.model, self.data)
         
@@ -231,7 +240,7 @@ class MinimalWBC:
         mujoco.mju_quat2Mat(mat, quat)
         mat = mat.reshape(3, 3)
         
-        # 2. Define the Task: Keep the torso pitch at 0 radians
+        # 2. Define the Task: Keep the torso pitch at target
         current_pitch = self.get_pitch_from_quat(quat)
         
         # Transform local-frame angular velocity (qvel[3:6]) to global world-frame
@@ -241,7 +250,7 @@ class MinimalWBC:
         
         # Compliant task gains to absorb perturbations in pitch rather than fight them
         Kp, Kd = 100.0, 20.0  # Critically damped
-        acc_desired = Kp * (self.target_pitch - current_pitch) + Kd * (0.0 - current_pitch_vel)
+        acc_desired = Kp * (target_pitch - current_pitch) + Kd * (0.0 - current_pitch_vel)
         
         # 3. Get the Jacobians for the Torso and Feet
         jacp = np.zeros((3, self.model.nv)) # Translational Jacobian
@@ -278,33 +287,40 @@ class MinimalWBC:
         
         # --- 4.5. Operational Space CoM Stabilization Task ---
         com_x_curr = self.data.subtree_com[0][0]
+        com_y_curr = self.data.subtree_com[0][1]
         
         # Midpoint of feet in world coordinates
         left_foot_glob_center = self.data.xpos[self.left_foot_body_id] + self.data.xmat[self.left_foot_body_id].reshape(3, 3).dot(np.array([-0.025, -0.038, 0.0]))
         right_foot_glob_center = self.data.xpos[self.right_foot_body_id] + self.data.xmat[self.right_foot_body_id].reshape(3, 3).dot(np.array([-0.025, -0.038, 0.0]))
-        com_x_des = 0.5 * (left_foot_glob_center[0] + right_foot_glob_center[0])
+        # Apply commanded X/Y CoM offsets from gait trajectory
+        com_x_des = 0.5 * (left_foot_glob_center[0] + right_foot_glob_center[0]) + com_offset[0]
+        com_y_des = 0.5 * (left_foot_glob_center[1] + right_foot_glob_center[1]) + com_offset[1]
         
         com_x_error = com_x_des - com_x_curr
+        com_y_error = com_y_des - com_y_curr
         
-        # Relative com translational Jacobian (using torso X translation relative to feet as proxy)
-        J_com = jacp[0, :] - 0.5 * (jacp_l[0, :] + jacp_r[0, :])
+        # Relative com translational Jacobian
+        J_com_x = jacp[0, :] - 0.5 * (jacp_l[0, :] + jacp_r[0, :])
+        J_com_y = jacp[1, :] - 0.5 * (jacp_l[1, :] + jacp_r[1, :])
         
         # Exact relative CoM velocity projected from state space
-        com_x_vel = J_com.dot(self.data.qvel)
+        com_x_vel = J_com_x.dot(self.data.qvel)
+        com_y_vel = J_com_y.dot(self.data.qvel)
         
         # Compliant task gains to absorb perturbations sagittally
         Kp_com, Kd_com = 60.0, 15.5  # Critically damped
-        F_com = Kp_com * com_x_error - Kd_com * com_x_vel
+        F_com_x = Kp_com * com_x_error - Kd_com * com_x_vel
+        F_com_y = Kp_com * com_y_error - Kd_com * com_y_vel
         
         # Physical Whole-Body Mass for translational CoM task
         Lambda_com = m_total
-        F_task_com = Lambda_com * F_com
-        
-        tau_task_com = J_com * F_task_com
+        tau_task_com = J_com_x * (Lambda_com * F_com_x) + J_com_y * (Lambda_com * F_com_y)
         
         # --- 5. Dynamic Whole-Body Torso Gravity Compensation + Active Height Control ---
         # Relative height task: maintain torso height relative to feet midpoint
+        # Apply commanded Z-offset from gait trajectory (e.g., squat depth)
         z_curr = self.data.xpos[self.torso_id][2] - 0.5 * (self.data.xpos[self.left_foot_body_id][2] + self.data.xpos[self.right_foot_body_id][2])
+        z_target = self.target_height + com_offset[2]
         
         # Stance-consistent relative vertical Jacobian (Z-axis is row 2)
         J_z = jacp[2, :] - 0.5 * (jacp_l[2, :] + jacp_r[2, :])
@@ -312,7 +328,7 @@ class MinimalWBC:
         
         # Compliant active vertical force to absorb vertical impact
         Kp_z, Kd_z = 150.0, 24.5  # Critically damped
-        f_active_z = Kp_z * (self.target_height - z_curr) - Kd_z * z_vel
+        f_active_z = Kp_z * (z_target - z_curr) - Kd_z * z_vel
         
         # Physical Whole-Body Mass for vertical height task
         Lambda_z = m_total
@@ -360,7 +376,7 @@ class MinimalWBC:
         
         return motor_torques
 
-    def step(self):
+    def step(self, gait_targets=None):
         # Apply torques and step physics
-        self.data.ctrl[:] = self.compute_torques()
+        self.data.ctrl[:] = self.compute_torques(gait_targets)
         mujoco.mj_step(self.model, self.data)

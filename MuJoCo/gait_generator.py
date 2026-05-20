@@ -1,10 +1,13 @@
 import numpy as np
 from enum import Enum
+import csv
+import os
 
 class GaitMode(Enum):
     STAND = 0           # Rock-solid upright balance
     WEIGHT_SHIFT = 1    # Slow quasi-static multi-axis weight shifts (proves backdrivability)
     STEP_IN_PLACE = 2   # Small-amplitude compliant stepping in-place (proves impact absorption)
+    SQUAT = 3           # Smooth vertical squat trajectory
 
 class GaitGenerator:
     """
@@ -53,6 +56,8 @@ class GaitGenerator:
             return self._compute_weight_shift_targets(t)
         elif self.mode == GaitMode.STEP_IN_PLACE:
             return self._compute_stepping_targets(t)
+        elif self.mode == GaitMode.SQUAT:
+            return self._compute_squat_targets(t)
         else:
             raise ValueError(f"[ERROR] Unsupported GaitMode: {self.mode}")
             
@@ -60,6 +65,21 @@ class GaitGenerator:
         """Static stance balance targets."""
         return {
             "com_offset": np.array([0.0, 0.0, 0.0]),
+            "torso_pitch": self.nominal_pitch,
+            "left_foot_pos": np.array([0.0, 0.0, 0.0]),
+            "right_foot_pos": np.array([0.0, 0.0, 0.0]),
+            "contact_left": True,
+            "contact_right": True
+        }
+        
+    def _compute_squat_targets(self, t: float):
+        """Smooth, sinusoidal Z-axis squat (e.g. 0.3 Hz, 15 cm amplitude)."""
+        squat_freq = 0.3
+        squat_depth = -0.15
+        dz = 0.5 * squat_depth * (1.0 - np.cos(2 * np.pi * squat_freq * t))
+        
+        return {
+            "com_offset": np.array([0.0, 0.0, dz]),
             "torso_pitch": self.nominal_pitch,
             "left_foot_pos": np.array([0.0, 0.0, 0.0]),
             "right_foot_pos": np.array([0.0, 0.0, 0.0]),
@@ -132,3 +152,67 @@ class GaitGenerator:
             "contact_left": contact_l,
             "contact_right": contact_r
         }
+
+    def export_to_csv(self, duration=10.0, dt=0.001, filepath=None):
+        """
+        Generates and exports the gait trajectory to a CSV file.
+        
+        Args:
+            duration (float): Total simulation time to generate (seconds).
+            dt (float): Time step (seconds).
+            filepath (str): Output path. If None, saves in the current directory.
+        """
+        if filepath is None:
+            filepath = f"gait_trajectory_{self.mode.name.lower()}.csv"
+            
+        # Ensure directories exist
+        dir_name = os.path.dirname(filepath)
+        if dir_name and not os.path.exists(dir_name):
+            os.makedirs(dir_name)
+            
+        num_steps = int(np.ceil(duration / dt))
+        time_steps = np.linspace(0, duration, num_steps, endpoint=False)
+        
+        headers = [
+            "time",
+            "com_offset_x", "com_offset_y", "com_offset_z",
+            "torso_pitch",
+            "left_foot_x", "left_foot_y", "left_foot_z",
+            "right_foot_x", "right_foot_y", "right_foot_z",
+            "contact_left", "contact_right"
+        ]
+        
+        with open(filepath, mode="w", newline="") as f:
+            writer = csv.writer(f)
+            writer.writerow(headers)
+            
+            for t in time_steps:
+                targets = self.get_targets(t)
+                row = [
+                    f"{t:.4f}",
+                    f"{targets['com_offset'][0]:.6f}",
+                    f"{targets['com_offset'][1]:.6f}",
+                    f"{targets['com_offset'][2]:.6f}",
+                    f"{targets['torso_pitch']:.6f}",
+                    f"{targets['left_foot_pos'][0]:.6f}",
+                    f"{targets['left_foot_pos'][1]:.6f}",
+                    f"{targets['left_foot_pos'][2]:.6f}",
+                    f"{targets['right_foot_pos'][0]:.6f}",
+                    f"{targets['right_foot_pos'][1]:.6f}",
+                    f"{targets['right_foot_pos'][2]:.6f}",
+                    "1" if targets['contact_left'] else "0",
+                    "1" if targets['contact_right'] else "0"
+                ]
+                writer.writerow(row)
+        print(f"Exported {self.mode.name} gait to: {filepath}")
+
+if __name__ == '__main__':
+    # Automatically export trajectories for all gait modes to phase0/gait_data/
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    gait_data_dir = os.path.join(current_dir, "..", "phase0", "gait_data")
+    
+    for mode in GaitMode:
+        generator = GaitGenerator(mode)
+        csv_filename = f"gait_trajectory_{mode.name.lower()}.csv"
+        csv_path = os.path.join(gait_data_dir, csv_filename)
+        generator.export_to_csv(duration=10.0, dt=0.001, filepath=csv_path)

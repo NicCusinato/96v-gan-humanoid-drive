@@ -128,11 +128,7 @@
             <geom name="R_femur_collision" type="capsule" fromto="0 0 0 0 0 -0.2" size="0.045" class="collision" /></body>
           </body>
         </body>
-        <body name="imu" pos="-0.025422 -0.001897 0.440523" quat="1.0 0.0 0.0 0.0">
-          <inertial pos="-0.003012 0 0.002999" quat="1.0 0.0 0.0 0.0" mass="0.005700" diaginertia="1e-06 1e-06 2e-06" />
-          <site name="imu_site" quat="1.0 0.0 0.0 0.0" pos="0.0 0.0 0.0" />
-        </body>
-      <geom name="pelvis_visual" type="box" size="0.06 0.12 0.04" pos="-0.025 0 0.0" material="torso_material" class="visual" /><geom name="torso_collision" type="box" size="0.12 0.15 0.08" pos="-0.025 0 0.1" class="collision" /></body>
+        <geom name="pelvis_visual" type="box" size="0.06 0.12 0.04" pos="-0.025 0 0.0" material="torso_material" class="visual" /><geom name="torso_collision" type="box" size="0.12 0.15 0.08" pos="-0.025 0 0.1" class="collision" /></body>
       <site name="base_site" pos="0.0 0.0 0.0" quat="1 0 0 0" />
       <camera name="front_camera" mode="track" fovy="90.0" quat="4.329780281177467e-17 4.329780281177466e-17 0.7071067811865475 0.7071067811865476" pos="0.0 2.0 0.5" />
       <camera name="side_camera" mode="track" fovy="90.0" quat="-0.5 -0.4999999999999999 0.5 0.5000000000000001" pos="-2.0 0.0 0.5" />
@@ -160,14 +156,6 @@
     <framelinvel name="base_site_linvel" objtype="site" objname="base_site" />
     <frameangvel name="base_site_angvel" objtype="site" objname="base_site" />
     <velocimeter name="base_site_vel" site="base_site" />
-    <accelerometer name="imu_acc" site="imu_site" noise="0.01" />
-    <gyro name="imu_gyro" site="imu_site" noise="0.01" />
-    <magnetometer name="imu_mag" site="imu_site" noise="0.05" />
-    <framepos name="imu_site_pos" objtype="site" objname="imu_site" />
-    <framequat name="imu_site_quat" objtype="site" objname="imu_site" />
-    <framelinvel name="imu_site_linvel" objtype="site" objname="imu_site" />
-    <frameangvel name="imu_site_angvel" objtype="site" objname="imu_site" />
-    <velocimeter name="imu_site_vel" site="imu_site" />
     <force name="left_foot_force" site="left_foot" />
     <force name="right_foot_force" site="right_foot" />
     <touch name="left_foot_touch" site="left_foot" />
