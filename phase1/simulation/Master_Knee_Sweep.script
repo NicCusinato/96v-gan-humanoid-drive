@@ -1,0 +1,1299 @@
+// PSIM Master Execution Script
+// This script uses native Simulate() functions to execute the schematic.
+
+Vdc = 48.0; fsw = 40000.0; T_load = 0.00; nm_ref = 0.0;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T0.0_N0.0.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 0.00; nm_ref = 91.6;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T0.0_N91.6.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 0.00; nm_ref = 183.2;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T0.0_N183.2.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 0.00; nm_ref = 274.8;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T0.0_N274.8.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 0.00; nm_ref = 366.4;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T0.0_N366.4.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 0.00; nm_ref = 458.0;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T0.0_N458.0.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 2.00; nm_ref = 0.0;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T2.0_N0.0.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 2.00; nm_ref = 91.6;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T2.0_N91.6.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 2.00; nm_ref = 183.2;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T2.0_N183.2.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 2.00; nm_ref = 274.8;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T2.0_N274.8.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 2.00; nm_ref = 366.4;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T2.0_N366.4.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 2.00; nm_ref = 458.0;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T2.0_N458.0.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 4.00; nm_ref = 0.0;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T4.0_N0.0.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 4.00; nm_ref = 91.6;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T4.0_N91.6.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 4.00; nm_ref = 183.2;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T4.0_N183.2.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 4.00; nm_ref = 274.8;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T4.0_N274.8.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 4.00; nm_ref = 366.4;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T4.0_N366.4.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 4.00; nm_ref = 458.0;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T4.0_N458.0.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 6.00; nm_ref = 0.0;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T6.0_N0.0.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 6.00; nm_ref = 91.6;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T6.0_N91.6.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 6.00; nm_ref = 183.2;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T6.0_N183.2.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 6.00; nm_ref = 274.8;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T6.0_N274.8.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 6.00; nm_ref = 366.4;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T6.0_N366.4.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 6.00; nm_ref = 458.0;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T6.0_N458.0.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 8.00; nm_ref = 0.0;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T8.0_N0.0.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 8.00; nm_ref = 91.6;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T8.0_N91.6.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 8.00; nm_ref = 183.2;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T8.0_N183.2.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 8.00; nm_ref = 274.8;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T8.0_N274.8.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 8.00; nm_ref = 366.4;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T8.0_N366.4.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 8.00; nm_ref = 458.0;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T8.0_N458.0.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 10.00; nm_ref = 0.0;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T10.0_N0.0.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 10.00; nm_ref = 91.6;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T10.0_N91.6.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 10.00; nm_ref = 183.2;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T10.0_N183.2.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 10.00; nm_ref = 274.8;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T10.0_N274.8.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 10.00; nm_ref = 366.4;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T10.0_N366.4.txt");
+
+Vdc = 48.0; fsw = 40000.0; T_load = 10.00; nm_ref = 458.0;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F40000_T10.0_N458.0.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 0.00; nm_ref = 0.0;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T0.0_N0.0.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 0.00; nm_ref = 91.6;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T0.0_N91.6.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 0.00; nm_ref = 183.2;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T0.0_N183.2.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 0.00; nm_ref = 274.8;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T0.0_N274.8.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 0.00; nm_ref = 366.4;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T0.0_N366.4.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 0.00; nm_ref = 458.0;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T0.0_N458.0.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 2.00; nm_ref = 0.0;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T2.0_N0.0.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 2.00; nm_ref = 91.6;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T2.0_N91.6.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 2.00; nm_ref = 183.2;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T2.0_N183.2.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 2.00; nm_ref = 274.8;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T2.0_N274.8.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 2.00; nm_ref = 366.4;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T2.0_N366.4.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 2.00; nm_ref = 458.0;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T2.0_N458.0.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 4.00; nm_ref = 0.0;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T4.0_N0.0.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 4.00; nm_ref = 91.6;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T4.0_N91.6.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 4.00; nm_ref = 183.2;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T4.0_N183.2.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 4.00; nm_ref = 274.8;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T4.0_N274.8.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 4.00; nm_ref = 366.4;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T4.0_N366.4.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 4.00; nm_ref = 458.0;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T4.0_N458.0.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 6.00; nm_ref = 0.0;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T6.0_N0.0.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 6.00; nm_ref = 91.6;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T6.0_N91.6.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 6.00; nm_ref = 183.2;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T6.0_N183.2.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 6.00; nm_ref = 274.8;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T6.0_N274.8.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 6.00; nm_ref = 366.4;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T6.0_N366.4.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 6.00; nm_ref = 458.0;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T6.0_N458.0.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 8.00; nm_ref = 0.0;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T8.0_N0.0.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 8.00; nm_ref = 91.6;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T8.0_N91.6.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 8.00; nm_ref = 183.2;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T8.0_N183.2.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 8.00; nm_ref = 274.8;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T8.0_N274.8.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 8.00; nm_ref = 366.4;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T8.0_N366.4.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 8.00; nm_ref = 458.0;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T8.0_N458.0.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 10.00; nm_ref = 0.0;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T10.0_N0.0.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 10.00; nm_ref = 91.6;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T10.0_N91.6.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 10.00; nm_ref = 183.2;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T10.0_N183.2.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 10.00; nm_ref = 274.8;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T10.0_N274.8.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 10.00; nm_ref = 366.4;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T10.0_N366.4.txt");
+
+Vdc = 48.0; fsw = 100000.0; T_load = 10.00; nm_ref = 458.0;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F100000_T10.0_N458.0.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 0.00; nm_ref = 0.0;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T0.0_N0.0.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 0.00; nm_ref = 91.6;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T0.0_N91.6.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 0.00; nm_ref = 183.2;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T0.0_N183.2.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 0.00; nm_ref = 274.8;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T0.0_N274.8.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 0.00; nm_ref = 366.4;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T0.0_N366.4.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 0.00; nm_ref = 458.0;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T0.0_N458.0.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 2.00; nm_ref = 0.0;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T2.0_N0.0.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 2.00; nm_ref = 91.6;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T2.0_N91.6.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 2.00; nm_ref = 183.2;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T2.0_N183.2.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 2.00; nm_ref = 274.8;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T2.0_N274.8.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 2.00; nm_ref = 366.4;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T2.0_N366.4.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 2.00; nm_ref = 458.0;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T2.0_N458.0.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 4.00; nm_ref = 0.0;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T4.0_N0.0.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 4.00; nm_ref = 91.6;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T4.0_N91.6.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 4.00; nm_ref = 183.2;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T4.0_N183.2.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 4.00; nm_ref = 274.8;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T4.0_N274.8.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 4.00; nm_ref = 366.4;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T4.0_N366.4.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 4.00; nm_ref = 458.0;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T4.0_N458.0.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 6.00; nm_ref = 0.0;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T6.0_N0.0.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 6.00; nm_ref = 91.6;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T6.0_N91.6.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 6.00; nm_ref = 183.2;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T6.0_N183.2.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 6.00; nm_ref = 274.8;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T6.0_N274.8.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 6.00; nm_ref = 366.4;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T6.0_N366.4.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 6.00; nm_ref = 458.0;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T6.0_N458.0.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 8.00; nm_ref = 0.0;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T8.0_N0.0.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 8.00; nm_ref = 91.6;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T8.0_N91.6.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 8.00; nm_ref = 183.2;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T8.0_N183.2.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 8.00; nm_ref = 274.8;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T8.0_N274.8.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 8.00; nm_ref = 366.4;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T8.0_N366.4.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 8.00; nm_ref = 458.0;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T8.0_N458.0.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 10.00; nm_ref = 0.0;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T10.0_N0.0.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 10.00; nm_ref = 91.6;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T10.0_N91.6.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 10.00; nm_ref = 183.2;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T10.0_N183.2.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 10.00; nm_ref = 274.8;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T10.0_N274.8.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 10.00; nm_ref = 366.4;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T10.0_N366.4.txt");
+
+Vdc = 48.0; fsw = 150000.0; T_load = 10.00; nm_ref = 458.0;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V48_F150000_T10.0_N458.0.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 0.00; nm_ref = 0.0;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T0.0_N0.0.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 0.00; nm_ref = 91.6;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T0.0_N91.6.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 0.00; nm_ref = 183.2;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T0.0_N183.2.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 0.00; nm_ref = 274.8;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T0.0_N274.8.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 0.00; nm_ref = 366.4;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T0.0_N366.4.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 0.00; nm_ref = 458.0;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T0.0_N458.0.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 2.00; nm_ref = 0.0;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T2.0_N0.0.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 2.00; nm_ref = 91.6;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T2.0_N91.6.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 2.00; nm_ref = 183.2;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T2.0_N183.2.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 2.00; nm_ref = 274.8;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T2.0_N274.8.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 2.00; nm_ref = 366.4;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T2.0_N366.4.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 2.00; nm_ref = 458.0;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T2.0_N458.0.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 4.00; nm_ref = 0.0;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T4.0_N0.0.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 4.00; nm_ref = 91.6;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T4.0_N91.6.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 4.00; nm_ref = 183.2;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T4.0_N183.2.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 4.00; nm_ref = 274.8;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T4.0_N274.8.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 4.00; nm_ref = 366.4;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T4.0_N366.4.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 4.00; nm_ref = 458.0;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T4.0_N458.0.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 6.00; nm_ref = 0.0;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T6.0_N0.0.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 6.00; nm_ref = 91.6;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T6.0_N91.6.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 6.00; nm_ref = 183.2;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T6.0_N183.2.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 6.00; nm_ref = 274.8;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T6.0_N274.8.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 6.00; nm_ref = 366.4;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T6.0_N366.4.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 6.00; nm_ref = 458.0;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T6.0_N458.0.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 8.00; nm_ref = 0.0;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T8.0_N0.0.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 8.00; nm_ref = 91.6;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T8.0_N91.6.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 8.00; nm_ref = 183.2;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T8.0_N183.2.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 8.00; nm_ref = 274.8;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T8.0_N274.8.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 8.00; nm_ref = 366.4;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T8.0_N366.4.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 8.00; nm_ref = 458.0;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T8.0_N458.0.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 10.00; nm_ref = 0.0;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T10.0_N0.0.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 10.00; nm_ref = 91.6;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T10.0_N91.6.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 10.00; nm_ref = 183.2;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T10.0_N183.2.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 10.00; nm_ref = 274.8;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T10.0_N274.8.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 10.00; nm_ref = 366.4;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T10.0_N366.4.txt");
+
+Vdc = 96.0; fsw = 40000.0; T_load = 10.00; nm_ref = 458.0;
+K_d = 1.884956; T_d = 0.001000;
+K_q = 2.764602; T_q = 0.001467;
+K_w = 13.648406; T_w = 0.007958;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F40000_T10.0_N458.0.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 0.00; nm_ref = 0.0;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T0.0_N0.0.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 0.00; nm_ref = 91.6;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T0.0_N91.6.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 0.00; nm_ref = 183.2;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T0.0_N183.2.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 0.00; nm_ref = 274.8;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T0.0_N274.8.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 0.00; nm_ref = 366.4;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T0.0_N366.4.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 0.00; nm_ref = 458.0;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T0.0_N458.0.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 2.00; nm_ref = 0.0;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T2.0_N0.0.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 2.00; nm_ref = 91.6;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T2.0_N91.6.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 2.00; nm_ref = 183.2;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T2.0_N183.2.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 2.00; nm_ref = 274.8;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T2.0_N274.8.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 2.00; nm_ref = 366.4;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T2.0_N366.4.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 2.00; nm_ref = 458.0;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T2.0_N458.0.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 4.00; nm_ref = 0.0;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T4.0_N0.0.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 4.00; nm_ref = 91.6;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T4.0_N91.6.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 4.00; nm_ref = 183.2;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T4.0_N183.2.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 4.00; nm_ref = 274.8;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T4.0_N274.8.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 4.00; nm_ref = 366.4;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T4.0_N366.4.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 4.00; nm_ref = 458.0;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T4.0_N458.0.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 6.00; nm_ref = 0.0;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T6.0_N0.0.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 6.00; nm_ref = 91.6;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T6.0_N91.6.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 6.00; nm_ref = 183.2;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T6.0_N183.2.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 6.00; nm_ref = 274.8;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T6.0_N274.8.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 6.00; nm_ref = 366.4;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T6.0_N366.4.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 6.00; nm_ref = 458.0;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T6.0_N458.0.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 8.00; nm_ref = 0.0;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T8.0_N0.0.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 8.00; nm_ref = 91.6;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T8.0_N91.6.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 8.00; nm_ref = 183.2;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T8.0_N183.2.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 8.00; nm_ref = 274.8;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T8.0_N274.8.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 8.00; nm_ref = 366.4;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T8.0_N366.4.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 8.00; nm_ref = 458.0;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T8.0_N458.0.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 10.00; nm_ref = 0.0;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T10.0_N0.0.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 10.00; nm_ref = 91.6;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T10.0_N91.6.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 10.00; nm_ref = 183.2;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T10.0_N183.2.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 10.00; nm_ref = 274.8;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T10.0_N274.8.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 10.00; nm_ref = 366.4;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T10.0_N366.4.txt");
+
+Vdc = 96.0; fsw = 100000.0; T_load = 10.00; nm_ref = 458.0;
+K_d = 4.712389; T_d = 0.001000;
+K_q = 6.911504; T_q = 0.001467;
+K_w = 34.121016; T_w = 0.003183;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F100000_T10.0_N458.0.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 0.00; nm_ref = 0.0;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T0.0_N0.0.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 0.00; nm_ref = 91.6;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T0.0_N91.6.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 0.00; nm_ref = 183.2;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T0.0_N183.2.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 0.00; nm_ref = 274.8;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T0.0_N274.8.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 0.00; nm_ref = 366.4;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T0.0_N366.4.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 0.00; nm_ref = 458.0;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T0.0_N458.0.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 2.00; nm_ref = 0.0;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T2.0_N0.0.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 2.00; nm_ref = 91.6;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T2.0_N91.6.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 2.00; nm_ref = 183.2;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T2.0_N183.2.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 2.00; nm_ref = 274.8;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T2.0_N274.8.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 2.00; nm_ref = 366.4;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T2.0_N366.4.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 2.00; nm_ref = 458.0;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T2.0_N458.0.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 4.00; nm_ref = 0.0;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T4.0_N0.0.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 4.00; nm_ref = 91.6;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T4.0_N91.6.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 4.00; nm_ref = 183.2;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T4.0_N183.2.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 4.00; nm_ref = 274.8;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T4.0_N274.8.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 4.00; nm_ref = 366.4;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T4.0_N366.4.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 4.00; nm_ref = 458.0;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T4.0_N458.0.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 6.00; nm_ref = 0.0;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T6.0_N0.0.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 6.00; nm_ref = 91.6;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T6.0_N91.6.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 6.00; nm_ref = 183.2;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T6.0_N183.2.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 6.00; nm_ref = 274.8;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T6.0_N274.8.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 6.00; nm_ref = 366.4;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T6.0_N366.4.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 6.00; nm_ref = 458.0;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T6.0_N458.0.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 8.00; nm_ref = 0.0;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T8.0_N0.0.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 8.00; nm_ref = 91.6;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T8.0_N91.6.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 8.00; nm_ref = 183.2;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T8.0_N183.2.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 8.00; nm_ref = 274.8;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T8.0_N274.8.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 8.00; nm_ref = 366.4;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T8.0_N366.4.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 8.00; nm_ref = 458.0;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T8.0_N458.0.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 10.00; nm_ref = 0.0;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T10.0_N0.0.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 10.00; nm_ref = 91.6;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T10.0_N91.6.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 10.00; nm_ref = 183.2;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T10.0_N183.2.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 10.00; nm_ref = 274.8;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T10.0_N274.8.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 10.00; nm_ref = 366.4;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T10.0_N366.4.txt");
+
+Vdc = 96.0; fsw = 150000.0; T_load = 10.00; nm_ref = 458.0;
+K_d = 7.068583; T_d = 0.001000;
+K_q = 10.367256; T_q = 0.001467;
+K_w = 51.181524; T_w = 0.002122;
+Simulate("HumanoidSimV2.psimsch", "KneeRun_V96_F150000_T10.0_N458.0.txt");
+

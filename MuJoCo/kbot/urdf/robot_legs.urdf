@@ -41,7 +41,7 @@
       <visual name="KD_D_102L_L_Hip_Yoke_Drive.stl">
          <origin xyz="4.3914299484087696e-05 0.010539982584437618 -0.047126583039270434" rpy="1.489508988039408 -0.8953002558528854 1.587550826110923" />
          <geometry>
-            <mesh filename="C:/96v-gan-humanoid-drive/MuJoCo/kbot/urdf/meshes/KD_D_102L_L_Hip_Yoke_Drive.stl" />
+            <mesh filename="C:/96v_gan_humanoid_drive/MuJoCo/kbot/urdf/meshes/KD_D_102L_L_Hip_Yoke_Drive.stl" />
          </geometry>
       </visual>
    </link>
@@ -61,7 +61,7 @@
       <visual name="L_Hip_Roll_RS03.stl">
          <origin xyz="-0.0009883078276069943 -0.0577850869660882 0.02769644379676059" rpy="2.5625496121829965 -1.5390725096082718 -0.9894198958725637" />
          <geometry>
-            <mesh filename="C:/96v-gan-humanoid-drive/MuJoCo/kbot/urdf/meshes/L_Hip_Roll_RS03.stl" />
+            <mesh filename="C:/96v_gan_humanoid_drive/MuJoCo/kbot/urdf/meshes/L_Hip_Roll_RS03.stl" />
          </geometry>
       </visual>
    </link>
@@ -81,7 +81,7 @@
       <visual name="KD_D_301L_L_Femur_Lower_Drive.stl">
          <origin xyz="0.0009381023965015589 0.0017909649864645465 -0.11914015059344343" rpy="0.12936278299174953 -0.05479700156089384 -0.03928105279759307" />
          <geometry>
-            <mesh filename="C:/96v-gan-humanoid-drive/MuJoCo/kbot/urdf/meshes/KD_D_301L_L_Femur_Lower_Drive.stl" />
+            <mesh filename="C:/96v_gan_humanoid_drive/MuJoCo/kbot/urdf/meshes/KD_D_301L_L_Femur_Lower_Drive.stl" />
          </geometry>
       </visual>
    </link>
@@ -101,7 +101,7 @@
       <visual name="KD_D_401L_L_Shin_Drive.stl">
          <origin xyz="-0.02619676805300098 -0.08955782709961331 0.02032641513695641" rpy="1.5602923843736303 0.16991661383873513 -0.009273856268361858" />
          <geometry>
-            <mesh filename="C:/96v-gan-humanoid-drive/MuJoCo/kbot/urdf/meshes/KD_D_401L_L_Shin_Drive.stl" />
+            <mesh filename="C:/96v_gan_humanoid_drive/MuJoCo/kbot/urdf/meshes/KD_D_401L_L_Shin_Drive.stl" />
          </geometry>
       </visual>
    </link>
@@ -121,7 +121,7 @@
       <visual name="LFootBushing_GPF_1517_12.stl">
          <origin xyz="-0.020727600042396124 0.033798663837542264 -0.01373243183762253" rpy="1.5717794825591445 -0.178916428089273 1.5214856553456566" />
          <geometry>
-            <mesh filename="C:/96v-gan-humanoid-drive/MuJoCo/kbot/urdf/meshes/LFootBushing_GPF_1517_12.stl" />
+            <mesh filename="C:/96v_gan_humanoid_drive/MuJoCo/kbot/urdf/meshes/LFootBushing_GPF_1517_12.stl" />
          </geometry>
       </visual>
    </link>
@@ -141,7 +141,7 @@
       <visual name="KD_D_102R.stl">
          <origin xyz="6.076870435459152e-05 -0.010479439124287098 -0.047117228116732794" rpy="-1.4819185641466674 -0.8970613971487448 -1.586086866608487" />
          <geometry>
-            <mesh filename="C:/96v-gan-humanoid-drive/MuJoCo/kbot/urdf/meshes/KD_D_102R.stl" />
+            <mesh filename="C:/96v_gan_humanoid_drive/MuJoCo/kbot/urdf/meshes/KD_D_102R.stl" />
          </geometry>
       </visual>
    </link>
@@ -161,7 +161,7 @@
       <visual name="L_Hip_Roll_RS03_2.stl">
          <origin xyz="-0.0009935418389624229 -0.05777329596912189 -0.027700740243464007" rpy="-0.5772316915832773 -1.5390985060031372 2.1504718011601343" />
          <geometry>
-            <mesh filename="C:/96v-gan-humanoid-drive/MuJoCo/kbot/urdf/meshes/L_Hip_Roll_RS03_2.stl" />
+            <mesh filename="C:/96v_gan_humanoid_drive/MuJoCo/kbot/urdf/meshes/L_Hip_Roll_RS03_2.stl" />
          </geometry>
       </visual>
    </link>
@@ -181,7 +181,7 @@
       <visual name="KD_D_301R.stl">
          <origin xyz="-0.0009386561962801405 0.001783295896997561 -0.11916718167415323" rpy="0.12926065195711878 0.05508779075386494 0.03775353625364742" />
          <geometry>
-            <mesh filename="C:/96v-gan-humanoid-drive/MuJoCo/kbot/urdf/meshes/KD_D_301R.stl" />
+            <mesh filename="C:/96v_gan_humanoid_drive/MuJoCo/kbot/urdf/meshes/KD_D_301R.stl" />
          </geometry>
       </visual>
    </link>
@@ -201,7 +201,7 @@
       <visual name="KD_D_401R.stl">
          <origin xyz="-0.026194238059575603 -0.08958073757831114 -0.020330607651574028" rpy="1.5811842222901855 -0.16979940119414505 -0.009270973540264071" />
          <geometry>
-            <mesh filename="C:/96v-gan-humanoid-drive/MuJoCo/kbot/urdf/meshes/KD_D_401R.stl" />
+            <mesh filename="C:/96v_gan_humanoid_drive/MuJoCo/kbot/urdf/meshes/KD_D_401R.stl" />
          </geometry>
       </visual>
    </link>
@@ -221,7 +221,7 @@
       <visual name="RFootBushing_GPF_1517_12.stl">
          <origin xyz="-0.020724748511274215 -0.033799846439350745 -0.013738278744756973" rpy="1.571672757247584 0.17874474649221628 1.6200444342874654" />
          <geometry>
-            <mesh filename="C:/96v-gan-humanoid-drive/MuJoCo/kbot/urdf/meshes/RFootBushing_GPF_1517_12.stl" />
+            <mesh filename="C:/96v_gan_humanoid_drive/MuJoCo/kbot/urdf/meshes/RFootBushing_GPF_1517_12.stl" />
          </geometry>
       </visual>
    </link>

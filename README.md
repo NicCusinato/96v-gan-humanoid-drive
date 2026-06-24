@@ -33,7 +33,7 @@ Control uses **downloaded gait trajectories** (not custom locomotion control). F
 ## Repository Structure
 
 ```
-96v-gan-humanoid-drive/
+96v_gan_humanoid_drive/
 ├── phase0/               # Setup, baseline, specs
 │   ├── specs/            # Electrical and mechanical target specs
 │   ├── literature/       # Paper notes and references
@@ -123,7 +123,7 @@ This auto-links commits to Jira tickets via the GitHub for Jira integration.
 ## Repo Structure
 
 ```
-96v-gan-humanoid-drive/
+96v_gan_humanoid_drive/
 ├── phase0/                        # Baseline & literature (Si 48V reference)
 │   ├── baseline_48v_si/           # PSIM schematics, MATLAB loss analysis
 │   ├── gait_data/                 # Humanoid gait torque/speed profiles

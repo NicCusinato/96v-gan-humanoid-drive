@@ -1,0 +1,189 @@
+# Gearbox / Transmission Library
+# Covers planetary, cycloidal, harmonic, and spur options
+# Units: SI
+
+gearboxes:
+
+  # ─── Planetary (low-backlash inline) ─────────────────────────────────────────
+  - id: planet_3
+    name: "Planetary 3:1"
+    type: planetary
+    GR: 3.0
+    eta: 0.96        # efficiency
+    J_gear: 5.0e-6   # kg·m² referred to motor shaft
+    friction_Nm: 0.05
+    mass: 0.08
+    notes: "Single-stage, low GR, backdrivable"
+
+  - id: planet_5
+    name: "Planetary 5:1"
+    type: planetary
+    GR: 5.0
+    eta: 0.95
+    J_gear: 8.0e-6
+    friction_Nm: 0.08
+    mass: 0.12
+    notes: "Single-stage"
+
+  - id: planet_7
+    name: "Planetary 7:1"
+    type: planetary
+    GR: 7.0
+    eta: 0.94
+    J_gear: 1.1e-5
+    friction_Nm: 0.10
+    mass: 0.15
+    notes: "Single-stage, QDD boundary"
+
+  - id: planet_9
+    name: "Planetary 9:1"
+    type: planetary
+    GR: 9.0
+    eta: 0.93
+    J_gear: 1.5e-5
+    friction_Nm: 0.13
+    mass: 0.18
+    notes: "Two-stage equivalent — Kbot RS-04 baseline"
+
+  - id: planet_12
+    name: "Planetary 12:1"
+    type: planetary
+    GR: 12.0
+    eta: 0.92
+    J_gear: 2.0e-5
+    friction_Nm: 0.16
+    mass: 0.22
+    notes: "Two-stage"
+
+  - id: planet_16
+    name: "Planetary 16:1"
+    type: planetary
+    GR: 16.0
+    eta: 0.91
+    J_gear: 2.6e-5
+    friction_Nm: 0.20
+    mass: 0.28
+    notes: "Two-stage"
+
+  - id: planet_20
+    name: "Planetary 20:1"
+    type: planetary
+    GR: 20.0
+    eta: 0.90
+    J_gear: 3.2e-5
+    friction_Nm: 0.25
+    mass: 0.34
+    notes: "Two-stage, common Maxon option"
+
+  - id: planet_25
+    name: "Planetary 25:1"
+    type: planetary
+    GR: 25.0
+    eta: 0.89
+    J_gear: 4.0e-5
+    friction_Nm: 0.30
+    mass: 0.40
+    notes: "Two-stage"
+
+  - id: planet_36
+    name: "Planetary 36:1"
+    type: planetary
+    GR: 36.0
+    eta: 0.88
+    J_gear: 5.5e-5
+    friction_Nm: 0.40
+    mass: 0.55
+    notes: "Three-stage"
+
+  - id: planet_50
+    name: "Planetary 50:1"
+    type: planetary
+    GR: 50.0
+    eta: 0.87
+    J_gear: 7.0e-5
+    friction_Nm: 0.50
+    mass: 0.65
+    notes: "Three-stage, stiff"
+
+  # ─── Cycloidal (high GR, compact, zero backlash) ──────────────────────────────
+  - id: cycloidal_7p75
+    name: "Cycloidal 7.75:1"
+    type: cycloidal
+    GR: 7.75
+    eta: 0.90
+    J_gear: 1.8e-5
+    friction_Nm: 0.15
+    mass: 0.28
+    notes: "Robstride RS-02 internal reduction (reference)"
+
+  - id: cycloidal_21
+    name: "Cycloidal 21:1"
+    type: cycloidal
+    GR: 21.0
+    eta: 0.88
+    J_gear: 4.5e-5
+    friction_Nm: 0.35
+    mass: 0.50
+    notes: ""
+
+  - id: cycloidal_33
+    name: "Cycloidal 33:1"
+    type: cycloidal
+    GR: 33.0
+    eta: 0.86
+    J_gear: 6.0e-5
+    friction_Nm: 0.50
+    mass: 0.62
+    notes: "Common Neugart / Apex cycloidal option"
+
+  # ─── Harmonic Drive (very high GR, zero backlash, back-driven with difficulty) ──
+  - id: harmonic_50
+    name: "Harmonic Drive 50:1"
+    type: harmonic
+    GR: 50.0
+    eta: 0.82
+    J_gear: 5.0e-5
+    friction_Nm: 0.55
+    mass: 0.45
+    notes: "Excellent for ankle precision; poor regen (not backdrivable easily)"
+
+  - id: harmonic_100
+    name: "Harmonic Drive 100:1"
+    type: harmonic
+    GR: 100.0
+    eta: 0.78
+    J_gear: 8.0e-5
+    friction_Nm: 0.80
+    mass: 0.65
+    notes: "Very stiff; regen nearly zero"
+
+  # ─── Direct / Belt (quasi-direct-drive, no separate gearbox) ─────────────────
+  - id: direct_1
+    name: "Direct Drive 1:1"
+    type: direct
+    GR: 1.0
+    eta: 1.00
+    J_gear: 0.0
+    friction_Nm: 0.0
+    mass: 0.0
+    notes: "No gearbox — motor must supply full joint torque"
+
+  - id: belt_2
+    name: "Belt/Pulley 2:1"
+    type: belt
+    GR: 2.0
+    eta: 0.97
+    J_gear: 2.0e-6
+    friction_Nm: 0.02
+    mass: 0.05
+    notes: "Low-inertia timing belt, good backdrivability"
+
+  - id: belt_4
+    name: "Belt/Pulley 4:1"
+    type: belt
+    GR: 4.0
+    eta: 0.96
+    J_gear: 4.0e-6
+    friction_Nm: 0.04
+    mass: 0.08
+    notes: ""

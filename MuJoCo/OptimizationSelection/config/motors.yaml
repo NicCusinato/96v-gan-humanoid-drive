@@ -1,0 +1,258 @@
+# Motor Component Library
+# Units: SI (N·m, A, Ω, kg, kg·m², rad/s)
+# Sources: datasheets from T-Motor, Maxon, Robstride, Kollmorgen, Allied Motion
+
+motors:
+
+  # ─── T-Motor / Antigravity Series ────────────────────────────────────────────
+  - id: tmotor_u8_lite
+    name: "T-Motor U8 Lite KV100"
+    manufacturer: T-Motor
+    series: U8 Lite
+    kt: 0.0955        # N·m/A (= 1/Kv in SI units, Kv=100 rpm/V)
+    kv_rpm_v: 100
+    ke: 0.0955        # V·s/rad  (= kt for ideal motor)
+    R_phase: 0.078    # Ohm, phase resistance
+    L_phase: 0.000065 # H, phase inductance
+    I_cont: 18.0      # A continuous
+    I_peak: 40.0      # A peak (≤2 s)
+    T_cont: 17.1      # N·m continuous
+    T_peak: 38.0      # N·m peak
+    omega_rated: 522  # rad/s no-load at 96V (Kv * V_bus * π/30)
+    J_rotor: 0.000095 # kg·m²
+    mass: 0.415       # kg
+    P_rated_W: 1000
+    notes: "Outrunner, suited for direct-drive or low-GR hip/knee"
+
+  - id: tmotor_ak80_9
+    name: "T-Motor AK80-9"
+    manufacturer: T-Motor
+    series: AK80
+    kt: 0.091
+    kv_rpm_v: 100
+    ke: 0.0955
+    R_phase: 0.083
+    L_phase: 0.000057
+    I_cont: 15.0
+    I_peak: 24.0
+    T_cont: 9.0         # after 9:1 internal gear; bare motor ~1 N·m → here we store bare motor values
+    T_peak: 18.0
+    omega_rated: 1005   # rad/s at 96V (internal reduction already in AK — we model bare motor)
+    J_rotor: 0.0000082
+    mass: 0.485
+    P_rated_W: 500
+    notes: "Quasi-direct-drive cycloidal; internal GR=9 already. Model as bare motor, set GR separately."
+
+  # ─── Robstride Series (current Kbot actuators — baseline) ────────────────────
+  - id: robstride_02
+    name: "Robstride RS-02"
+    manufacturer: Robstride
+    series: RS
+    kt: 0.122
+    kv_rpm_v: 78
+    ke: 0.122
+    R_phase: 0.32
+    L_phase: 0.00018
+    I_cont: 10.0
+    I_peak: 20.0
+    T_cont: 12.2
+    T_peak: 24.4
+    omega_rated: 395    # rad/s at 46V rated; at 96V → ~820 rad/s, but internal GR limits it
+    J_rotor: 0.0000699
+    mass: 0.540
+    P_rated_W: 500
+    notes: "Modeled as bare motor. Originally integrated with ~7.75:1 GR. Set GR separately."
+
+  - id: robstride_04
+    name: "Robstride RS-04"
+    manufacturer: Robstride
+    series: RS
+    kt: 0.212
+    kv_rpm_v: 45
+    ke: 0.212
+    R_phase: 0.25
+    L_phase: 0.00020
+    I_cont: 20.0
+    I_peak: 40.0
+    T_cont: 42.0
+    T_peak: 84.0
+    omega_rated: 250    # rad/s at 50V rated; ~480 at 96V pre-GR
+    J_rotor: 0.000494
+    mass: 1.100
+    P_rated_W: 1500
+    notes: "Modeled as bare motor. Used in Kbot with GR~9 built-in."
+
+  # ─── Maxon EC-i / EC-4pole Series ────────────────────────────────────────────
+  - id: maxon_eci40_48v
+    name: "Maxon EC-i 40 48V 70W"
+    manufacturer: Maxon
+    series: EC-i 40
+    kt: 0.0386
+    kv_rpm_v: 248
+    ke: 0.0370
+    R_phase: 2.07
+    L_phase: 0.000480
+    I_cont: 3.60
+    I_peak: 10.0
+    T_cont: 0.139
+    T_peak: 0.386
+    omega_rated: 2495   # rad/s (23820 RPM / 9.549)
+    J_rotor: 1.35e-6
+    mass: 0.162
+    P_rated_W: 70
+    notes: "Compact slotted motor; needs high GR for joint torques."
+
+  - id: maxon_ec4pole_30
+    name: "Maxon EC 4-pole 30 200W"
+    manufacturer: Maxon
+    series: EC 4-pole 30
+    kt: 0.0294
+    kv_rpm_v: 325
+    ke: 0.0281
+    R_phase: 0.665
+    L_phase: 0.000120
+    I_cont: 8.60
+    I_peak: 22.0
+    T_cont: 0.253
+    T_peak: 0.647
+    omega_rated: 3403   # rad/s (32500 RPM)
+    J_rotor: 6.03e-7
+    mass: 0.200
+    P_rated_W: 200
+    notes: "High-speed brushless; suitable for high-GR planetary drives."
+
+  - id: maxon_ec_i_70_250w
+    name: "Maxon EC-i 70 48V 250W"
+    manufacturer: Maxon
+    series: EC-i 70
+    kt: 0.0707
+    kv_rpm_v: 135
+    ke: 0.0674
+    R_phase: 0.413
+    L_phase: 0.000310
+    I_cont: 7.00
+    I_peak: 21.0
+    T_cont: 0.495
+    T_peak: 1.485
+    omega_rated: 1414   # rad/s
+    J_rotor: 1.36e-5
+    mass: 0.600
+    P_rated_W: 250
+    notes: "Medium-frame; good for knee with planetary ~20:1."
+
+  # ─── Kollmorgen / Allied Motion ──────────────────────────────────────────────
+  - id: kollmorgen_tbm3
+    name: "Kollmorgen TBM3-04A"
+    manufacturer: Kollmorgen
+    series: TBM3
+    kt: 0.115
+    kv_rpm_v: 83
+    ke: 0.110
+    R_phase: 0.130
+    L_phase: 0.000095
+    I_cont: 14.0
+    I_peak: 42.0
+    T_cont: 1.610
+    T_peak: 4.830
+    omega_rated: 870    # rad/s
+    J_rotor: 0.0000085
+    mass: 0.340
+    P_rated_W: 700
+    notes: "Frameless slotless hub motor; ideal for knee with ~10:1 planetary."
+
+  - id: kollmorgen_tbm4
+    name: "Kollmorgen TBM4-08A"
+    manufacturer: Kollmorgen
+    series: TBM4
+    kt: 0.195
+    kv_rpm_v: 49
+    ke: 0.186
+    R_phase: 0.053
+    L_phase: 0.000040
+    I_cont: 28.0
+    I_peak: 84.0
+    T_cont: 5.460
+    T_peak: 16.38
+    omega_rated: 503    # rad/s
+    J_rotor: 0.0000420
+    mass: 0.710
+    P_rated_W: 2000
+    notes: "High-torque frameless; hip application at GR 6-12."
+
+  # ─── Unitree / Legged Robotics High-Torque BLDC ──────────────────────────────
+  - id: unitree_go_m8010
+    name: "Unitree Go M8010-6"
+    manufacturer: Unitree
+    series: Go
+    kt: 0.098
+    kv_rpm_v: 97
+    ke: 0.0934
+    R_phase: 0.030
+    L_phase: 0.000028
+    I_cont: 16.0
+    I_peak: 40.0
+    T_cont: 1.568
+    T_peak: 3.920
+    omega_rated: 1015   # rad/s
+    J_rotor: 0.0000112
+    mass: 0.340
+    P_rated_W: 800
+    notes: "Used in Unitree B1/B2/Go2 joints; low resistance enables high peak torque."
+
+  - id: myactuator_rmd_x10
+    name: "MyActuator RMD-X10 v3"
+    manufacturer: MyActuator
+    series: RMD-X
+    kt: 0.180
+    kv_rpm_v: 53
+    ke: 0.180
+    R_phase: 0.180
+    L_phase: 0.000145
+    I_cont: 12.0
+    I_peak: 25.0
+    T_cont: 21.6
+    T_peak: 45.0
+    omega_rated: 555    # rad/s
+    J_rotor: 0.000240
+    mass: 0.960
+    P_rated_W: 1500
+    notes: "Modeled as bare motor. Originally integrated with ~7:1 cycloidal."
+
+  # ─── Higher-power BLDC for hip heavy-payload scenarios ───────────────────────
+  - id: tmotor_mn8005
+    name: "T-Motor MN8005 KV170"
+    manufacturer: T-Motor
+    series: MN
+    kt: 0.0562
+    kv_rpm_v: 170
+    ke: 0.0562
+    R_phase: 0.025
+    L_phase: 0.000020
+    I_cont: 30.0
+    I_peak: 80.0
+    T_cont: 16.86
+    T_peak: 44.96
+    omega_rated: 1780   # rad/s at 96V
+    J_rotor: 0.000085
+    mass: 0.550
+    P_rated_W: 3000
+    notes: "High-power drone/robot motor; very low resistance. Large outrunner, good regen."
+
+  - id: emoteq_qb02303
+    name: "Emoteq QB02303 (Allied Motion)"
+    manufacturer: Allied Motion
+    series: QB
+    kt: 0.130
+    kv_rpm_v: 73
+    ke: 0.124
+    R_phase: 0.065
+    L_phase: 0.000062
+    I_cont: 22.0
+    I_peak: 66.0
+    T_cont: 2.86
+    T_peak: 8.58
+    omega_rated: 766    # rad/s
+    J_rotor: 0.0000520
+    mass: 0.830
+    P_rated_W: 2000
+    notes: "Frameless pancake; low-profile hip/knee integration."

@@ -1,0 +1,103 @@
+# Robot + Gait + Electrical + Supercap Configuration
+# All values have inline comments with units
+
+robot:
+  total_mass_kg: 32.0          # Robot body mass (kg)
+  payload_mass_kg: 10.0        # Additional payload (kg)
+  g: 9.81                      # Gravity (m/s²)
+
+  # Kbot leg geometry (from leg_params.py)
+  link_lengths_m:
+    thigh: 0.3854              # hip → knee (m)
+    shank: 0.2915              # knee → ankle (m)
+    foot:  0.0478              # ankle → foot center (m)
+
+  link_masses_kg:
+    thigh: 5.297               # lumped thigh mass (kg)
+    shank: 1.685               # lumped shank mass (kg)
+    foot:  0.609               # lumped foot mass (kg)
+
+  # Link COM offsets from proximal joint [x, z] (m)
+  com_offsets_m:
+    thigh: [-0.00318, -0.19441]
+    shank: [ 0.02412, -0.10431]
+    foot:  [ 0.01655, -0.03114]
+
+  # Link inertias (Iyy, about own COM, kg·m²)
+  link_inertias_kgm2:
+    thigh: 0.12715
+    shank: 0.01466
+    foot:  0.00189
+
+  joint_limits_rad:
+    hip_pitch:   [-1.047, 2.217]
+    knee_pitch:  [0.0,    2.705]
+    ankle_pitch: [-1.134, 0.262]
+
+gait:
+  # Select which joint to optimize: hip_pitch | knee_pitch | ankle_pitch
+  target_joint: knee_pitch
+
+  # Gait profile source:
+  #   "analytic"   → built-in sinusoidal/trapezoidal model
+  #   "mujoco_csv" → load a CSV exported from test_kbot_legs.py
+  #   "online"     → fetch reference profiles from literature (stair / payload)
+  profile_source: analytic
+
+  # Path to CSV if profile_source = mujoco_csv
+  # Columns expected: time, <joint>_angle, <joint>_velocity, <joint>_net_torque
+  mujoco_csv_path: ""
+
+  # Analytic gait parameters
+  gait_type: step_in_place      # stand | squat | step_in_place | stair_climb
+  step_freq_hz: 1.0             # steps per second
+  step_height_m: 0.04           # foot clearance height (m)
+  slope_deg: 0.0                # terrain slope (degrees)
+  stair_rise_m: 0.18            # stair riser height if gait_type=stair_climb (m)
+
+  # Simulation parameters for analytic inverse dynamics
+  t_cycle_s: 2.0                # one full gait cycle duration (s)
+  dt_s: 0.002                   # time step (s)
+  n_cycles: 3                   # number of cycles to simulate (for RMS averaging)
+
+electrical:
+  V_bus: 96.0                   # DC bus voltage (V)
+  V_bus_utilization_target: 0.75  # Target back-EMF fraction (0.70–0.80)
+  I_phase_max_A: 60.0           # Maximum allowable phase current (A)
+  voltage_margin: 0.80          # Back-EMF + I·R must stay below this fraction of V_bus
+  eta_drive: 0.97               # Inverter/drive efficiency
+
+supercap:
+  # Per-joint decentralized supercap (one cap bank per joint)
+  capacitance_F: 50.0           # Capacitance (F)
+  esr_ohm: 0.010                # Equivalent Series Resistance (Ω)
+  V_min: 40.0                   # Minimum usable voltage (V)
+  V_max: 60.0                   # Maximum charge voltage (V)
+  V_nominal: 50.0               # Nominal operating voltage (V)
+
+  # Regen matching thresholds
+  regen_min_power_W: 2.0        # Below this, regen is considered negligible (W)
+  regen_overvoltage_margin: 0.95 # Fraction of V_max; reject if regen would push cap above this
+
+thermal:
+  # Thermal constraints (copper loss budget)
+  P_cu_limit_W: 80.0            # Max continuous copper loss (W) — motor winding budget
+  # Note: P_cu = I_rms² × R_phase
+
+scoring:
+  # Scoring weights (must sum to 1.0)
+  weights:
+    mass: 0.20
+    voltage_utilization: 0.20
+    efficiency: 0.20
+    regen_match: 0.15
+    reflected_inertia: 0.15
+    gr_penalty: 0.10
+
+  # GR penalty: penalize very high or very low gear ratios
+  gr_penalty_low: 3.0           # GR below this gets a linearly increasing penalty
+  gr_penalty_high: 30.0         # GR above this gets a linearly increasing penalty
+
+output:
+  top_n: 10                     # Number of top candidates to return
+  results_dir: "data/output"    # Relative to OptimizationSelection/
