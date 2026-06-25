@@ -25,7 +25,7 @@ class MinimalWBC:
             
         # Identify the ID of the body we want to balance (e.g., torso, base)
         self.torso_id = -1
-        for name in ["torso", "base", "base_link"]:
+        for name in ["torso", "base", "base_link", "Torso_Side_Right"]:
             try:
                 self.torso_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, name)
                 if self.torso_id >= 0:
@@ -38,8 +38,11 @@ class MinimalWBC:
             raise ValueError("[ERROR] Could not find torso or base body in the robot model!")
 
         # --- Dynamic Kinematic Standing Balanced Pose Solver ---
-        left_foot_body_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, "LFootBushing_GPF_1517_12")
-        right_foot_body_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, "RFootBushing_GPF_1517_12")
+        # Get foot names, supporting both the old and new kbot_v2 full models
+        l_foot_name = "KB_D_501L_L_LEG_FOOT" if mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, "KB_D_501L_L_LEG_FOOT") >= 0 else "LFootBushing_GPF_1517_12"
+        r_foot_name = "KB_D_501R_R_LEG_FOOT" if mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, "KB_D_501R_R_LEG_FOOT") >= 0 else "RFootBushing_GPF_1517_12"
+        self.left_foot_body_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, l_foot_name)
+        self.right_foot_body_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, r_foot_name)
         
         # Leg joint names and index mappings
         leg_joint_names = [
@@ -71,7 +74,7 @@ class MinimalWBC:
                 
                 mujoco.mj_forward(self.model, kin_data)
                 
-                mat_l = kin_data.xmat[left_foot_body_id].reshape(3, 3)
+                mat_l = kin_data.xmat[self.left_foot_body_id].reshape(3, 3)
                 pitch_l = np.arcsin(mat_l[2, 0])
                 ankle_l = np.clip(ankle_l - pitch_l, jnt_range_l[0], jnt_range_l[1])
                 
@@ -86,7 +89,7 @@ class MinimalWBC:
                 
                 mujoco.mj_forward(self.model, kin_data)
                 
-                mat_r = kin_data.xmat[right_foot_body_id].reshape(3, 3)
+                mat_r = kin_data.xmat[self.right_foot_body_id].reshape(3, 3)
                 pitch_r = np.arcsin(mat_r[2, 0])
                 # Mirrored ankle axis requires inverting correction feedback direction to converge
                 ankle_r = np.clip(ankle_r + pitch_r, jnt_range_r[0], jnt_range_r[1])
@@ -119,8 +122,8 @@ class MinimalWBC:
             
             com_x = kin_data.subtree_com[0][0]
             
-            left_foot_glob = kin_data.xpos[left_foot_body_id] + kin_data.xmat[left_foot_body_id].reshape(3, 3).dot(local_foot_center)
-            right_foot_glob = kin_data.xpos[right_foot_body_id] + kin_data.xmat[right_foot_body_id].reshape(3, 3).dot(local_foot_center)
+            left_foot_glob = kin_data.xpos[self.left_foot_body_id] + kin_data.xmat[self.left_foot_body_id].reshape(3, 3).dot(local_foot_center)
+            right_foot_glob = kin_data.xpos[self.right_foot_body_id] + kin_data.xmat[self.right_foot_body_id].reshape(3, 3).dot(local_foot_center)
             support_x = 0.5 * (left_foot_glob[0] + right_foot_glob[0])
             
             com_err = abs(com_x - support_x)
@@ -143,8 +146,8 @@ class MinimalWBC:
         kin_data.qpos[3:7] = [np.cos(self.target_pitch/2), 0, np.sin(self.target_pitch/2), 0]
         mujoco.mj_forward(self.model, kin_data)
         final_com_x = kin_data.subtree_com[0][0]
-        final_left_glob = kin_data.xpos[left_foot_body_id] + kin_data.xmat[left_foot_body_id].reshape(3, 3).dot(local_foot_center)
-        final_right_glob = kin_data.xpos[right_foot_body_id] + kin_data.xmat[right_foot_body_id].reshape(3, 3).dot(local_foot_center)
+        final_left_glob = kin_data.xpos[self.left_foot_body_id] + kin_data.xmat[self.left_foot_body_id].reshape(3, 3).dot(local_foot_center)
+        final_right_glob = kin_data.xpos[self.right_foot_body_id] + kin_data.xmat[self.right_foot_body_id].reshape(3, 3).dot(local_foot_center)
         final_support_x = 0.5 * (final_left_glob[0] + final_right_glob[0])
         print(f"  [WBC] Solver Final COM x: {final_com_x:.6f}, Support x: {final_support_x:.6f}, Error: {abs(final_com_x - final_support_x):.6f}")
 
@@ -156,10 +159,6 @@ class MinimalWBC:
             0.0, 0.0, 0.0, 0.0, 0.0   # Left arm
         ]
         
-        # Expose foot body IDs for external diagnostics/monitoring
-        self.left_foot_body_id = left_foot_body_id
-        self.right_foot_body_id = right_foot_body_id
-
         # Automatically pre-set joint position states in qpos
         for i in range(self.model.nu):
             joint_id = self.model.actuator_trnid[i, 0]
@@ -221,6 +220,16 @@ class MinimalWBC:
         self.data.qpos[2] = original_z  # restore
         return solved_height
 
+    def set_reference_trajectory(self, qpos_ref=None, qvel_ref=None, base_pos=None, base_vel=None):
+        """
+        Set explicit joint reference trajectories to override the static stand target.
+        Pass None to return to default standing behavior.
+        """
+        self.qpos_ref = qpos_ref
+        self.qvel_ref = qvel_ref
+        self.base_pos_ref = base_pos
+        self.base_vel_ref = base_vel
+
     def compute_torques(self, gait_targets=None):
         # Default to static stand if no targets provided
         if gait_targets is None:
@@ -270,8 +279,22 @@ class MinimalWBC:
         jacr_r = np.zeros((3, self.model.nv))
         mujoco.mj_jacBody(self.model, self.data, jacp_r, jacr_r, self.right_foot_body_id)
         
+        # Check contact heights to determine support blending (Contact Scheduling)
+        left_foot_z = self.data.xpos[self.left_foot_body_id][2]
+        right_foot_z = self.data.xpos[self.right_foot_body_id][2]
+        
+        # We blend the support based on the height difference. 
+        # If left is >2cm higher than right, right is the sole stance foot (alpha=0.0).
+        # If right is >2cm higher than left, left is the sole stance foot (alpha=1.0).
+        diff_z = right_foot_z - left_foot_z 
+        alpha = np.clip(0.5 + diff_z / 0.04, 0.0, 1.0)
+        
+        # Stance Jacobians: we only push off the stance foot (or both if double stance)
+        jacp_support = alpha * jacp_l + (1.0 - alpha) * jacp_r
+        jacr_support = alpha * jacr_l + (1.0 - alpha) * jacr_r
+        
         # Relative global pitch Jacobian (Torso pitch minus stance feet pitch)
-        J_pitch = jacr[1, :] - 0.5 * (jacr_l[1, :] + jacr_r[1, :]) 
+        J_pitch = jacr[1, :] - jacr_support[1, :] 
         
         # --- 4. Dynamic Operational Space Inertia Matrix Lambda Calculation ---
         # Obtain the joint-space inertia mass matrix inverse M_inv
@@ -294,19 +317,29 @@ class MinimalWBC:
         com_x_curr = self.data.subtree_com[0][0]
         com_y_curr = self.data.subtree_com[0][1]
         
-        # Midpoint of feet in world coordinates
-        left_foot_glob_center = self.data.xpos[self.left_foot_body_id] + self.data.xmat[self.left_foot_body_id].reshape(3, 3).dot(np.array([-0.025, -0.038, 0.0]))
-        right_foot_glob_center = self.data.xpos[self.right_foot_body_id] + self.data.xmat[self.right_foot_body_id].reshape(3, 3).dot(np.array([-0.025, -0.038, 0.0]))
-        # Apply commanded X/Y CoM offsets from gait trajectory
-        com_x_des = 0.5 * (left_foot_glob_center[0] + right_foot_glob_center[0]) + com_offset[0]
-        com_y_des = 0.5 * (left_foot_glob_center[1] + right_foot_glob_center[1]) + com_offset[1]
+        if hasattr(self, 'base_pos_ref') and self.base_pos_ref is not None:
+            # Dynamic Walk Mode: Track the global base trajectory
+            com_x_des = self.base_pos_ref[0]
+            com_y_des = self.base_pos_ref[1]
+            com_x_vel_des = self.base_vel_ref[0]
+            com_y_vel_des = self.base_vel_ref[1]
+        else:
+            # Stand Mode: Balance over feet midpoint
+            left_foot_glob_center = self.data.xpos[self.left_foot_body_id] + self.data.xmat[self.left_foot_body_id].reshape(3, 3).dot(np.array([-0.025, -0.038, 0.0]))
+            right_foot_glob_center = self.data.xpos[self.right_foot_body_id] + self.data.xmat[self.right_foot_body_id].reshape(3, 3).dot(np.array([-0.025, -0.038, 0.0]))
+            
+            # Use alpha blending from contact scheduling to position CoM over the active stance foot
+            com_x_des = alpha * left_foot_glob_center[0] + (1.0 - alpha) * right_foot_glob_center[0] + com_offset[0]
+            com_y_des = alpha * left_foot_glob_center[1] + (1.0 - alpha) * right_foot_glob_center[1] + com_offset[1]
+            com_x_vel_des = 0.0
+            com_y_vel_des = 0.0
         
         com_x_error = com_x_des - com_x_curr
         com_y_error = com_y_des - com_y_curr
         
-        # Relative com translational Jacobian
-        J_com_x = jacp[0, :] - 0.5 * (jacp_l[0, :] + jacp_r[0, :])
-        J_com_y = jacp[1, :] - 0.5 * (jacp_l[1, :] + jacp_r[1, :])
+        # Relative com translational Jacobian using active stance support
+        J_com_x = jacp[0, :] - jacp_support[0, :]
+        J_com_y = jacp[1, :] - jacp_support[1, :]
         
         # Exact relative CoM velocity projected from state space
         com_x_vel = J_com_x.dot(self.data.qvel)
@@ -314,21 +347,26 @@ class MinimalWBC:
         
         # Compliant task gains to absorb perturbations sagittally
         Kp_com, Kd_com = 60.0, 15.5  # Critically damped
-        F_com_x = Kp_com * com_x_error - Kd_com * com_x_vel
-        F_com_y = Kp_com * com_y_error - Kd_com * com_y_vel
+        F_com_x = Kp_com * com_x_error - Kd_com * (com_x_vel - com_x_vel_des)
+        F_com_y = Kp_com * com_y_error - Kd_com * (com_y_vel - com_y_vel_des)
         
         # Physical Whole-Body Mass for translational CoM task
         Lambda_com = m_total
         tau_task_com = J_com_x * (Lambda_com * F_com_x) + J_com_y * (Lambda_com * F_com_y)
         
         # --- 5. Dynamic Whole-Body Torso Gravity Compensation + Active Height Control ---
-        # Relative height task: maintain torso height relative to feet midpoint
-        # Apply commanded Z-offset from gait trajectory (e.g., squat depth)
-        z_curr = self.data.xpos[self.torso_id][2] - 0.5 * (self.data.xpos[self.left_foot_body_id][2] + self.data.xpos[self.right_foot_body_id][2])
-        z_target = self.target_height + com_offset[2]
+        # Relative height task: maintain torso height relative to active stance foot (or globally if walking)
+        if hasattr(self, 'base_pos_ref') and self.base_pos_ref is not None:
+            z_curr = self.data.xpos[self.torso_id][2]
+            z_target = self.base_pos_ref[2]
+            z_vel_des = self.base_vel_ref[2]
+        else:
+            z_curr = self.data.xpos[self.torso_id][2] - (alpha * left_foot_z + (1.0 - alpha) * right_foot_z)
+            z_target = self.target_height + com_offset[2]
+            z_vel_des = 0.0
         
         # Stance-consistent relative vertical Jacobian (Z-axis is row 2)
-        J_z = jacp[2, :] - 0.5 * (jacp_l[2, :] + jacp_r[2, :])
+        J_z = jacp[2, :] - jacp_support[2, :]
         z_vel = J_z.dot(self.data.qvel)
         
         # Compliant active vertical force to absorb vertical impact
@@ -348,7 +386,7 @@ class MinimalWBC:
             Kp_z = 100.0
             Kd_z = 35.0  # High damping to suck energy out of the landing
             
-        f_active_z = Kp_z * (z_target - z_curr) - Kd_z * z_vel
+        f_active_z = Kp_z * (z_target - z_curr) - Kd_z * (z_vel - z_vel_des)
         
         # Physical Whole-Body Mass for vertical height task
         Lambda_z = m_total
@@ -362,42 +400,42 @@ class MinimalWBC:
         self.tau_pd = np.zeros(self.model.nu)
         
         current_target = list(self.stand_target)
+        current_vel_target = np.zeros(self.model.nu)
+        
         jump_phase = gait_targets.get('jump_phase', -1)
         phase_time = gait_targets.get('phase_time', 0.0)
         
-        if jump_phase == 0:
-            # Squat (0 to 0.5s): Bend knees, dorsiflex ankles to keep feet flat!
-            prog = phase_time / 0.5
-            squat_val = 1.0 * (1.0 - np.cos(np.pi * prog)) / 2.0
-            # Increase knee bend (Left is positive, Right is negative)
-            current_target[3] += squat_val
-            current_target[8] -= squat_val
-            # Dorsiflex ankles to keep heels planted (Assume negative is dorsiflexion)
-            current_target[4] -= squat_val * 0.6
-            current_target[9] -= squat_val * 0.6
-            
-        elif jump_phase == 1:
-            # Thrust (0 to 0.2s)
-            # 0.0 to 0.1s: Explode knees straight
-            # 0.1 to 0.2s: Explode ankles to tip-toe!
-            knee_prog = np.clip(phase_time / 0.1, 0.0, 1.0)
-            ankle_prog = np.clip((phase_time - 0.1) / 0.1, 0.0, 1.0)
-            
-            # Knee thrusts from deep squat (squat_val=1.0) back to 0.0
-            current_target[3] += 1.0 * (1.0 - knee_prog)
-            current_target[8] -= 1.0 * (1.0 - knee_prog)
-            
-            # Ankle thrusts from dorsiflexion (-0.6) to extreme tip-toe (+0.25)
-            current_target[4] += -0.6 * (1.0 - ankle_prog) + 0.25 * ankle_prog
-            current_target[9] += -0.6 * (1.0 - ankle_prog) + 0.25 * ankle_prog
-            
-        elif jump_phase == 3:
-            # Landing: deeply bend knees and dorsiflex ankles to absorb impact
-            current_target[3] += 0.8
-            current_target[8] -= 0.8
-            current_target[4] -= 0.5
-            current_target[9] -= 0.5
-            
+        # Check if we have an explicit trajectory reference (e.g. from GaitReplay)
+        if hasattr(self, 'qpos_ref') and self.qpos_ref is not None:
+            current_target = self.qpos_ref
+            current_vel_target = self.qvel_ref
+        else:
+            if jump_phase == 0:
+                # Squat (0 to 0.5s): Bend knees, dorsiflex ankles to keep feet flat!
+                prog = phase_time / 0.5
+                squat_val = 1.0 * (1.0 - np.cos(np.pi * prog)) / 2.0
+                current_target[3] += squat_val
+                current_target[8] -= squat_val
+                current_target[4] -= squat_val * 0.6
+                current_target[9] -= squat_val * 0.6
+                
+            elif jump_phase == 1:
+                # Thrust (0 to 0.2s)
+                knee_prog = np.clip(phase_time / 0.1, 0.0, 1.0)
+                ankle_prog = np.clip((phase_time - 0.1) / 0.1, 0.0, 1.0)
+                
+                current_target[3] += 1.0 * (1.0 - knee_prog)
+                current_target[8] -= 1.0 * (1.0 - knee_prog)
+                current_target[4] += -0.6 * (1.0 - ankle_prog) + 0.25 * ankle_prog
+                current_target[9] += -0.6 * (1.0 - ankle_prog) + 0.25 * ankle_prog
+                
+            elif jump_phase == 3:
+                # Landing: deeply bend knees and dorsiflex ankles to absorb impact
+                current_target[3] += 0.8
+                current_target[8] -= 0.8
+                current_target[4] -= 0.5
+                current_target[9] -= 0.5
+                
         for i in range(self.model.nu):
             joint_id = self.model.actuator_trnid[i, 0]
             joint_name = mujoco.mj_id2name(self.model, mujoco.mjtObj.mjOBJ_JOINT, joint_id)
@@ -406,25 +444,34 @@ class MinimalWBC:
             kp = float(meta['kp'])
             kd = float(meta['kd'])
             
-            # Scale leg joint gains for backdrivability while maintaining damping ratio
-            if 'hip_pitch' in joint_name or 'knee' in joint_name or 'ankle' in joint_name:
-                kp_scale = 0.20
-                if jump_phase == 3:
-                    kp_scale = 0.05  # Moderate compliance for landing
-                
-                kd_scale = np.sqrt(kp_scale)
-                kp *= kp_scale
-                kd *= kd_scale
-            elif 'hip_roll' in joint_name or 'hip_yaw' in joint_name:
-                kp_scale = 0.50
-                kd_scale = np.sqrt(kp_scale)
-                kp *= kp_scale
-                kd *= kd_scale
+            # If tracking motion capture data, we need stiffer gains to track properly
+            if hasattr(self, 'qpos_ref') and self.qpos_ref is not None:
+                # KBot legs need high gains to track dynamic motion capture data
+                if 'hip_pitch' in joint_name or 'knee' in joint_name:
+                    kp, kd = 300.0, 15.0
+                elif 'hip_roll' in joint_name or 'hip_yaw' in joint_name or 'ankle' in joint_name:
+                    kp, kd = 200.0, 10.0
+                else:
+                    kp, kd = 100.0, 5.0
+            else:
+                # Scale leg joint gains for backdrivability in static stand
+                if 'hip_pitch' in joint_name or 'knee' in joint_name or 'ankle' in joint_name:
+                    kp_scale = 0.20
+                    if jump_phase == 3:
+                        kp_scale = 0.05  # Moderate compliance for landing
+                    kd_scale = np.sqrt(kp_scale)
+                    kp *= kp_scale
+                    kd *= kd_scale
+                elif 'hip_roll' in joint_name or 'hip_yaw' in joint_name:
+                    kp_scale = 0.50
+                    kd_scale = np.sqrt(kp_scale)
+                    kp *= kp_scale
+                    kd *= kd_scale
                 
             qpos_idx = self.model.jnt_qposadr[joint_id]
             qvel_idx = self.model.jnt_dofadr[joint_id]
             
-            self.tau_pd[i] = kp * (current_target[i] - self.data.qpos[qpos_idx]) - kd * self.data.qvel[qvel_idx]
+            self.tau_pd[i] = kp * (current_target[i] - self.data.qpos[qpos_idx]) + kd * (current_vel_target[i] - self.data.qvel[qvel_idx])
             
         # 7. Add native Gravity and Coriolis compensation
         tau_gravity_coriolis = self.data.qfrc_bias

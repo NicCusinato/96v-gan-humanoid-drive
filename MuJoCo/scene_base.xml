@@ -12,7 +12,6 @@
   </visual>
 
   <worldbody>
-    <geom name="floor" size="0 0 .05" type="plane" material="grid" condim="6" friction="1.0 0.005 0.0001"/>
     <light name="spotlight" mode="targetbodycom" target="base" diffuse=".8 .8 .8" specular="0.3 0.3 0.3" pos="0 -6 4" cutoff="30"/>
   </worldbody>
 </mujoco>

@@ -1,4 +1,4 @@
 <mujoco model="kbot_in_scene">
-  <include file="scene_base.xml"/>
-  <include file="kbot/robot.mjcf"/>
+  <include file="../scene_base.xml"/>
+  <include file="../kbot/robot.mjcf"/>
 </mujoco>
