@@ -10,30 +10,26 @@ sys.path.append(os.path.join(current_dir, "..", "loco-mujoco"))
 
 from loco_mujoco import TaskFactory
 from loco_mujoco.algorithms import PPOJax
-from loco_mujoco.utils.trajectory import Trajectory
+from loco_mujoco.trajectory import Trajectory, TrajectoryInfo, TrajectoryModel, TrajectoryData
 from loco_mujoco.task_factories.dataset_confs import CustomDatasetConf
+import mujoco
 
 # We have to parse the 07_01_poses.npz
 def load_gait_trajectory(env, npz_path):
     data = np.load(npz_path)
     qpos = data['qpos']
     qvel = data['qvel']
+    N_steps = qpos.shape[0]
 
-    # The Trajectory class expects specific formats
-    # loco_mujoco Trajectory has fields like states, actions, res_qpos, res_qvel
-    # It might be easier to use the env's create_dataset function if available, 
-    # but Trajectory can be built manually.
+    model = env.get_model()
+    njnt = model.njnt
+    jnt_type = model.jnt_type
+    jnt_names = [mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_JOINT, i) for i in range(njnt)]
     
-    # We must ensure qpos size matches the environment
-    # Let's create a basic Trajectory object. We might need keys like 'qpos', 'qvel'
-    # Actually, Trajectory constructor requires keys: 
-    # qpos, qvel, time, etc. 
-    # Let's look at how Trajectory is initialized in loco-mujoco.
-    dt = 1.0 / 50.0 # 50Hz dataset
-    time = np.arange(qpos.shape[0]) * dt
+    traj_info = TrajectoryInfo(jnt_names, model=TrajectoryModel(njnt, jnp.array(jnt_type)), frequency=50.0)
+    traj_data = TrajectoryData(jnp.array(qpos), jnp.array(qvel), split_points=jnp.array([0, N_steps]))
     
-    traj = Trajectory(keys=["qpos", "qvel", "time"])
-    traj.append(qpos=qpos, qvel=qvel, time=time)
+    traj = Trajectory(traj_info, traj_data)
     return traj
 
 def main():
@@ -73,7 +69,7 @@ def main():
     
     # Load dataset
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    npz_path = os.path.join(current_dir, "..", "loco-mujoco", "loco_mujoco", "datasets", "data_generation", "generated_data", "real", "07_01_poses.npz")
+    npz_path = os.path.join(current_dir, "..", "loco-mujoco", "gait_data", "walk", "07_01_poses.npz")
     
     # Need to instantiate the environment FIRST to parse the trajectory properly (or we can just pass the traj)
     # Wait, get_custom_dataset inside ImitationFactory expects `env` as argument to do FK to get rpos.
