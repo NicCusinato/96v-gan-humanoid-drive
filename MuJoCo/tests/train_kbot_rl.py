@@ -15,13 +15,16 @@ from loco_mujoco.task_factories.dataset_confs import CustomDatasetConf
 import mujoco
 
 # We have to parse the 07_01_poses.npz
-def load_gait_trajectory(env, npz_path):
+def load_gait_trajectory(npz_path):
     data = np.load(npz_path)
     qpos = data['qpos']
     qvel = data['qvel']
     N_steps = qpos.shape[0]
 
-    model = env.get_model()
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    xml_path = os.path.join(current_dir, "..", "loco-mujoco", "loco_mujoco", "models", "kbot_v2", "kbot_v2.xml")
+    model = mujoco.MjModel.from_xml_path(xml_path)
+    
     njnt = model.njnt
     jnt_type = model.jnt_type
     jnt_names = [mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_JOINT, i) for i in range(njnt)]
@@ -74,44 +77,47 @@ def main():
     # Need to instantiate the environment FIRST to parse the trajectory properly (or we can just pass the traj)
     # Wait, get_custom_dataset inside ImitationFactory expects `env` as argument to do FK to get rpos.
     
-    class DummyConf:
-        pass
-        
-    config = DummyConf()
-    config.experiment = DummyConf()
-    config.experiment.env_params = env_params
-    config.experiment.task_factory = DummyConf()
-    config.experiment.task_factory.name = "ImitationFactory"
-    config.experiment.task_factory.params = {}
-    config.experiment.validation = DummyConf()
-    config.experiment.validation.active = False
-    config.experiment.n_seeds = 1
-    config.experiment.debug = True
-    config.experiment.num_steps = 200
-    config.experiment.total_timesteps = int(300e6)
-    config.experiment.update_epochs = 4
-    config.experiment.proportion_env_reward = 0.0
-    config.experiment.num_minibatches = 32
-    config.experiment.gamma = 0.99
-    config.experiment.gae_lambda = 0.95
-    config.experiment.clip_eps = 0.2
-    config.experiment.init_std = 0.2
-    config.experiment.learnable_std = False
-    config.experiment.ent_coef = 0.0
-    config.experiment.vf_coef = 0.5
-    config.experiment.max_grad_norm = 0.5
-    config.experiment.activation = "tanh"
-    config.experiment.anneal_lr = False
-    config.experiment.weight_decay = 0.0
-    config.experiment.normalize_env = True
-    config.experiment.lr = 1e-4
-    config.experiment.num_envs = 2048
-    config.experiment.hidden_layers = [512, 256]
+    from omegaconf import OmegaConf
+    
+    config = OmegaConf.create({
+        "experiment": {
+            "env_params": env_params,
+            "task_factory": {
+                "name": "ImitationFactory",
+                "params": {}
+            },
+            "validation": {
+                "active": False,
+                "num": 10
+            },
+            "n_seeds": 1,
+            "debug": True,
+            "num_steps": 200,
+            "total_timesteps": int(300e6),
+            "update_epochs": 4,
+            "proportion_env_reward": 0.0,
+            "num_minibatches": 32,
+            "gamma": 0.99,
+            "gae_lambda": 0.95,
+            "clip_eps": 0.2,
+            "init_std": 0.2,
+            "learnable_std": False,
+            "ent_coef": 0.0,
+            "vf_coef": 0.5,
+            "max_grad_norm": 0.5,
+            "activation": "tanh",
+            "anneal_lr": False,
+            "weight_decay": 0.0,
+            "normalize_env": True,
+            "lr": 1e-4,
+            "num_envs": 2048,
+            "hidden_layers": [512, 256]
+        }
+    })
 
     print("Loading trajectory...")
-    traj = load_gait_trajectory(None, npz_path)
-    custom_dataset_conf = CustomDatasetConf()
-    custom_dataset_conf.traj = traj
+    traj = load_gait_trajectory(npz_path)
+    custom_dataset_conf = CustomDatasetConf(traj=traj)
 
     print(f"Creating {env_name} environment...")
     env = factory.make(**env_params, custom_dataset_conf=custom_dataset_conf)
