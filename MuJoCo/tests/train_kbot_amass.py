@@ -53,6 +53,26 @@ def main(config: DictConfig):
     output_dir = HydraConfig.get().runtime.output_dir
     saved_path = PPOJax.save_agent(output_dir, agent_conf, out["agent_state"])
     print(f"Model successfully saved to {saved_path}")
+    
+    # Auto-generate info.md
+    config_name = HydraConfig.get().job.config_name
+    # Try to parse the action from the config name (e.g. conf_walk_02_02 -> walk)
+    action = "Unknown"
+    if "_" in config_name:
+        parts = config_name.split("_")
+        if len(parts) >= 2:
+            action = parts[1].capitalize() # e.g. "Walk"
+            
+    datasets = config.experiment.task_factory.params.amass_dataset_conf.rel_dataset_path
+    dataset_str = ", ".join([d.split("/")[-1].replace("_poses.npz", "") for d in datasets])
+    
+    info_path = os.path.join(output_dir, "info.md")
+    with open(info_path, "w") as f:
+        f.write(f"# {action}\n")
+        f.write(f"CMU Dataset: {dataset_str}\n")
+        f.write(f"Action: {action}ing\n")
+    print(f"Generated {info_path}")
+    
     return out
 
 
