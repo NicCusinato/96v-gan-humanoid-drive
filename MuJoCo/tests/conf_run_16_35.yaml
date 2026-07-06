@@ -31,7 +31,7 @@ experiment:
       rpos_w_sum: 0.5
       rquat_w_sum: 0.3
       rvel_w_sum: 0.1
-      energy_coeff: 0.05
+      energy_coeff: 0.0005
       regen_efficiency: 0.5
       sites_for_mimic:
         - upper_body_mimic
