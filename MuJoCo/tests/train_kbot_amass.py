@@ -67,10 +67,12 @@ def main(config: DictConfig):
     dataset_str = ", ".join([d.split("/")[-1].replace("_poses.npz", "") for d in datasets])
     
     info_path = os.path.join(output_dir, "info.md")
+    policy_type = os.environ.get("POLICY_TYPE", "Unknown")
     with open(info_path, "w") as f:
         f.write(f"# {action}\n")
         f.write(f"CMU Dataset: {dataset_str}\n")
         f.write(f"Action: {action}ing\n")
+        f.write(f"Policy: {policy_type}\n")
     print(f"Generated {info_path}")
     
     return out
