@@ -1,0 +1,808 @@
+Article
+PSTO: Learning Energy-Efﬁcient Locomotion for
+Quadruped Robots
+
+Wangshu Zhu
+
+and Andre Rosendo *
+
+Living Machines Laboratory, School of Information Science and Technology, ShanghaiTech University,
+Shanghai 201210, China; zhuwsh@shanghaitech.edu.cn
+* Correspondence: arosendo@shanghaitech.edu.cn
+
+Abstract: Energy efﬁciency is critical for the locomotion of quadruped robots. However, energy
+efﬁciency values found in simulations do not transfer adequately to the real world. To address
+this issue, we present a novel method, named Policy Search Transfer Optimization (PSTO), which
+combines deep reinforcement learning and optimization to create energy-efﬁcient locomotion for
+quadruped robots in the real world. The deep reinforcement learning and policy search process are
+performed by the TD3 algorithm and the policy is transferred to the open-loop control trajectory
+further optimized by numerical methods, and conducted on the robot in the real world. In order to
+ensure the high uniformity of the simulation results and the behavior of the hardware platform, we
+introduce and validate the accurate model in simulation including consistent size and ﬁne-tuning
+parameters. We then validate those results with real-world experiments on the quadruped robot
+Ant by executing dynamic walking gaits with different leg lengths and numbers of ampliﬁcations.
+We analyze the results and show that our methods can outperform the control method provided
+by the state-of-the-art policy search algorithm TD3 and sinusoid function on both energy efﬁciency
+and speed.
+
+Keywords: machine learning; robot locomotion; energy efﬁciency; deep reinforcement learning
+
+1. Introduction
+
+Legged locomotion [1] is essential for robots to traverse difficult environments with
+agility and grace. However, the energy efficiency of mobile robots still have room for
+improvement when performing a dynamic locomotion. Classical approaches often require
+extensive experience of the structure and massive manual tuning of parameteric choices [2,3].
+Recently, learning-based approaches, especially deep reinforcement learning methods,
+have achieved tremendous progress in controlling robots [4–7]. Policy search [8], as a
+subﬁeld of deep reinforcement learning, is widely studied in recent years. Numbers of
+policy search algorithms have appeared to improve the performance, sample efﬁciency
+while reducing the entropy in the learning process e.g., DDPG [4], TRPO [5], PPO [9],
+SAC [10], and TD3 [11]. These algorithms automate the training process and produce
+feasible locomotion for robots without much human interference.
+
+While these methods have demonstrated promising results in simulation, the transfer
+of those to the real world often performs poorly, including substandard energy efﬁciency
+and low speed, which is mainly caused by the reality gap [12]. Model discrepancies between
+the simulated and the real physical system, unmodeled dynamics, wrong simulation
+parameters, and numerical errors contribute to this gap. In three-dimensional locomotion,
+this gap will be even ampliﬁed because the subtle difference of the contact situations
+between the simulation and the real world could be magniﬁed and forked to unexpected
+consequences. With this gap, robots could conduct poor performance, increase energy
+consumption, and even damage themselves. Works on narrowing the reality gap are
+essential for machine learning on robots.
+
+Citation: Zhu, W.; Rosendo, A. PSTO:
+
+Learning Energy-Efﬁcient
+
+Locomotion for Quadruped Robots.
+
+Machines 2022, 10, 185. https://
+
+doi.org/10.3390/machines10030185
+
+Academic Editors: Dan Zhang and
+
+Marco Ceccarelli
+
+Received: 6 January 2022
+
+Accepted: 18 February 2022
+
+Published: 4 March 2022
+
+Publisher’s Note: MDPI stays neutral
+
+with regard to jurisdictional claims in
+
+published maps and institutional afﬁl-
+
+iations.
+
+Copyright: © 2022 by the authors.
+
+Licensee MDPI, Basel, Switzerland.
+
+This article is an open access article
+
+distributed under
+
+the terms and
+
+conditions of the Creative Commons
+
+Attribution (CC BY) license (https://
+
+creativecommons.org/licenses/by/
+
+4.0/).
+
+Machines 2022, 10, 185. https://doi.org/10.3390/machines10030185
+
+https://www.mdpi.com/journal/machines
+
+(cid:1)(cid:2)(cid:3)(cid:1)(cid:4)(cid:5)(cid:6)(cid:7)(cid:8)(cid:1)(cid:1)(cid:2)(cid:3)(cid:4)(cid:5)(cid:6)(cid:7)machinesMachines 2022, 10, 185
+
+2 of 13
+
+On the other hand, studies on learning directly in the real world have been conducted
+recently. In robot grasping and robot locomotion, these studies have achieved gratifying
+results [13,14]. Compared with grasping, learning in robot locomotion in the real world is
+more challenging due to the difﬁculties of automatically resetting the environments and
+continuously collecting data [15]. Additionally, a robot falling can potentially damage joints,
+legs, or torso, which will affect the learning result. Therefore, learning in simulation is more
+reasonable and efﬁcient when the robot is expensive and fragile. After that, a well-designed
+policy could be transferred to the real robot and the robot can perform locomotion learned
+from simulation, e.g., [16–18].
+
+Power is a very limited resource in robots, especially for untethered walking robots.
+Researchers have made great efforts on improving the energy efficiency of walking robots.
+Adaptive gait pattern control was introduced to establish a stable locomotion for quadrupedal
+robots while suppressing the energy consumption [19]. A gradient descent based optimal
+control approach was utilized to optimize the energy cost of a biologically inspired three-
+joint robot [20]. The inﬂuence of parameters that deﬁned the foot trajectories of legged
+robots was investigated to minimize energy consumption [21]. The pulsed control sig-
+nal outperforms the sinusoidal counterpart with higher energy efﬁciency on a hopping
+robot [22]. Some other papers studied the hardware parts e.g., structure of the robots and
+backdrivable actuator designs [23,24] to improve energy efﬁciency because energy is critical
+for the long-term behavior of robots. The quadrupedal robot that can morphologically
+adapt to different environmental conditions has also been carried out to achieve higher
+energy efﬁciency for different terrains [25].
+
+To conduct massive parameter tuning, population optimization include black-box [26]
+and Bayesian optimization [27] is an appealing approach. Bayesian optimization is often
+data efﬁcient, so it is practical to apply it on real robots directly [28,29]. However, these
+methods are challenging to scale up to high-dimensional control space especially in the
+real world.
+
+Inspired by the insights above, in this paper, we present a complete learning and
+optimizing approach for quadruped robot locomotion, named Policy Search Transfer
+Optimization (PSTO), which unites the strengths of both deep reinforcement learning and
+optimization. In our approach, the energy-efﬁcient control policy is learned in simulation
+and transferred to the real robot after optimization.
+
+There are two main challenges in our approach: learning robust control policy and
+transferring the policy to the real physical system. To learn a robust control policy, we
+adopt TD3 as the training method in simulation, which is outstanding in preventing
+overestimation and can obtain a state-of-the-art control policy within limited training time.
+To better transfer the policy to the real world, we ﬁrst unify the robot size in simulation and
+in the real world. Additionally, we improve the ﬁdelity of the physics simulator by adding
+an actuator model with appropriate gear parameters. In addition, we further optimize the
+policy from the simulation by numerical methods before conducting it on the real robot.
+We evaluate our approach on a quadruped robot Ant with two different groups of leg
+length. We show our method can generate an energy-efﬁcient locomotion method. We
+can successfully transfer controlling policies to the real robot with an accurate physics
+simulator and optimization. Furthermore, we investigate the power consumption related
+to speed on the Ant robot, which can provide a useful guideline for readers to construct
+their robots with energy-efﬁcient locomotion.
+
+2. Materials and Methods
+2.1. Physics Simulation and Robot Platform
+
+The training environment is a Pybullet [30] based simulation platform, Tianshou [31],
+in which we build a physics simulation of the Ant robot (Figure 1 Left). Pybullet solves
+the equations of motion for rigid bodies in the system while satisfying physical constraints
+involving joint limits, earth contact, and actuator models. Tianshou is a reinforcement
+
+Machines 2022, 10, 185
+
+3 of 13
+
+learning platform, which provides a fast and parallelizable framework with Python to
+build a deep reinforcement learning agent.
+
+Figure 1. The Ant robot in Pybullet simulation (Left) and in the real world (Right) are created at a
+consistent size to guarantee the performance in the real world.
+
+The robot platform we used is the Ant [29], a custom-built quadruped robot with eight
+servomotors (Figure 1 Right). Each leg of the Ant consists of two carbon ﬁber tubes and two
+servo motors controlled by an Arduino nano with an Adafruit 16-Channel PWM/Servo
+Driver. Servomotors on the hips are responsible for the movement of the legs in the
+horizontal plane, while servomotors on the knees are responsible for the movement of
+the legs in the vertical plane. Four hip joints move in the same horizontal plane to avoid
+oscillations in the region below the body. The range of each servomotor is limited to
+[−45◦, 45◦] and the control frequency is 60 Hz. The snapshots of the Ant robot walking on
+the marked arena with PSTO and leg length of 1 L (23 cm) are illustrated in Figure 2. We
+unify the robot size in simulation and in the real world to guarantee performance in the real
+world. In addition, we improve the ﬁdelity of the physics simulator by meticulously tuning
+the parameters of the robot in the simulation, including gear and motor control range.
+
+Figure 2. Snapshots of the Ant robot walking on the marked arena within 12 s with PSTO and leg
+length of 1 L (23 cm). The side length of each black square on the ground is 1 m.
+
+We measure the energy efﬁciency of the robot system calculating its cost of transport
+
+(CoT) [32], with
+
+CoT =
+
+E
+Wd
+
+(1)
+
+where E is the energy consumption of the robot system during the whole locomotion, W is
+the weight of the robot, and d is the horizontal translating distance. In this paper, we use
+
+Machines 2022, 10, 185
+
+4 of 13
+
+INA219 DC current sensors to measure the voltage and current of the system. The energy
+consumption of each time step is integral to the ﬁnal energy consumption E. Usually, we
+consider that the system with lower CoT is more energy-efﬁcient.
+
+2.2. Deep Reinforcement Learning
+
+We consider reinforcement learning (RL) as a process running by a Markov decision
+process (MDP). An MDP is deﬁned by the tuple (S, A, p, ρ0, r, γ), where S ⊆ Rds is a ﬁnite
+set of states of the agent and A ⊆ RdA is a ﬁnite set of actions which can be conducted
+by the agent. p(st+1 | st, at) denotes the probability of transfer from state st to st+1 given
+the action conducted by the agent at time step t. p(st+1 | st, at) is usually unknown in
+high-dimensional control tasks, but we can sample from p(st+1 | st, at) in simulation or
+from a physical system in the real world. ρ0 denotes the initial state distribution of the
+agent, and r(st, at) denotes the valued reward in state st when the agent executes action
+at. The last γ ∈ (0, 1) is the discount factor to indicate that recent rewards count more. A
+policy in RL is deﬁned as the map (or function) from the state space to the action space. In
+policy search, the goal is to ﬁnd a optimal policy π that maximizes the long-term expected
+reward (accumulated reward) [5],
+
+where
+
+η(π) = E
+
+ρπ (s)π(a|s)[Qπ(s, a)]
+
+Qπ(st, at) = Est+1,at+1,...
+
+(cid:35)
+
+γtr(st, at)
+
+(cid:34) T
+∑
+t=0
+
+(2)
+
+(3)
+
+in which ρπ(s) is the state distribution under π, i.e., the probability of visiting state s under
+π. Qπ(st, at) is called state–action value function which evaluate the state–action pair.
+st+1 ∼ p(st+1 | st, at), at ∼ π(at | st) and T is the terminal time step. In recent works, the
+policy usually adopts the deep neural network structure (e.g., [4,5,9]), which simulates the
+network of neurons of human beings to some extent and can conduct backpropagation to
+update the network.
+
+The original ant model in Pybullet has 111 dimensions of observations, including
+positions of the torso in Cartesian coordinates, orientation, joint angles, 3D velocities, angu-
+lar velocities, joint velocities, and external forces. However, we exclude the x, y positions
+in Cartesian coordinates and external forces to reduce the dimension of observation to
+27 for faster training. We do not exclude the z-position because this value is critical for the
+Ant to know whether it will fall and how to behave in high and low positions. We ﬁnd
+that our observation space is sufﬁcient to learn the walking policy for the Ant. For the
+action space, we select the position control mode of the actuators for better transferring
+to Arduino-controlled servomotors. The reward function includes alive reward, moving
+progress, electricity cost, joints at limit cost, and feet collision cost, which encourages the
+robot to move faster to the target position while avoiding high energy consumption and
+collisions as shown in:
+
+r(st, at) = ralive + v f wd − ce − climit − ccollision
+
+(4)
+
+where ralive is the alive reward which is 1 when the distance between the body of the robot
+and ground is larger than 0.05 m, and otherwise it is −1 at each time step. v f wd is the
+forward velocity of the robot. ce is the electricity cost of the robot. climit is the joints at limit
+cost which discourages stuck joints. ccollision is the feet collision cost that prevents the robot
+from smashing its feet into itself.
+
+We adopt TD3 [11] as our training method, which applies clipped double Q-learning,
+delayed update of target and policy networks, and target policy smoothing on DDPG [4] to
+prevent the overestimation of the value function. The learning curves are shown in Figure 3
+and we will further discuss the training detail in Section 2.4.
+
+Machines 2022, 10, 185
+
+5 of 13
+
+Figure 3. Reward on each time step on a 1 L (23 cm) and 0.6 L (13.8 cm) leg length simulation. The
+training process shows that longer legs reach higher rewards in the later learning stages.
+
+2.3. Trajectory Optimization
+
+The direct transfer from the simulation to the real world is running the policy learned
+from the simulation on the real robot [28]. However, in this control scheme, the sensor
+provides the observations to the policy and the policy gives back the action (control
+command) to the actuators, which could cause large latency between the computed action
+and the current state. In addition, the robot needs to have a system to perform the neural
+network for each time step, which could waste some computing sources. An alternative
+to conducting the transfer is generating a feasible trajectory by the simulation for the real
+robots. Trajectory control is widely utilized in industrial robots, which guarantee the safety
+and stability of robots.
+
+With the robust policy in the simulation, we can produce a simulation trajectory for
+each joint of the Ant by averaging several trials as shown in Figure 4. In this paper, we
+average 20 trials to provide the original trajectory. However, even considering the power
+penalty in the simulation, there is the reality gap between the simulation and the real world,
+which is mainly caused by the model discrepancies between the simulated and the real
+physical system. In addition, the highly dynamic motion also increases the uncertainty
+of the robot during locomotion. The robot can only move sub-optimally along with the
+original trajectory.
+
+One insight on the original trajectory is that it has a large bias. The possible reason for
+that is that each isolated angle value does not consider the nearby values in the recent time
+steps. Besides the average method, we adopt polynomial regression to further address this
+problem. Polynomial regression is a widely used regression method with one independent
+variable which can be expressed as:
+
+qi = β0 + β0xi + β2x2
+
+i + ... + βkxk
+
+i + ei
+
+(5)
+
+where qi is the output independent variable, which is the optimized trajectory in this paper,
+and xi is the input variable, which is the original trajectory. Each βk is the slope of the
+regression surface with respect to variable xi, the random error of the ith case is ei, and k
+is the degree (order) of the polynomial. In this paper, we choose k = 10 as the regression
+degree to provide smooth trajectories while avoiding overﬁtting, as shown in Figure 4. In
+
+050,000100,000150,000200,000250,000Timesteps250500750100012501500175020002250Reward1L0.6LMachines 2022, 10, 185
+
+6 of 13
+
+addition, we amplify the trajectories to investigate the energy efﬁciency of the robot, which
+will be further discussed in Section 2.4.
+
+Figure 4. The blue dots are the angle trajectories of eight joints over time (s) on a simulation. The
+red lines are the trajectories acquired from the optimization, and each loop takes 4 s. Simulated
+trajectories have a larger variance, while the optimized ones are smoother, which leads to a higher
+energy efﬁciency on the real robot. We later compare this smoothness with sinusoidal curves.
+
+With the aforementioned insights in mind, we propose a novel approach named Policy
+Search Transfer Optimization (PSTO), as shown in Algorithm 1, which integrates deep
+reinforcement learning and optimization to provide a energy-efﬁcient control method for
+real robots.
+
+Algorithm 1 PSTO with TD3.
+
+Input: The robot model in simulation
+1: Initialize critic networks Qθ1, Qθ2, and actor network πφ with random parameters θ1,
+
+1 ← θ1 , θ(cid:48)
+
+2 ← θ2, φ(cid:48) ← φ and replay buffer B
+
+θ2, φ
+
+2: Initialize target networks θ(cid:48)
+3: for t = 0 → T do
+4:
+5:
+
+Select action with exploration noise a ∼ π(s) + (cid:101)
+Observe reward r and new state s
+Store transition tuple (s, a, r, s(cid:48)) in B
+Update critics parameters θ1, θ2 by TD3
+Delayed update policy networks φ and target networks θ(cid:48)
+
+6:
+7:
+8:
+
+d == 0
+9: end for
+10: Record the trajectory qi for each joint from the simulation
+11: Optimize each trajectory qi by polynomial regression and ampliﬁcation
+Output: Optimized trajectory for the real robot
+
+1, θ(cid:48)
+
+2, φ(cid:48) when t mod
+
+−2.0−1.5−1.0−0.50.00.51.01.52.00.40.60.8Hip 1Optimized trajectorySimulation trajectory−2.0−1.5−1.0−0.50.00.51.01.52.0−0.8−0.6−0.4Ankle 1−2.0−1.5−1.0−0.50.00.51.01.52.0−0.50.00.5Hip 2−2.0−1.5−1.0−0.50.00.51.01.52.0−0.8−0.7−0.6−0.5Ankle 2−2.0−1.5−1.0−0.50.00.51.01.52.0−0.50.00.5Hip 3−2.0−1.5−1.0−0.50.00.51.01.52.0−0.9−0.8−0.7−0.6−0.5Ankle 3−2.0−1.5−1.0−0.50.00.51.01.52.0−0.7−0.6−0.5−0.4−0.3Hip 4−2.0−1.5−1.0−0.50.00.51.01.52.0−1.0−0.8−0.6Ankle 4Machines 2022, 10, 185
+
+7 of 13
+
+2.4. Experiment Setup
+
+We present experiments to assess the performance of our proposed algorithm on the
+Ant robot with two groups of leg length and three methods. We compare our method with
+control methods obtained from the aforementioned state-of-the-art TD3 algorithm and the
+well-known sinusoid control function to evaluate the energy efﬁciency of different methods.
+In addition, for each trajectory from the method, we conduct eight different amplitudes
+ranging from 1.0 × to 2.4× to further investigate the energy efﬁciency of different gaits.
+
+We ﬁrst conduct the training process in the Pybullet-based training platform Tianshou
+on an Ant model with 1 L (23 cm) leg length and 0.6 L (13.8 cm) leg length. We create a
+new Ant model with consistent leg length, gear, and motor control range with the real
+robot. Our training networks include two actor networks and two critic networks as
+recommended in TD3. The actor and critic networks have three fully connected hidden
+layers and 128 neurons per layer, and the adopted activation function is ReLU function [33].
+The algorithm runs with ten random seeds, 100 epochs, and 2500 steps per epoch using
+ADAM optimizer [34]. The other training hyperparameters are shown in Table 1 for more
+details, and the learning curves are shown in Figure 3. The 1 L leg length will achieve a
+higher reward than 0.6 L leg length after about 100,000 time steps though 0.6 L leg length
+has a slightly higher reward around 50,000 time steps. The training time is about 4.8 h on
+the DELL OptiPlex 7060 series desktop with i7-8700 processor, 12 processor threads, and
+32 GB internal memory.
+
+Table 1. Hyperparameter of the training environment.
+
+Hyperparameter
+
+buffer size
+actor learning rate
+critic learning rate
+γ
+tau
+update actor frequency
+policy noise
+exploration noise
+epoch
+step per epoch
+collect per step
+batch size
+hidden layer number
+hidden neurons per layer
+training number
+test number
+joint gear
+joint control range
+
+Value
+
+20,000
+0.0003
+0.001
+0.99
+0.005
+2
+0.2
+0.1
+2500
+100
+10
+128
+3
+128
+8
+50
+45
+−45∼45◦
+
+Among the ten random seeds, we choose the policy with the best reward to provide
+trajectories in simulation. The policy will perform a walking gait, and we average 20 trials
+to generate eight original trajectories as the blue dots in Figure 4 for four hip actuators
+and four ankle actuators. After that, we apply a 10-degree polynomial regression method
+from sklearn library on the trajectories to produce smoother trajectories for the real robot.
+The midpoints of the trajectory of hip 2 and hip 3 are near 0 while other joints are not,
+which indicates that we can obtain asymmetric trajectories to operate the robot and most of
+the trajectories have subtle phase differences from the training process. Our optimization
+method can also change the ﬂat part of the trajectory to some curves that can provide more
+energy-efﬁcient locomotion for the robot.
+
+The sinusoid function is widely used in open-loop control, offering advantages in
+simplicity and robustness. We also choose the sinusoid control function obtained from
+Bayesian optimization [29] as one of the comparisons of our method. In addition, we
+
+Machines 2022, 10, 185
+
+8 of 13
+
+increase the amplitude of the trajectories from three methods, ranging from 1.0× to 2.4×,
+to evaluate the energy efﬁciency of the robot.
+
+3. Results
+
+In this section, we demonstrate the comparison of original, sinusoid, and PSTO
+functions on energy efﬁciency and speed in real-world experiments. Figure 5 presents a
+comparison between three methods on our 1 L leg length robot moving at a 0.12 m/s speed.
+The average power consumption per step of our proposed PSTO method is 0.776 Watts,
+while the original and sinusoidal trajectories consumed 0.837 and 0.802 Watts, respectively.
+In this initial real-world experiment, our proposed method could save 7% energy at the
+0.12 m/s speed compared to the original and sinusoidal trajectories.
+
+Figure 5. The comparison of power consumption per time step of three methods in the real world.
+PSTO has a lower average power consumption than both original and sinusoid functions when the
+speed is 0.12 m/s and leg length is 1 L.
+
+For each trial, the running time is 12 s, which is reasonable for the robot to perform
+several gait cycles. Figure 6 shows the CoT related to ampliﬁcation ranging from 1.0× to
+2.4× with the interval of 0.2, with both 1 L and 0.6 L leg lengths. The best CoT from PSTO
+reaches 0.595 when the ampliﬁcation is 2.0, which is 14% lower than the other two methods
+with the same ampliﬁcation and the leg length of 1 L in consideration.
+
+While the sinusoid method shows a high efﬁciency at low ampliﬁcations when short
+legs are used, PSTO outperforms all methods with mid to high ampliﬁcation. PSTO can
+save up to 38% energy when compared to the original method and 26% if compared to the
+sinusoid method with a motion range ampliﬁcation of 2.2×.
+
+Figure 7 shows speed changes in relation to the adopted ampliﬁcation. The highest
+speed reached by PSTO is 0.139 m/s for both 1 L leg length and 0.6 L leg length, which
+is 39% higher than the other two methods for 1 L leg length and 18% higher for 0.6 L
+leg length. The highest speed appears with an ampliﬁcation of 2.0× for 1 L leg length
+while the ampliﬁcation is 2.4× for 0.6 L. A possible reason for the similarity in maximum
+speed for 1 L and 0.6 L is that the larger ampliﬁcation leads to an unstable locomotion with
+longer legs due to the higher center of mass. This instability causes excessive slipping,
+which eventually decreases the speed of the robot. Since the original trajectory has a larger
+variance, which would exceed the control range of the actuator with a large ampliﬁcation,
+the robot can not conduct the experiment with high ampliﬁcation following the original
+trajectory. Independent of ampliﬁcation, the best CoT and speed reached by those three
+methods can be seen in details in Table 2. PSTO can achieve a 15% lower CoT and 10%
+higher speed than the original and sinusoid methods for 1 L leg length, and it can reach a
+26% lower CoT and 30% higher speed than the other two methods with 0.6 L leg length.
+
+00.20.40.60.811.21.41471013161922252831343740434649525558616467707376798285Power [W]Time [0.1s]originalsinusoidPSTOMachines 2022, 10, 185
+
+9 of 13
+
+Figure 6. CoT related to ampliﬁcation for original trajectory, sinusoid trajectory, and PSTO trajectory
+for 1 L leg length (top) and 0.6 L leg length (bottom) in the real-world experiments. The ampliﬁcation
+range is from 1.0 to 2.4. The curves are the 2nd order polynomial regression for the tendency of three
+methods. PSTO can achieve lower CoT cost than the other two methods for different ampliﬁcations
+when the leg length is 1 L. For 0.6 L leg length, PSTO has competitive energy efﬁciency among the
+three methods when the ampliﬁcation is low. With the increasing ampliﬁcation, PSTO can achieve
+outstanding energy efﬁciency. Notice that the original trajectory has a larger variance which will
+exceed the control range of the actuator with a large ampliﬁcation, so the robot can not conduct the
+full experiment following the original trajectory.
+
+Table 2. Comparisons of original method, sinusoid method and PSTO with 1 L leg length and 0.6 L
+leg length in the real-world experiments.
+
+Method
+
+1 L original
+1 L sinusoid
+1 L PSTO
+0.6 L original
+0.6 L sinusoid
+0.6 L PSTO
+
+CoT
+
+0.688
+0.639
+0.595
+0.839
+0.764
+0.563
+
+Speed [m/s]
+
+0.127
+0.127
+0.139
+0.096
+0.104
+0.139
+
+1.01.21.41.61.82.02.22.4amplification0.60.81.01.21.41.6CoTmethod1L original1L sinusoid1L PSTO1.01.21.41.61.82.02.22.4amplification0.500.751.001.251.501.752.002.25CoTmethod0.6L original0.6L sinusoid0.6L PSTOMachines 2022, 10, 185
+
+10 of 13
+
+Figure 7. Speed [m/s] related to ampliﬁcation for the original, sinusoid, and PSTO trajectories for
+1 L leg length (top) and 0.6 L leg length (bottom) in the real-world experiments. The ampliﬁcation
+range is from 1.0 to 2.4. The curves are the 2nd order polynomial regression for the tendency of three
+methods. PSTO can achieve a higher speed than the other two methods for different ampliﬁcations
+for both 1 L and 0.6 L leg length. Notice that the original trajectory has a larger variance which will
+exceed the control range of the actuator with a large ampliﬁcation, so the robot can not conduct the
+full experiment following the original trajectory.
+
+In addition, we analyze the CoT in relation to speed, as shown in Figure 8, which
+could be a reasonable measurement of energy efﬁciency. During low-speed locomotion, the
+sinusoid method has better performance than the other two methods as it shows a lower
+CoT with the same speed for both leg lengths. However, PSTO starts to outperform the
+sinusoid method when the robot reaches higher speeds. PSTO can achieve a 20% higher
+energy efﬁciency than the sinusoid method and a 30% higher efﬁciency when compared to
+the original method with speeds above 0.12 m/s.
+
+The crossing point of PSTO over sinusoid appeared earlier when the leg length is
+0.6 L. The possible reason for that is that PSTO works better when the system needs a more
+meticulous control method due to the optimization process. We also observe that most of
+the tendency curves appear to converge with the increasing speed, which means that the
+speed limitation of the system could be about 0.139 m/s.
+
+1.01.21.41.61.82.02.22.4amplification0.040.060.080.100.120.14speed [m/s]method1L original1L sinusoid1L PSTO1.01.21.41.61.82.02.22.4amplification0.020.040.060.080.100.120.14speed [m/s]method0.6L original0.6L sinusoid0.6L PSTOMachines 2022, 10, 185
+
+11 of 13
+
+(a)
+
+(b)
+
+Figure 8. CoT related to speed [m/s] for original trajectory, sinusoid trajectory, and PSTO with
+trajectory ampliﬁcation from 1.0 to 2.4 for 1 L leg length (a) and 0.6 L leg length (b) in the real-world
+experiments. The curves are the 2nd order polynomial regression for the tendency of three methods.
+At low speed, the sinusoid method is more competitive with low CoT than other methods while
+PSTO can achieve higher speed and lower CoT with the increasing ampliﬁcation for both 1 L and
+0.6 L leg length.
+
+4. Discussion
+
+Compared to a previously published hopping robot [22], our Ant robot has a higher
+CoT with the same speed, which could be caused by the non-backdrivable servomotors,
+while the hopping robot is equipped with parallel elastic actuators. It is also very likely
+that the elastic energy stored at the springs helps their system move efﬁciently, but the
+detrimental effects of that previously proposed actuation can be the lack of control, sudden
+speed changes, and even directional changes. Backdrivable servomotors could further
+
+0.020.040.060.080.100.120.14speed [m/s]0.60.81.01.21.41.6CoTmethod1L original1L sinusoid1L PSTO0.020.040.060.080.100.120.14speed [m/s]0.60.81.01.21.41.61.82.02.2CoTmethod0.6L original0.6L sinusoid0.6L PSTOMachines 2022, 10, 185
+
+12 of 13
+
+improve the energy efﬁciency of leg robots while the control method should be more subtle
+and robust.
+
+Other than training directly in the real world [29], our method can avoid the potential
+damage to the robots during the training process which is critical for valuable robots.
+Additionally, parallel learning with multiple agents and environments can greatly accelerate
+the training in the simulation.
+
+However, the legged robots are not as energy-efﬁcient as the wheeled robots in gen-
+eral [32], due to the lower friction of the wheels. On the other hand, the morphology of
+robots can contribute to the energy efﬁciency to a great extent [19,25], so we will apply
+our methods on robots with different morphology to further improve the energy efﬁciency
+of robots.
+
+5. Conclusions
+
+In this paper, we propose a novel method to learn and transfer an energy-efﬁcient
+control method for a quadruped robot in the real world by deep reinforcement learning
+and optimization. We use the TD3 algorithm to train the policy for safety and learning efﬁ-
+ciency and optimize the control trajectories for energy-efﬁcient locomotion by polynomial
+regression. We compare our method with the sinusoid method and to trajectories obtained
+directly from simulation on both energy consumption and speed. We ﬁnd that our method
+can outperform the other two methods on the real robot for different groups of leg length.
+Such ﬁndings will contribute to the study on the algorithm design of machine learning,
+structure design, including length of legs and control range of joints, and locomotion
+of robots.
+
+While in this paper we focused on the robot Ant, in the future, we will consider other
+types of robots, which will further expand the applicability of this method. We will also
+study the relationship between the terrain and structure of robots on energy efﬁciency and
+speed because the ability for robots to traverse difﬁcult environments with energy-efﬁciency
+and agility is crucial in the real world. Although we study the relationship between the
+amplitude of the trajectory and the performance of the robot with different leg lengths,
+there are still many parameters remaining to be explored in the framework.
+
+Author Contributions: Conceptualization, W.Z. and A.R.; Data Curation, W.Z.; Funding Acquisition,
+A.R.; Investigation, W.Z.; Methodology, W.Z.; Software, W.Z.; Supervision, A.R.; Writing—Original
+Draft, W.Z.; Writing—Review and Editing, A.R. All authors have read and agreed to the published
+version of the manuscript.
+
+Funding: This work was funded by the National Natural Science Foundation of China Grant No.
+61850410527 and the Shanghai Young Oriental Scholars Grant No. 0830000081.
+
+Institutional Review Board Statement: Not applicable.
+
+Informed Consent Statement: Not applicable.
+
+Data Availability Statement: The repository with the code materials and the data required to repro-
+duce the results are available at https://github.com/zhuwangshu/PSTO (accessed on
+11 December 2021).
+
+Conﬂicts of Interest: The authors declare no conﬂict of interest.
+
+References
+
+1.
+2.
+
+3.
+
+4.
+
+5.
+
+Raibert, M.H. Legged Robots that Balance; Massachusetts Institute of Technology: Cambridge, MA, USA, 1986; ISBN 0-262-18117-7.
+Pratt, J.; Pratt, G. Intuitive control of a planar bipedal walking robot. In Proceedings of the 1998 IEEE International Conference on
+Robotics and Automation (Cat. No.98CH36146), Leuven, Belgium, 20 May 1998; Volume 3, pp. 2014–2021.
+Kolter, J.Z.; Rodgers, M.P.; Ng, A.Y. A control architecture for quadruped locomotion over rough terrain. In Proceedings of the
+2008 IEEE International Conference on Robotics and Automation, Pasadena, CA, USA, 19–23 May 2008; pp. 811–818.
+Lillicrap, T.P.; Hunt, J.J.; Pritzel, A.; Heess, N.; Erez, T.; Tassa, Y.; Wierstra, D. Continuous control with deep reinforcement
+learning. arXiv 2015, arXiv:1509.02971.
+Schulman, J.; Levine, S.; Abbeel, P.; Jordan, M.; Moritz, P. Trust region policy optimization. In Proceedings of the International
+Conference on Machine Learning, Lille, France, 6–11 July 2015; pp. 1889–1897.
+
+Machines 2022, 10, 185
+
+13 of 13
+
+6.
+
+7.
+
+8.
+
+9.
+
+Duan, Y.; Chen, X.; Houthooft, R.; Schulman, J.; Abbeel, P. Benchmarking deep reinforcement learning for continuous control. In
+Proceedings of the International Conference on Machine Learning, New York, NY, USA, 19–24 June 2016; pp. 1329–1338.
+Bing, Z.; Lemke, C.; Cheng, L.; Huang, K.; Knoll, A. Energy-efﬁcient and damage-recovery slithering gait design for a snake-like
+robot based on reinforcement learning and inverse reinforcement learning. Neural Netw. 2020, 129, 323–333. [CrossRef] [PubMed]
+Peters, J.; Schaal, S. Reinforcement learning of motor skills with policy gradients. Neural Netw.
+2008, 21, 682–697.
+[CrossRef] [PubMed]
+Schulman, J.; Wolski, F.; Dhariwal, P.; Radford, A.; Klimov, O. Proximal policy optimization algorithms.
+arXiv:1707.06347.
+
+arXiv 2017,
+
+10. Haarnoja, T.; Zhou, A.; Hartikainen, K.; Tucker, G.; Ha, S.; Tan, J.; Levine, S. Soft actor-critic algorithms and applications. arXiv
+
+11.
+
+2018, arXiv:1812.05905.
+Fujimoto, S.; Hoof, H.; Meger, D. Addressing function approximation error in actor-critic methods. In Proceedings of the
+International Conference on Machine Learning, Stockholm, Sweden, 10–15 July 2018; pp. 1587–1596.
+
+12. Boeing, A.; Bräunl, T. Leveraging multiple simulators for crossing the reality gap. In Proceedings of the 2012 12th International
+
+Conference on Control Automation Robotics Vision (ICARCV), Guangzhou, China, 5–7 December 2012; pp. 1113–1119.
+
+13. Levine, S.; Pastor, P.; Krizhevsky, A.; Ibarz, J.; Quillen, D. Learning hand-eye coordination for robotic grasping with deep learning
+
+and large-scale data collection. Int. J. Robot. Res. 2018, 37, 421–436. [CrossRef]
+
+14. Haarnoja, T.; Ha, S.; Zhou, A.; Tan, J.; Tucker, G.; Levine, S. Learning to Walk Via Deep Reinforcement Learning. arXiv 2018,
+
+arXiv:1812.11103.
+
+15. Rosendo, A.; Von Atzigen, M.; Iida, F. The trade-off between morphology and control in the co-optimized design of robots. PLoS
+
+ONE 2017, 12, e0186107. [CrossRef] [PubMed]
+
+16. Tan, J.; Zhang, T.; Coumans, E.; Iscen, A.; Bai, Y.; Hafner, D.; Vanhoucke, V. Sim-to-Real: Learning Agile Locomotion for
+
+Quadruped Robots. arXiv 2018, arXiv:1804.10332.
+
+17. Li, T.; Geyer, H.; Atkeson, C.G.; Rai, A. Using deep reinforcement learning to learn high-level policies on the atrias biped.
+In Proceedings of the 2019 International Conference on Robotics and Automation, Montreal, QC, Canada, 20–24 May 2019;
+pp. 263–269.
+
+18. Nagabandi, A.; Clavera, I.; Liu, S.; Fearing, R.S.; Abbeel, P.; Levine, S.; Finn, C. Learning to Adapt in Dynamic, Real-World Envi-
+ronments through Meta-Reinforcement Learning. In Proceedings of the International Conference on Learning Representations,
+Vancouver, BC, Canada, 30 April–3 May 2018.
+
+19. Tsujita, K.; Tsuchiya, K.; Onat, A. Adaptive gait pattern control of a quadruped locomotion robot. In Proceedings of the 2001
+IEEE/RSJ International Conference on Intelligent Robots and Systems. Expanding the Societal Role of Robotics in the Next,
+Millennium (Cat. No. 01CH37180), Maui, HI, USA, 29 October–3 November 2001; Volume 4, pp. 2318–2325.
+
+20. Erden, M.S. Optimal protraction of a biologically inspired robot leg. J. Intell. Robot. Syst. 2011, 64, 301–322. [CrossRef]
+21. de Santos, P.G.; Garcia, E.; Ponticelli, R.; Armada, M. Minimizing energy consumption in hexapod robots. Adv. Robot. 2009, 23,
+
+681–704. [CrossRef]
+
+22. Hunt, J.; Giardina, F.; Rosendo, A.; Iida, F. Improving efﬁciency for an open-loop-controlled locomotion with a pulsed actuation.
+
+23.
+
+IEEE/ASME Trans. Mechatron. 2016, 21, 1581–1591. [CrossRef]
+Sulzer, J.S.; Roiz, R.A.; Peshkin, M.A.; Patton, J.L. A highly backdrivable, lightweight knee actuator for investigating gait in stroke.
+IEEE Trans. Robot. 2009, 25, 539–548. [CrossRef] [PubMed]
+
+24. Wensing, P.M.; Wang, A.; Seok, S.; Otten, D.; Lang, J.; Kim, S. Proprioceptive actuator design in the mit cheetah: Impact mitigation
+
+and high-bandwidth physical interaction for dynamic legged robots. IEEE Trans. Robot. 2017, 33, 509–522. [CrossRef]
+
+25. Nygaard, T.F.; Martin, C.P.; Torresen, J.; Glette, K.; Howard, D. Real-world embodied AI through a morphologically adaptive
+
+quadruped robot. Nat. Mach. Intell. 2021, 3, 410–419. [CrossRef]
+
+26. Choromanski, K.; Iscen, A.; Sindhwani, V.; Tan, J.; Coumans, E. Optimizing simulations with noise-tolerant structured exploration.
+In Proceedings of the 2018 IEEE International Conference on Robotics and Automation (ICRA), Brisbane, Australia, 21–25 May
+2018; pp. 2970–2977.
+
+27. Cully, A.; Clune, J.; Tarapore, D.; Mouret, J.B. Robots that can adapt like animals. Nature 2015, 521, 503–507. [CrossRef] [PubMed]
+28. Calandra, R.; Seyfarth, A.; Peters, J.; Deisenroth, M.P. Bayesian optimization for learning gaits under uncertainty. Ann. Math.
+
+Artif. Intell. 2015, 76, 5–23. [CrossRef]
+
+29. Zhu, J.; Li, S.; Wang, Z.; Rosendo, A. Bayesian optimization of a quadruped robot during three-dimensional locomotion. In
+
+Proceedings of the Conference on Biomimetic and Biohybrid Systems, Nara, Japan, 9–12 July 2019; pp. 295–306.
+
+30. Coumans, E.; Bai, Y. Pybullet, a Python Module for Physics Simulation in Robotics, Games and Machine Learning. 2016–2017.
+
+Available online: http://pybullet.org (accessed on 2 February 2021).
+
+31. Weng, J.; Chen, H.; Duburcq, A.; You, K.; Zhang, M.; Yan, D.; Su, H.; Zhu, J. GitHub Repository. 2020. Available online:
+
+https://github.com/thu-ml/tianshou (accessed on 2 February 2021).
+
+32. Tucker, V.A. The Energetic Cost of Moving About: Walking and running are extremely inefﬁcient forms of locomotion. Much
+
+greater efﬁciency is achieved by birds, ﬁsh—And bicyclists. Am. Sci. 1975, 63, 413–419. [PubMed]
+
+33. Glorot, X.; Bordes, A.; Bengio, Y. Deep sparse rectiﬁer neural networks. In Proceedings of the Fourteenth International Conference
+
+on Artiﬁcial Intelligence and Statistics, Fort Lauderdale, FL, USA, 11–13 April 2011; pp. 315–323.
+
+34. Kingma, D.P.; Ba, J. Adam: A method for stochastic optimization. arXiv 2014, arXiv:1412.6980.
+
+

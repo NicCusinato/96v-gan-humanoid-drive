@@ -20,6 +20,8 @@ from .fourier_gr1t2 import FourierGR1T2
 from .fourier_gr1t2_mjx import MjxFourierGR1T2
 from .kbot_v2 import KBotV2
 from .kbot_v2_mjx import MjxKBotV2
+from .kbot_legs_v2 import KBotLegsV2
+from .kbot_legs_v2_mjx import MjxKBotLegsV2
 from .skeletons import (SkeletonTorque, MjxSkeletonTorque, HumanoidTorque, SkeletonMuscle, MjxSkeletonMuscle,
                         HumanoidMuscle)
 
@@ -45,6 +47,8 @@ FourierGR1T2.register()
 MjxFourierGR1T2.register()
 KBotV2.register()
 MjxKBotV2.register()
+KBotLegsV2.register()
+MjxKBotLegsV2.register()
 SkeletonTorque.register()
 MjxSkeletonTorque.register()
 SkeletonMuscle.register()

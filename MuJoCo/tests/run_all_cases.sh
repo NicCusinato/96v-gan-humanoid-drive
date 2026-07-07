@@ -15,9 +15,6 @@ python tests/train_kbot_amass.py --config-name=conf_walk_07_08
 echo "Training Run 09_04..."
 python tests/train_kbot_amass.py --config-name=conf_run_09_04
 
-echo "Training Run 16_57..."
-python tests/train_kbot_amass.py --config-name=conf_run_16_57
-
 echo "Training Run 38_03..."
 python tests/train_kbot_amass.py --config-name=conf_run_38_03
 

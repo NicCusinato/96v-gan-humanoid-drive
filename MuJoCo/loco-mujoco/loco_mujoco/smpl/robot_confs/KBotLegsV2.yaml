@@ -1,0 +1,44 @@
+# Inherits from defaults.yaml
+
+# Define reusable variables/defaults
+default_constraint_type: &weld_constraint mjEQ_WELD # Define the anchor here
+default_torque_scale: &default_torque 1.0 # Define the torque anchor here
+
+# Map mimic sites from kbot_legs_v2.xml to SMPL joint names
+site_joint_matches:
+  pelvis_mimic:
+    smpl_joint: Pelvis
+    equality_constraint_type: *weld_constraint # Use alias
+    torque_scale: *default_torque # Use alias
+  left_hip_mimic:
+    smpl_joint: L_Hip
+    equality_constraint_type: *weld_constraint # Use alias
+    torque_scale: *default_torque # Use alias
+  left_knee_mimic:
+    smpl_joint: L_Knee
+    equality_constraint_type: *weld_constraint # Use alias
+    torque_scale: 10 # Use alias
+  left_foot_mimic:
+    smpl_joint: L_Ankle
+    equality_constraint_type: *weld_constraint # Use alias
+    torque_scale: 10 # Use alias
+  right_hip_mimic:
+    smpl_joint: R_Hip
+    equality_constraint_type: *weld_constraint # Use alias
+    torque_scale: *default_torque # Use alias
+  right_knee_mimic:
+    smpl_joint: R_Knee
+    equality_constraint_type: *weld_constraint # Use alias
+    torque_scale: 10 # Use alias
+  right_foot_mimic:
+    smpl_joint: R_Ankle
+    equality_constraint_type: *weld_constraint # Use alias
+    torque_scale: 10 # Use alias
+
+robot_pose_modifier: []
+
+optimization_params:
+  z_offset_feet: -0.0
+  disable_collision: true
+
+env_params: {}

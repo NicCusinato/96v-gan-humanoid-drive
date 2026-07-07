@@ -7,7 +7,6 @@ TRIALS = {
     "walk_07_12":     ("CMU/07/07_12_poses.npz",  150_000_000),
     "walk_07_08":     ("CMU/07/07_08_poses.npz",  150_000_000),
     "run_09_04":      ("CMU/09/09_04_poses.npz",  250_000_000),
-    "run_16_57":      ("CMU/16/16_57_poses.npz",  250_000_000),
     "run_38_03":      ("CMU/38/38_03_poses.npz",  250_000_000),
     "run_16_35":      ("CMU/16/16_35_poses.npz",  250_000_000),
     "jump_13_13":     ("CMU/13/13_13_poses.npz",  400_000_000),
@@ -55,6 +54,11 @@ for name, (path, steps) in TRIALS.items():
         # Force debug: false for cleaner logs during long runs
         if "debug: true" in line:
             out_lines.append("  debug: false")
+            continue
+
+        # Bump num_envs to use more VRAM
+        if line.startswith("  num_envs:"):
+            out_lines.append("  num_envs: 2560")
             continue
 
         out_lines.append(line)

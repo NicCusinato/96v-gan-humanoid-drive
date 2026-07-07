@@ -1,23 +1,15 @@
-defaults:
-  - override hydra/job_logging: default
-  - override hydra/launcher: basic
-
 wandb:
-  project: "loco-mujoco-kbot"
-
+  project: loco-mujoco-kbot
 experiment:
   task_factory:
     name: ImitationFactory
     params:
       amass_dataset_conf:
-        # We will use just a few CMU datasets for testing. 
-        # These will be automatically retargeted using KBot's smpl config.
         rel_dataset_path:
-          - "CMU/16/16_57_poses.npz"
-
+        - CMU/16/16_35_poses.npz
   env_params:
-    env_name: MjxKBotV2
-    headless: True
+    env_name: MjxKBotLegsV2
+    headless: true
     horizon: 1000
     goal_type: GoalTrajMimic
     goal_params:
@@ -32,16 +24,16 @@ experiment:
       rquat_w_sum: 0.3
       rvel_w_sum: 0.1
       sites_for_mimic:
-        - upper_body_mimic
-        - pelvis_mimic
-        - left_foot_mimic
-        - right_foot_mimic
-        - head_mimic
-
-  # PPOJax hyperparameters
-  hidden_layers: [512, 256]
-  lr: 1e-4
-  num_envs: 1536
+      - upper_body_mimic
+      - pelvis_mimic
+      - left_foot_mimic
+      - right_foot_mimic
+      - head_mimic
+  hidden_layers:
+  - 512
+  - 256
+  lr: 0.0001
+  num_envs: 2560
   num_steps: 200
   total_timesteps: 250000000
   update_epochs: 4
@@ -67,50 +59,29 @@ experiment:
     num_steps: 100
     num_envs: 100
     num: 10
-
 control_config:
   position_control:
     control_type: PDControl
     control_params:
       p_gain:
-        - 300
-        - 100
-        - 100
-        - 100
-        - 100
-        - 300
-        - 100
-        - 100
-        - 100
-        - 100
-        - 200
-        - 200
-        - 200
-        - 300
-        - 40 
-        - 200
-        - 200
-        - 200
-        - 300
-        - 40 
+      - 200
+      - 200
+      - 200
+      - 300
+      - 40
+      - 200
+      - 200
+      - 200
+      - 300
+      - 40
       d_gain:
-        - 6 
-        - 2 
-        - 2 
-        - 2 
-        - 2 
-        - 6
-        - 2 
-        - 2 
-        - 2 
-        - 2 
-        - 5 
-        - 5 
-        - 5 
-        - 6 
-        - 2 
-        - 5 
-        - 5 
-        - 5 
-        - 6 
-        - 2 
+      - 5
+      - 5
+      - 5
+      - 6
+      - 2
+      - 5
+      - 5
+      - 5
+      - 6
+      - 2

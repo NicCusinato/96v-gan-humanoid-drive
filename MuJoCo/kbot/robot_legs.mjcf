@@ -24,6 +24,9 @@
       <default class="collision">
         <geom material="collision_material" condim="6" contype="1" conaffinity="1" priority="1" group="1" solref="0.005 1" solimp="0.9 0.99 0.001" friction="1.0 0.005 0.0001" />
       </default>
+      <default class="mimic">
+        <site group="4" type="box" size="0.075 0.05 0.025" rgba="1.0 0.0 0.0 0.5"/>
+      </default>
     </default>
     <mesh maxhullvert="64" />
   </default>
@@ -72,6 +75,7 @@
     <body name="base" pos="0.00000000 0.00000000 0.76264403" quat="1 0 0 0" childclass="robot">
       <freejoint name="floating_base" />
       <body name="torso" pos="0 0.025888 0" quat="0.7071054825112363 0.0 0.0 0.7071080798594735">
+        <site name="pelvis_mimic" class="mimic" pos="0.1 0 -0.23"/>
         <inertial pos="-0.025920 0.003286 0.170540" quat="1.0 0.0 0.0 0.0" mass="12.606875" diaginertia="0.369404 0.398554 0.05807" />
         <body name="KD_D_102L_L_Hip_Yoke_Drive" pos="0.030112 0.000852 -0.027644" quat="0.5000001633974483 -0.4999999999999733 -0.49999983660255165 0.4999999999999733">
           <joint name="dof_left_hip_pitch_04" type="hinge" ref="0.0" class="robstride_04" range="-1.047198 2.216568" axis="0 0 1" />
@@ -97,6 +101,7 @@
                   <geom name="LFootBushing_GPF_1517_12_visual_capsule_0" type="capsule" quat="1.000000 0.000000 0.000000 0.000000" fromto="-0.1017 0.038000 -0.030886 0.055821 0.038000 -0.030886" size="0.005000" material="torso_material" class="visual" />
                   <geom name="LFootBushing_GPF_1517_12_collision_capsule_1" type="capsule" quat="1.000000 0.000000 0.000000 0.000000" fromto="-0.1127 0.038000 0.000954 0.055821 0.038000 0.000954" size="0.005000" material="collision_material" class="collision" />
                   <geom name="LFootBushing_GPF_1517_12_visual_capsule_1" type="capsule" quat="1.000000 0.000000 0.000000 0.000000" fromto="-0.1127 0.038000 0.000954 0.055821 0.038000 0.000954" size="0.005000" material="torso_material" class="visual" />
+                  <site name="left_foot_mimic" class="mimic" pos="0 0 0.03"/>
                   <site name="left_foot" size="0.138 0.032 0.043" pos="-0.0290 0.038 -0.0150" type="box" />
                 </body>
               <geom name="L_shin_collision" type="capsule" fromto="0 0 0 0 -0.29 0" size="0.035" class="collision" /></body>
@@ -127,6 +132,7 @@
                   <geom name="RFootBushing_GPF_1517_12_visual_capsule_0" type="capsule" quat="1.000000 0.000000 0.000000 0.000000" fromto="-0.1017 -0.038000 -0.030886 0.055821 -0.038000 -0.030886" size="0.005000" material="torso_material" class="visual" />
                   <geom name="RFootBushing_GPF_1517_12_collision_capsule_1" type="capsule" quat="1.000000 0.000000 0.000000 0.000000" fromto="-0.1127 -0.038000 0.000954 0.055821 -0.038000 0.000954" size="0.005000" material="collision_material" class="collision" />
                   <geom name="RFootBushing_GPF_1517_12_visual_capsule_1" type="capsule" quat="1.000000 0.000000 0.000000 0.000000" fromto="-0.1127 -0.038000 0.000954 0.055821 -0.038000 0.000954" size="0.005000" material="torso_material" class="visual" />
+                  <site name="right_foot_mimic" class="mimic" pos="0 0 0.03"/>
                   <site name="right_foot" size="0.138 0.032 0.043" pos="-0.0290 -0.038 -0.0150" type="box" />
                 </body>
               <geom name="R_shin_collision" type="capsule" fromto="0 0 0 0 -0.29 0" size="0.035" class="collision" /></body>

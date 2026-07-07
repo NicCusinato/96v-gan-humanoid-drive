@@ -1,0 +1,1331 @@
+MITSUBISHI ELECTRIC RESEARCH LABORATORIES
+https://www.merl.com
+
+Energy-Eﬃcient Motion Planner for Legged Robots
+
+Schperberg, Alexander; Menner, Marcel; Di Cairano, Stefano
+
+TR2025-151 October 23, 2025
+
+Abstract
+We propose an online motion planner for legged robot locomotion with the primary objective
+of achieving energy eﬃciency. The conceptual idea is to leverage a placement set of footstep
+positions based on the robot’s body position to determine when and how to execute steps.
+In particular, the proposed planner uses virtual placement sets beneath the hip joints of the
+legs and executes a step when the foot is outside of such placement set. Furthermore, we
+propose a parameter design framework that considers both energy-eﬃciency and robustness
+measures to optimize the gait by changing the shape of the placement set along with other
+parameters, such as step height and swing time, as a function of walking speed. We show
+that the planner produces trajectories that have a low Cost of Transport (CoT) and high
+robustness measure, and evaluate our approach against model-free Reinforcement Learning
+(RL) and motion imitation using biological dog motion priors as the reference. Overall, within
+low to medium velocity range, we show a 50.4% improvement in CoT and improved robustness
+over model-free RL, our best performing baseline. Finally, we show ability to handle slippery
+surfaces, gait transitions, and disturbances in simulation and hardware with the Unitree A1
+robot.
+
+IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS) 2025
+
+c(cid:13) 2025 IEEE. Personal use of this material is permitted. Permission from IEEE must be obtained for all other uses, in
+any current or future media, including reprinting/republishing this material for advertising or promotional purposes,
+creating new collective works, for resale or redistribution to servers or lists, or reuse of any copyrighted component of
+this work in other works.
+
+Mitsubishi Electric Research Laboratories, Inc.
+201 Broadway, Cambridge, Massachusetts 02139
+
+Energy-Efficient Motion Planner for Legged Robots
+
+Alexander Schperberg†∗, Marcel Menner‡, and Stefano Di Cairano†
+
+Abstract— We propose an online motion planner for legged
+robot locomotion with the primary objective of achieving energy
+efficiency. The conceptual idea is to leverage a placement set
+of footstep positions based on the robot’s body position to
+determine when and how to execute steps. In particular, the
+proposed planner uses virtual placement sets beneath the hip
+joints of the legs and executes a step when the foot is outside
+of such placement set. Furthermore, we propose a parameter
+design framework that considers both energy-efficiency and
+robustness measures to optimize the gait by changing the shape
+of the placement set along with other parameters, such as step
+height and swing time, as a function of walking speed. We show
+that the planner produces trajectories that have a low Cost of
+Transport (CoT) and high robustness measure, and evaluate
+our approach against model-free Reinforcement Learning (RL)
+and motion imitation using biological dog motion priors as the
+reference. Overall, within low to medium velocity range, we
+show a 50.4% improvement in CoT and improved robustness
+over model-free RL, our best performing baseline. Finally, we
+show ability to handle slippery surfaces, gait transitions, and
+disturbances in simulation and hardware with the Unitree A1
+robot.
+
+I. INTRODUCTION
+
+Legged robots excel on uneven terrain and in human-
+centric environments, but
+their efficiency is hindered by
+energy losses from foot-ground impacts, which accelerate
+battery depletion and increase motor heat, reducing operation
+time. Thus, formulating new energy conservation strate-
+gies are worthwhile endeavors. Hardware solutions such as
+Ranger [1] and ANYmal [2], reduce energy consumption
+using passive dynamics and mechanical springs. Software-
+based solutions, the focus of this work, can include various
+motion planning strategies, including optimization [3], Rein-
+forcement Learning (RL) [4], and vision-based methods [5].
+terms can be
+Although energy-efficient rewards or cost
+incorporated into the optimization or learning process, it
+is often challenging to assign significant weight to these
+terms without encountering local optima issues, where the
+robot fails to follow the desired velocity commands or avoids
+movements entirely.
+
+Our approach achieves energy-efficient locomotion using
+a simple, geometry-based footstep planner that constrains
+motion based on fundamental physical principles. Elliptical
+placement sets beneath each hip dictate when and where
+steps occur. The planner’s parameters—ellipse shape, swing
+
+∗Corresponding author
+†Alexander Schperberg, and Stefano Di Cairano are with Mitsubishi
+Electric Research Laboratories (MERL), Cambridge, MA, 02139, USA.
+{schperberg, dicairano}@merl.com
+
+‡Marcel Menner was with Mitsubishi Electric Research Laboratories
+(MERL) during part of the work of this paper, Cambridge, MA, 02139,
+USA. {menner}@ieee.org
+
+Fig. 1. We compare and evaluate our energy-efficient motion planner (A)
+(Sec. II), with motion imitation (B) (motion dataset from [6]) and model-
+free reinforcement learning (C) baselines.
+
+time, and step height—are optimized to minimize the Cost of
+Transport (CoT) and maximize robustness to avoid singular-
+ity and favor non-slipping configurations. These parameters
+can be derived offline or adjusted through RL for improved
+disturbance handling. The proposed planner produces a more
+natural gait, where the robot moves its feet only when
+necessary, as defined by the placement set.
+
+Although natural gaits can also be achieved by imitating
+animal motion [6], to the best of our knowledge, there has not
+been a clear analysis to evaluate whether imitating motion
+derived from biological animals is actually more energy-
+efficient for lower degree of freedom robots. Thus, in this
+work, we use CoT and robustness measures to compare our
+method against not only typical model-free RL approaches
+[7], but also against motion imitation, where the reference
+motions are derived from real animal movements (see Fig.
+1).
+
+Overall, we present the following contributions:
+1) An online motion planning framework that naturally
+determines the gait by minimizing energy consumption
+using ellipses beneath the hip joints. Simulation and
+hardware experiments are presented.
+
+2) The ellipses, along with step height and swing time of
+each leg are designed based on a parameter study that
+considers CoT and robustness measures. This study is
+achieved analytically and also through exploration of
+parameters using RL. Both are compared against each
+other for efficacy.
+
+3) Our approach is compared against baselines, including
+model-free RL, and motion imitation using real biolog-
+ical dog motion priors as the reference.
+
+Motion ImitationMoCap to Re-targetingRe-targeting toMotion ImitationEnergy-Efficient Motion PlannerModel-based ControlRLAnalyticalOrEllipse-basedPlannerParameter SelectionRobot10 Hz10 HzStateBody/Footstep referencePD Swing ControllerMPC Stance ControllerPD Low Level Controller𝜏motorFoot in ContactFoot not in Contact𝜏refModel-free RLReward functionVelocity TrackingRegularization[6]50 Hz400 Hz200 Hz(A)(B)(C)50 Hz50 HzA. Related Works
+
+Motion planning is a fundamental requirement for legged
+locomotion. Several approaches for stable motion
+robot
+have been proposed such as model-based (Sec. I-A.1) and
+learning-based methods including RL and motion imitation
+(Sec.I-A.2). Efficacy of these methods are typically evaluated
+primarily for velocity tracking, and only a few for energy-
+efficient locomotion (Sec. I-A.3).
+
+1) Model-based: The Raibert controller [8] provides sta-
+ble trajectories for legged robots that
+is computationally
+efficient, but not suitable for rough terrain nor considers
+energy-efficiency. For rough terrain, optimization-based tech-
+niques can be used, optimizing for the Zero-Moment Point
+(ZMP) through the Linear Inverted Pendulum approach [9].
+Trajectory Optimization (TO) is employed if footsteps are not
+specified a priori, which helps expand the robot’s feasible
+workspace, and optimizes over contact forces using more
+complex centroidal dynamics [10]. However, TO methods are
+computationally expensive and difficult to apply for online-
+replanning.
+
+2) Reinforcement Learning and Motion Imitation: To
+optimize over a high-precision model while being computa-
+tionally efficient, model-free RL methods have become pop-
+ular [7], [11], such as using a student/teacher policy in [7].
+However, these methods require extensive hyperparameter
+tuning, heavy reward engineering, and safety consideration
+is less relevant as the underlying network output is difficult
+to understand. Another approach is through motion imitation,
+such as Imitation Learning (IL) [6], [12]. For example, repli-
+cating motion patterns observed in biological locomotion
+data collected from a real dog was proposed in [6]. By
+following such motion priors, the need to enforce walking
+behaviors such as achieving a certain step height, forward
+progress, or motion smoothness and so on, is greatly reduced,
+simplifying the number of reward terms necessary for legged
+locomotion. Although prior works using RL or IL can, and
+often do, include energy-efficient terms, the resulting policies
+tend to perform poorly if weights on these terms are too
+large. Also, these methods evaluate success based primarily
+on overall velocity tracking performance, not on energy-
+efficiency, as we do in this work.
+
+3) Optimizing for Energy-Efficiency: Only few works
+primarily focus on energy-efficient locomotion to help reduce
+power consumption of the robot’s actuators. One such exam-
+ple can be found in [13]. Unlike our work, in [13], the step-
+height needs to be pre-determined, and the gait timings are a
+function of a pre-defined distance instead of being modifiable
+during operation. Although our work does not employ vision
+data as shown in [14], by considering energy-efficiency for
+various step heights implicitly provides information on which
+postures are optimal (energy wise) on uneven terrain. Similar
+to [14], we also consider slipping using force ellipsoids.
+
+Other works aim at energy-efficiency by either optimiz-
+ing locomotion parameters [15], employing policy gradient
+RL [4], or with adaptive control methods [16]. However,
+these works do not consider the effects of minimizing energy-
+consumption while accounting for gait transitions which is
+
+computationally costly if using a programming solver [17],
+[18]. In contrast, here we address the decision at which for-
+ward velocity it becomes more energy-efficient to transition
+from a gait to another, e.g., walking to trot. The proposed
+method is also general enough not to need the exact order of
+legs that transition from stance to swing as required in [19].
+
+B. Preliminaries
+
+Here we describe the low-level controllers to track the
+reference trajectories from the proposed energy-efficient
+planner.
+
+1) Swing Controller: The swing controller is similar
+to [20], which computes the torque for foot i for all three
+joints of the robot as1:
+
+τ i = J⊤
+
+i [Kp (pi,ref − pi,cur ) + Kd (vi,ref − vi,cur )] (1a)
++ J⊤
+(1b)
+
+i Λiai,ref + Vi( ˙qi,cur) + Gi(qi,cur)
+
+where τ i ∈ R3 is the joint
+torque, qi,cur ∈ R3 and
+˙qi,cur ∈ R3 are the current joint position and velocity of
+foot i, Ji ∈ R3×3 is the foot Jacobian, Kp and Kd are the
+proportional and derivative (PD) gain matrices, pi,ref ∈ R3
+and pi,cur ∈ R3 are the reference and current footstep
+positions (calculated using forward kinematics on current
+joint encoders) in the body frame, vi,ref ∈ R3 and vi,cur ∈ R3
+are the reference and current footstep velocities in the body
+frame, ai,ref ∈ R3 is the reference footstep acceleration in
+the body frame, Vi ∈ R3 is the torque due to the Coriolis
+and centrifugal forces, Gi ∈ R3 is the torque due to gravity,
+and Λi ∈ R3×3 is the operational mass matrix.
+
+2) Stance Controller: For the legs in stance, i.e., making
+contact with the ground, we use a Model Predictive Con-
+troller (MPC) to calculate the ground reaction forces to track
+the reference trajectory of the body, or Xref ∈ R12, where
+Xref = [Θ⊤, r⊤, ω⊤, v⊤]⊤, Θ is the robot’s orientation, r
+is the CoM base position, ω is the angular velocity, and v is
+the linear velocity, each vector with x, y, and z components.
+While details of such controller are in [20], here, the ground
+reaction forces are used to calculate the joint torques that
+serve as input to the motor’s torque controller:
+
+τ i,t = J⊤
+
+i,tRw,⊤
+
+b,i,tfi,t
+
+(2)
+
+where fi,t ∈ R3 is the force vector associated with leg i as
+subset of ft, and Rw
+b,i,t is the rotation matrix from world to
+body frame of leg i at time step t.
+
+3) Reinforcement Learning through PPO: We employ
+Proximal Policy Optimization (PPO) [21] for both our opti-
+mal parameter study (Sec. II), and for our model-free and
+motion imitation baselines. Only the reward formulation
+differs for each use case. In short, PPO enhances the policy
+πθ(a | O) by maximizing the clipped objective function:
+(cid:17)(cid:105)
+
+rt(θ) ˆAt, clip(rt(θ), 1 − ϵ, 1 + ϵ) ˆAt
+
+,
+(3)
+Here, rt(θ) denotes the ratio of the new policy to the old one,
+ˆAt represents the estimated advantage, and ϵ is a threshold
+
+L(θ) = Et
+
+min
+
+(cid:16)
+
+(cid:104)
+
+1We omit time step t for simplicity.
+
+Fig. 2. We show the process of our energy-efficient motion planner. With a desired forward velocity, from t = 0 − 2 s, the robot’s body pushes forward
+using the MPC stance controller from Sec. I-B.2, until one or more legs are outside of the ellipse (red circle), which activates the footstep as shown at
+t = 2 s. The robot then takes a step, t = 2 − 2.2 s, and the process repeats. Note, the center position of the ellipse is beneath the hip joint at all times.
+
+that constrains policy updates to maintain stability. At each
+time step t, the PPO-derived policy outputs an action at,
+which is then executed on the system: at = πθ(Ot), where
+Ot refers to the current observation.
+
+The observation space at time step t for our model-free
+baseline is denoted by OM
+t while for our motion imitation
+baseline as well as for optimizing our planner parameter
+selection (see Sec. II) is denoted by OI
+t (joints from all legs
+i are considered in the observation space):
+
+(4)
+
+OM
+t = [qcur, ˙qcur, τ , Xcur, at−1]t,
+OI
+t = [qcur, ˙qcur, τ , Xcur, at−1, qref, Xref]t,
+where the new variables include current body state de-
+scribed by Xcur, the previous actions by at−1, and reference
+joint trajectory by qref. Note, although not shown explicitly
+in equation (4), we do include the observational history
+up to Nprev as part of our overall observation space, or
+Ot = [Ot:t−Nprev ]. During model-free and motion imitation
+training, at represents desired joint positions, whereas in
+energy-efficient motion planning it serves as parameters of
+our planner such as swing time or ellipse shape (Sec. II).
+
+Different combination of rewards were used depending
+on the RL training, although hyper-parameters were kept
+constant and w, σtrack represent weights on reward terms
+(see Table I). For the motion imitation baseline, we used all
+the terms listed in (1), and (2) in Table I. We used data from
+[6] as motion priors, which involve re-targeting mocap data
+from a real dog. For the model-free RL baseline we used
+all the terms listed in (2), and (3) in Table I. Finally, for
+the parameter selection study described in detail in Sec. II,
+we used only the terms listed in (4) in Table I. Note, we
+do not include all details of our hyper-parameter selection
+and domain randomization, as they follow similar structure
+as found in many other RL locomotion works such as [7].
+
+II. ENERGY-EFFICIENT MOTION PLANNER
+
+Our planner is based on the relative position of the center
+of mass of the robot and the robot’s feet. In particular, it
+uses the geometric shape of an ellipse as the placement set
+for the feet. For each leg of the robot, the center point of the
+ellipse is always located directly beneath the hip joint, which
+imposes a stable position. Other shapes for the placement sets
+can be used, but ellipses are an intuitive geometric shape for
+this purpose. We define this ellipse through their major/minor
+ell and ry
+axis, rx
+ell, with center point position, i.e., the robot’s
+hip and py
+hip position, px
+hip. As the robot’s center of mass
+
+Fig. 3. We show a 2D representation of the footstep ellipses and their
+variable representation as described in Sec. II on the left-hand side. A full
+3D sequence is given in Fig. 2.
+
+moves using a desired longitudinal and lateral commanded
+velocity, Vdes, through the ground reaction forces calculated
+by the MPC [20] in Section I-B.2, at each time step, we
+calculate the difference between the current footstep position,
+cur and py
+px
+
+cur, and the hip position:
+cur − px
+hip
+cur − py
+hip.
+
+pdx
+ell = px
+pdy
+ell = py
+
+(5a)
+
+(5b)
+
+Given by a contact matrix Cref to indicate which feet are
+in stance or swing phase, using pdy
+ell, we can check
+whether the current foot is outside this ellipse for each leg.
+For each foot in contact, the check can be represented by:
+
+ell and pdy
+
+(pdx
+ell )2
+ell)2 +
+(rx
+
+(pdy
+ell)2
+ell)2 > 1.
+(ry
+
+(6)
+
+If the check in (6) is true for any of the legs, we plan
+for the next footstep swing trajectory and corresponding
+body trajectory. The planner outputs the reference footstep
+position, velocity, and acceleration given by pref , ˙pref , ¨pref
+respectively, and the body trajectory, calculated using Euler
+discretization on the commanded velocity, Vdes, and current
+state, Xcur, to yield the reference Xref .
+
+When all feet are inside their corresponding ellipse, the
+reference trajectory stays in place. In other words, if the user
+commands a forward velocity, the MPC controller pushes the
+robot’s body in that direction with all feet in stance. Once
+one of the foot locations is outside the ellipse, the planner
+produce a swing trajectory. The reference trajectory for the
+footstep in swing is calculated by moving the current footstep
+
+t=0 s: Push Forwardt=0-2 s: Push Forwardt=2 s: Activate Footstept=2-2.2 s: Steppingt=2.4 s: Activate Footstept=2.2-2.4 s: Push Forwardxxx𝐩totaldx,dy𝐩progdx,dy𝐩elldx,dyt=0.0 st=0.15 st=0.0 st=0.15 sFoot inside ellipseFoot inside ellipseFoot inside ellipseFoot outside ellipsex [m]y [m]z [m]Foot 1 LocationxFoot 2 LocationxFoot 3 LocationxFoot 4 LocationxBody TrajectoryCenter of Ellipse TimestepFoot 4 TrajectoryxxAlgorithm 1: Energy-Efficient Motion Planner
+
+TABLE I
+REWARD FUNCTIONS. SEE SEC. I-B.3 FOR DETAILS ON USAGE.
+
+1 while Robot in Operation do
+2
+
+Xcur, pcur ← StateEstimation(See [22])
+// Get user commands (10 Hz)
+Vdes ← Joystick
+// Get planner parameters
+[∆T, hstep, X z, rx
+ell] ←
+Analytical or RL (Sec. II)
+
+ell, ry
+
+// For each leg
+cur − px
+ell = px
+pdx
+hip
+cur − py
+pdy
+ell = py
+// Check if foot in contact is outside
+
+hip
+
+ellipse
+
+Outside Ellipse? ←
+checkEllipse(pdx
+
+ell, rx
+// If outside the ellipse, calculate a new
+
+ell , pdy
+
+ell, ry
+
+ell)
+
+reference trajectory
+if Outside Ellipse = True :
+
+x,des∆T + (cid:112)X z/g(V B
+y,des∆T + (cid:112)X z/g(V B
+
+pdx
+prog = V B
+pdy
+prog = V B
+pref , ˙pref , ¨pref , Cref ←
+Sinusoidal(dt, ∆T, gait, pdx,dy
+Xref ← interp(Xcur, Vdes)
+
+x,cur − V B
+y,cur − V B
+
+x,des)
+y,des)
+
+prog , pdx,dy
+
+ell
+
+, hstep)
+
+// If no legs are outside the ellipse nor
+currently in swing phase, we put all
+legs in stance, and include the
+reference commanded body velocity to
+push body forwards
+
+if Swing Phase Complete = True :
+
+Xnext, pnext, ˙pnext, ¨pnext, Cnext ←
+Xcur, pcur, 012, 012, 14
+
+// Otherwise, iterate through the
+
+reference trajectory
+
+else:
+
+Xnext, pnext, ˙pnext, ¨pnext, Cnext ←
+Xref [it], pref [it], ˙pref [it], ¨pref [it], Cref [it]
+
+Send references to swing (1) and stance (2)
+controllers.
+
+3
+
+4
+
+5
+
+6
+
+7
+
+8
+
+9
+
+10
+
+11
+
+12
+
+13
+
+14
+
+15
+
+16
+
+17
+
+position first to the center of the ellipse, and then adding an
+additional term, pdx
+prog (see Fig. 3), to account for
+the desired commanded velocity:
+
+prog and pdy
+
+prog = V B
+pdx
+prog = V B
+pdy
+
+x,des∆T /2 + (cid:112)X z/g(V B
+y,des∆T /2 + (cid:112)X z/g(V B
+
+x,cur − V B
+y,cur − V B
+
+x,des)
+y,des)
+
+(7a)
+
+(7b)
+
+where X z is the height of the robot, g is the gravity term,
+∆T is the footstep timing for the swing phase, and B is
+to symbolize that we expect the desired velocity, V B
+x,des and
+V B
+y,des, to be in the body frame. Note, this is derived from
+the Raibert Heuristic [8], where the the feedback gain k is
+chosen to be equal to (cid:112)X z/g.
+
+(1) Term (Imitation)
+
+Joint Position Reward
+
+Foot Position Reward
+
+(2) Term (Tracking)
+
+Linear Velocity in XY Plane
+
+Angular Velocity in Z Axis
+
+Linear Velocity in Z Axis
+
+(3) Term (Regularization)
+
+Joint Accelerations
+
+Action Rate
+
+Foot Airtime
+
+Self-collision
+
+Equation
+(cid:32)
+e
+
+−
+
+(cid:80) ∥qcur−qref∥2
+σtrack
+
+(cid:32)
+e
+
+−
+
+(cid:80) ∥pcur−pref∥2
+σtrack
+
+(cid:33)
+
+(cid:33)
+
+w1
+
+w2
+
+Equation
+(cid:32)
+e
+
+−
+
+∥vcur,xy−vref,xy∥2
+σtrack
+
+(cid:33)
+
+w3
+
+(cid:32)
+e
+
+−
+
+∥ωcur,z −ωref,z ∥2
+σtrack
+
+(cid:33)
+
+w4
+
+− (cid:0)∥vcur,z − vref,z∥2(cid:1) w5
+Equation
+− (cid:0)(cid:80) ∥ ˙q∥2(cid:1) w6
+− (cid:0)(cid:80) ∥at − at−1∥2(cid:1) w7
+((cid:80) tair1new contact) w8 [7]
+(1collision) w9 [7]
+
+(4) Term (Parameter Selection)
+
+Equation
+
+Cost of Transport
+
+Robustness
+
+− (CoT) w10 eq.(9)
+
+(Manipulability) w11
+eq.(10)
+
+Number of Time Steps
+
+(t/tmax) w12
+
+The reference trajectory from the current footstep pcur
+to the next footstep or pnext is created using a sinusoidal
+implementation:
+
+(cid:19)2
+
+(cid:19)
+
+(cid:18) 2π
+1
+∆T
+2
+(cid:18) 2π
+∆T
+
+t
+
+sin
+
+(cid:18) 2π
+∆T
+
+(cid:19)
+
+t
+
+¯az = hstep
+
+az,t = ¯az cos
+
+vz,t = ¯az
+
+pz,t = ¯az
+
+∆T
+2π
+(cid:18) ∆T
+2π
+
+(cid:19)2 (cid:18)
+
+1 − cos
+
+(cid:19)(cid:19)
+
+(cid:18) 2π
+∆T
+
+t
+
+¯ax = (cid:0)pdx
+(cid:16)
+
+¯ay =
+
+ell + pdx
+
+prog
+
+pdy
+ell + pdy
+
+vx/y,t = ¯ax/y
+
+ax/y,t = ¯ax/y cos
+∆T
+π
+(cid:18) ∆T
+π
+
+px/y,t = ¯ax/y
+
+(cid:17)2
+
+(cid:17)2
+
+(cid:16) π
+∆T
+(cid:16) π
+∆T
+
+(cid:1) 1
+2
+(cid:17) 1
+2
+(cid:17)
+t
+
+prog
+(cid:16) π
+∆T
+
+sin
+
+(cid:16) π
+∆T
+
+(cid:17)
+t
+
+(cid:19)2 (cid:16)
+
+1 − cos
+
+(cid:16) π
+∆T
+
+(cid:17)(cid:17)
+
+t
+
+(8a)
+
+(8b)
+
+(8c)
+
+(8d)
+
+(8e)
+
+(8f)
+
+(8g)
+
+(8h)
+
+(8i)
+
+with maximum lateral acceleration ¯ax/y. Note that the pro-
+posed footstep motion planner does not rely on the choice
+of trajectory. Different implementations can be used as well.
+In particular, for climbing stairs or traversing rubble and
+obstacles, (8) may be modified to alter the touchdown point.
+
+18 end
+
+with step height hstep, maximum vertical acceleration ¯az,
+and:
+
+The contact matrix Cref ∈ R4 specifying which leg is
+in stance or swing phase can be pre-determined if a certain
+gait is desired, e.g., trot or walk, or can be determined by
+the algorithm. E.g., in the pre-determined case for a trot gait,
+if one of the footsteps is outside the defined ellipse, the foot
+along with the diagonally opposing footstep are constrained
+to move at the same time from stance into swing. In this
+case, we only move the leg and its diagonally opposing leg
+in alternating order, e.g., if legs 1 and 3 were in swing
+previously, we must move legs 2 and 4 next. In the non-
+predetermined case, we remove such constraints (except that
+we cannot move the same leg twice). Instead, we only move
+the leg that passes (6), allowing Cref to freely vary. In both
+cases, since foot movement follows (6), stance phase duration
+varies with current body position relative to the feet. Thus,
+unique gaits and footstep timings for each step are generated.
+We now detail how to enforce energy-efficiency for our
+motion planner. A common metric for energy-efficient plan-
+ning is the Cost of Transport (CoT), which can be computed
+using the joint velocity ˙qt, torque τ t, and distance ∆D
+traveled:
+
+CoT =
+
+(cid:80)k
+
+t=k−N max{ ˙q⊤
+
+t τ t, 0}dt
+
+∆D
+
+(9)
+
+where k is the current time step discretized with sampling
+time dt, and N is the number of time steps within total time
+of locomotion considered.
+
+For each desired velocity commanded by the user (Vdes),
+we determine ideal parameters for the proposed planner that
+achieve not only the lowest CoT but also favors robot config-
+urations for which the legs in stance can most easily produce
+ground reaction forces. To quantify the favorable configura-
+tions, we leverage force manipulability ellipsoids [23]. These
+ellipsoids provide a concise and intuitive representation of
+the force and moment capabilities of a robot at a particular
+point in its workspace. Mathematically, the motor torque vec-
+tor is mapped into a unit sphere τ ⊤
+i τ i ≤ 1 in joint space and
+into the ellipsoids f ⊤
+i fi ≤ 1 in task space, where Ji and
+fi are the Jacobian and end-effector ground reaction forces,
+respectively. We can estimate a representation of the volume
+of these force ellipsoids through the force manipulability
+measure [23]. A high force manipulability measure indicates
+a better ability to apply forces in various directions, while a
+lower manipulability measure indicates a more limited ability
+to do so. To calculate this force manipulablity measure, we
+first take the eigenvalues, λ, of the matrix U = (JiJ⊤
+i )−1,
+and:
+
+i JiJ⊤
+
+manipulability measure = (cid:112)max(λ)/ min(λ).
+
+(10)
+
+Thus, our goal is to find the parameters for each com-
+manded body velocity that minimize the CoT and maximize
+the manipulability measure of the force ellipsoids for in-
+creased robustness. To do so, we compute both CoT and the
+force manipulability measure as a function of the planner
+parameters using Mujoco [24] simulation as our physics
+model for propagating from the current to the next time step.
+In particular, we study the impact of the swing time ∆T ,
+
+TABLE II
+PARAMETERS USED FOR PARAMETER STUDY
+
+Name
+
+V B
+x,des
+∆T
+hstep
+X z
+ell, ry
+rx
+
+ell
+
+Description
+
+Desired Body Velocity
+Swing Time
+Step height
+Robot Height
+Ellipse axis in x/y direction
+
+min
+
+0.05
+0.10
+0.05
+0.28
+0.01
+
+max
+
+units
+
+1.00
+0.25
+0.15
+0.311
+0.15
+
+m
+s
+s
+m
+m
+m
+
+body velocity in the x-direction V B
+x,des, step height hstep,
+robot height X z, and the ellipse size of the planner rx
+ell
+and ry
+ell. For each combination of parameters, we calculate
+the average CoT and force manipulability measure during
+about 20 seconds of locomotion. The range of parameters
+tested is described in Table II. To calculate the CoT and
+the force manipulablity measure, the joint torques for the
+feet in swing and stance are needed. These torques can
+be received directly from Mujoco. We call this method of
+parameter selection as Energy-Efficient Motion Planner using
+the analytical approach (or EEMP-Analytical), because we
+can find these parameters without any learning methods—
+we simply iterate through a range of velocities to find
+which parameter combination produced the ideal CoT and
+manipulability measure for each commanded velocity and
+employ a look-up table during evaluation.
+
+In addition to this analytical approach, we also employ
+a simple RL formulation using PPO (Sec. I-B.3) to find
+these parameters through exploration and compare against
+the analytical approach. We term this as EEMP-RL. In
+this approach, the actions are the parameters of our planner
+ell, ry
+from Table II, or at = [∆T, hstep, X z, rx
+ell]t, and the
+observations are described by OI
+t in equation (4), using IK
+on pref to get qref. Our reward function consist of only the
+three terms listed in (4) of Table I, which is to penalize
+the agent for high CoT, reward high manipulability, and to
+reward the agent for not falling to the ground—where t is
+the current time step during an episode, and tmax is the
+maximum allotted time step per episode or 20 seconds of
+locomotion.
+
+The overall footstep planner is described in Algorithm 1,
+and visually shown in 3D and 2D in Figs. 2 and 3 re-
+spectively. Summarizing, we first get the state of the robot
+[22], and then receive the desired velocity command from
+the user. Planner parameters are then selected through either
+EEMP-Analytical or EEMP-RL. We then check (6) to see
+if any of the footsteps in contact with the ground are
+currently outside the defined ellipse. If one of the footsteps
+is outside the ellipse, we calculate the footstep trajectory (7),
+(8) and the body trajectory through Euler discretization for
+the commanded velocity. Additionally, we check if we fully
+iterated through the swing trajectory based on the swing
+time ∆T . If so, we produce four stance phase reference
+trajectories for all legs, i.e., the robot feet are commanded
+to stay in position, while the body reference, Xnext ∈ R12,
+is such that it moves in the direction of the desired velocity.
+If the swing phase is not completed, we proceed to the next
+
+TABLE III
+BEST PARAMETERS FOR WALK / TROT GAIT ACROSS VELOCITY RANGE
+
+Name
+
+∆T
+hstep
+X z
+ell, ry
+rx
+
+ell
+
+Description
+
+Value
+
+units
+
+Swing Time
+Step height
+Robot Height
+Ellipse axis in x/y directions
+
+0.25
+0.10
+0.31
+[0.07, 0.05]
+
+s
+m
+m
+m
+
+time step of the swing reference trajectory. References are
+then sent to our downstream stance and swing controllers.
+
+III. PARAMETER STUDY RESULTS
+
+We first applied the EEMP-Analytical approach (Sec. II)
+to examine how optimal parameter selection affects CoT and
+manipulability across various lateral velocities (x-direction)
+during 20 seconds of locomotion and setting the gait to
+be either in walk or trot to compare both. Our analysis
+showed that the parameters in Table III consistently yielded
+the lowest CoT and highest manipulability on average, i.e.,
+across the velocity range in walk/trot. However, optimizing
+parameters for each velocity improved CoT by 35.5% in the
+trot gait and 13.3% in the walk gait over using the constant
+set of parameters from Table III.
+
+Fig. 4 shows contour plots of the parameter selection,
+where for each commanded velocity we show the ellipse’s
+major x axis, rx
+ell (toward the locomotion direction), swing
+time, and color coding represented by CoT. The results of
+the trot gait are shown on the left and of the walk gait on the
+right half. For the trot gait, we show that high swing times
+are critical at low velocities, whereas the selection for rx
+ell
+appears less important. As velocity increases to 0.50 m/s, the
+combination of rx
+ell and swing time becomes critical, where
+a swing time of about 0.18 seconds and rx
+ell of about 0.06 to
+0.08 meters, or high swing time and high rx
+ell leads to optimal
+CoT. However, at velocities going towards 1.0 m/s, lower
+swing times of 0.14-0.16 seconds become more favorable,
+while rx
+ell has minimal impact in this range. This is intuitive
+since, at higher velocities, the footstep often falls outside the
+ellipse, triggering constant step initiation regardless of rx
+ell.
+For the walk gait, we see the same trend as for the trot
+gait in low velocities. However, different from the trot gait,
+a high swing time is more favorable at nearly all choice of
+velocities. Although the rx
+ell parameter seems more important
+if the user selects lower swing times, at higher velocities rx
+ell
+loses effect, particularly at 1.0 m/s due to a similar reason
+as for the trot gait. We make a comparison for the CoT and
+manipulability measure between the trot and walk gait in
+Fig. 5. In the velocity range up to 0.4 m/s, the walk gait
+has both a more favorable CoT and manipulability measure
+relative to trot. This is expected as energy consumption is
+estimated by summing joint accelerations and torques across
+all legs, with the swing phase being most significant. Since
+walk gait has one leg in swing phase at a time, it results in
+lower energy consumption across all velocities, as confirmed
+by our results. As the manipulability measure is based on
+how well the robot can produce ground reaction forces at
+
+Fig. 4. Contour plots for different commanded velocities (namely, 0.01,
+0.10, 0.50, and 1.00 m/s), and for varying major axis of the planning ellipse
+rx
+ell (y-axis) and swing time (x-axis). The color varies with the values of
+CoT, from yellow to blue. The graphs on the left half show the trot gait
+results, while the graphs on the right half show the walk gait results.
+
+any given time, the walk gait is expected to show higher
+performance as well since it has three legs in stance phase,
+instead of two legs for the trot gait. Overall, the walk gait
+used 59% of energy of the trot gait in this velocity range.
+At velocities exceeding 0.4 m/s (marked by the red line in
+Fig. 5), the walk gait becomes unstable, evidenced by a sharp
+increase in CoT and a decline in the manipulability measure.
+This instability is consistently observed in both simulation
+and hardware experiments at velocities above 0.4 m/s.
+
+Finally, we also compare EEMP-Analytical with param-
+eter selection using RL (EEMP-RL, Sec. II). As shown
+in Fig. 6, EEMP-RL (red) slightly outperforms EEMP-
+Analytical (blue) in both CoT and manipulability. This
+indicates two key points: first, our method achieves efficient
+locomotion without requiring RL, as both methods show
+
+Fig. 5.
+CoT (left) and the manipulability measure (right) for the trot
+(yellow) and walk (purple) gaits at various velocities. The red line indicates
+the velocity at which walk gait becomes unstable.
+
+good performance; second, RL improves performance by
+better handling disturbances from estimation errors, con-
+tacts, or velocity transitions. For instance, RL can optimize
+parameters in continuous space for smoother gait changes,
+instead of relying on a discretized look-up table (i.e., EEMP-
+Analytical), thereby enhancing overall energy efficiency.
+
+IV. EXPERIMENTAL VALIDATION
+
+1) Controller Architecture and Baseline Comparisons: In
+simulation and hardware, the velocity commands are pro-
+vided by the operator, via a joystick. For state estimation we
+use a similar approach as [22]. (A) in Fig. 1 summarizes the
+control architecture and control frequency used in this paper
+for both Mujoco simulation and hardware experiments. We
+also show two other baselines methods for achieving legged
+locomotion, namely through motion imitation and model-free
+RL (Sec. I-B.3). The results of training these baselines, along
+with our optimal parameter selection (EEMP-RL) is shown
+in Fig. 7. We note that we trained our RL baselines on flat
+terrain for 100 million time steps, and on rough terrain for 50
+million time steps (thus, the drop in rewards occur due to the
+switch of terrains, which is expected), and we required only
+10 million time steps directly on rough terrain for EEMP-RL.
+2) Mujoco Simulation Results: For 20 seconds of locomo-
+tion per desired velocity, we compare our method, EEMP-
+Analytical (blue) and EEMP-RL (red), without predefining
+walk/trot for parity, with motion imitation (orange) and
+model-free RL (green) baselines using CoT, manipulability,
+and velocity tracking as evaluation metrics. Overall, our
+method performs best at ≤ 0.6 m/s across all metrics
+(i.e., CoT, manipulability, and velocity tracking). At higher
+velocities, model-free RL and motion imitation slightly out-
+perform EEMP methods in CoT, but perform similarly in
+velocity tracking and manipulability using EEMP-RL. This
+is expected, as higher velocities shrink the ellipses to a
+point, requiring constant stepping, thus reducing the energy-
+efficiency benefits of our planner. Additionally, nonlinear
+dynamics at high speeds challenge the linear MPC stance
+controller assumption underlying the EEMP framework, a
+limitation of this work. Addressing this may require nonlin-
+ear models, at the cost of higher computation, or learning
+such models offline with neural nets. Notably, model-free
+RL benefits from tightly coupling the planner and controller
+
+Fig. 6.
+CoT, manipulability measure, and velocity tracking (y-axis)
+for various desired velocities (x-axis) are shown, comparing our Energy-
+Efficient Motion Planner (EEMP) using the analytical approach and RL
+approach for parameter selection in blue and red respectively, motion
+imitation in orange, and model-free RL in green.
+
+(unlike our EEMP methods), which proves advantageous at
+higher speeds. Interestingly, motion imitation under performs
+compared to model-free RL at nearly all velocities, sug-
+gesting that biological imitation may be less effective for
+lower-DoF robots, such as a 3-DoF per leg quadruped. Based
+on these findings, the most optimal energy-efficient motion
+would be one that uses EEMP-RL for velocities ≤ 0.6 m/s,
+and then transition to model-free RL.
+
+3) Hardware Validation: We teleoperated the robot shown
+in Fig. 8 using a desired commanded walking speed to test
+how the proposed footstep planner and control framework
+
+Cost of Transport (CoT) vs VelocityVelocity [m/s]log (CoT [J/m])Manipulability Measure vs VelocityVelocity [m/s]Manipulability MeasureVelocity [m/s]Error between Measured and Desired VelocityError:|vx,cur−v𝑥,𝑑𝑒𝑠| [m/s]Motion ImitationEEMP-AnalyticalEEMP-RLModel-Free RLREFERENCES
+
+[1] P. A. Bhounsule, J. Cortell, and A. Ruina, “Design and control of
+ranger: An energy-efficient, dynamic walking robot,” Adaptive Mobile
+Robotics, pp. 441–448, 2012.
+
+[2] M. Hutter et al., “Anymal - a highly mobile and dynamic quadrupedal
+
+robot,” in 2016 IEEE IROS, pp. 38–44, 2016.
+
+[3] A. Schperberg, S. D. Cairano, and M. Menner, “Auto-tuning of
+controller and online trajectory planner for legged robots,” IEEE
+Robotics and Automation Letters, vol. 7, no. 3, pp. 7802–7809, 2022.
+[4] Z. Sun and N. Roos, “An energy efficient dynamic gait for a Nao
+
+robot,” in 2014 IEEE ICARSC, pp. 267–272, 2014.
+
+[5] L. Chen, S. Ye, C. Sun, A. Zhang, G. Deng, T. Liao, and J. Sun, “Cnns
+based foothold selection for energy-efficient quadruped locomotion
+over rough terrains,” in 2019 IEEE International Conference on
+Robotics and Biomimetics (ROBIO), pp. 1115–1120, 2019.
+
+[6] X. B. Peng, E. Coumans, T. Zhang, T.-W. E. Lee, J. Tan, and S. Levine,
+“Learning agile robotic locomotion skills by imitating animals,” in
+Robotics: Science and Systems, 07 2020.
+
+[7] J. Lee, J. Hwangbo, L. Wellhausen, V. Koltun, and M. Hutter,
+“Learning quadrupedal locomotion over challenging terrain,” Science
+Robotics, vol. 5, no. 47, 2020.
+
+[8] M. H. Raibert, Legged Robots That Balance. USA: Massachusetts
+
+Institute of Technology, 1986.
+
+[9] S. Kajita, F. Kanehiro, K. Kaneko, K. Fujiwara, K. Harada, K. Yokoi,
+and H. Hirukawa, “Biped walking pattern generation by using preview
+control of zero-moment point,” in 2003 IEEE International Conference
+on Robotics and Automation, vol. 2, pp. 1620–1626, 2003.
+
+[10] A. W. Winkler, C. D. Bellicoso, M. Hutter, and J. Buchli, “Gait and
+trajectory optimization for legged systems through phase-based end-
+effector parameterization,” IEEE Robotics and Automation Letters,
+vol. 3, no. 3, pp. 1560–1567, 2018.
+
+[11] K. Ito and F. Matsuno, “A study of reinforcement learning for the robot
+with many degrees of freedom - acquisition of locomotion patterns
+for multi-legged robot,” in 2002 IEEE International Conference on
+Robotics and Automation, vol. 4, pp. 3392–3397, 2002.
+
+[12] X. B. Peng, P. Abbeel, S. Levine, and M. van de Panne, “Deepmimic:
+example-guided deep reinforcement learning of physics-based charac-
+ter skills,” ACM Trans. Graph., vol. 37, July 2018.
+
+[13] H.-K. Shin and B. K. Kim, “Energy-efficient gait planning and
+control for biped robots utilizing the allowable ZMP region,” IEEE
+Transactions on Robotics, vol. 30, no. 4, pp. 986–993, 2014.
+
+[14] L. Chen, S. Ye, C. Sun, A. Zhang, G. Deng, T. Liao, and J. Sun, “CNNs
+based foothold selection for energy-efficient quadruped locomotion
+over rough terrains,” in 2019 IEEE International Conference on
+Robotics and Biomimetics (ROBIO), pp. 1115–1120, 2019.
+
+[15] W. Xi and C. D. Remy, “Optimal gaits and motions for legged robots,”
+in 2014 IEEE/RSJ International Conference on Intelligent Robots and
+Systems, pp. 3259–3265, 2014.
+
+[16] A. Mutka, E. Koˇco, and Z. Kovaˇci´c, “Adaptive control of quadruped lo-
+comotion through variable compliance of revolute spiral feet,” IJARS,
+vol. 11, no. 10, p. 162, 2014.
+
+[17] N. Chakraborty, S. Berard, S. Akella, and J. Trinkle, “A geometrically
+implicit time-stepping method for multibody systems with intermittent
+contact,” IJRR, vol. 33, no. 3, pp. 426–445, 2014.
+
+[18] Z. Manchester, N. Doshi, R. J. Wood, and S. Kuindersma, “Contact-
+implicit trajectory optimization using variational integrators,” IJRR,
+vol. 38, no. 12-13, pp. 1463–1476, 2019.
+
+[19] Z. Fu, A. Kumar, J. Malik, and D. Pathak, “Minimizing energy
+consumption leads to the emergence of gaits in legged robots,” in
+Conference on Robot Learning (CoRL), 2021.
+
+[20] J. Di Carlo, P. M. Wensing, B. Katz, G. Bledt, and S. Kim, “Dynamic
+locomotion in the MIT Cheetah 3 through convex model-predictive
+control,” in 2018 IEEE/RSJ IROS, pp. 1–9, 2018.
+
+[21] J. Schulman et al., “Proximal policy optimization algorithms,”
+
+https://arxiv.org/abs/1707.06347, 2017.
+
+[22] M. Menner and K. Berntorp, “Simultaneous state estimation and con-
+tact detection for legged robots by multiple-model kalman filtering,”
+in 2024 (ECC), pp. 2768–2773, 2024.
+
+[23] C. Melchiorri, “Force manipulability ellipsoids for general manipula-
+tion systems,” IFAC Proceedings Volumes, vol. 27, no. 14, pp. 235–
+240, 1994. Fourth IFAC Symposium on Robot Control, Capri, Italy,
+September 19-21, 1994.
+
+[24] E. Todorov, T. Erez, and Y. Tassa, “Mujoco: A physics engine for
+model-based control,” in 2012 IEEE/RSJ IROS, pp. 5026–5033, IEEE,
+2012.
+
+Fig. 7. Rewards for model-free RL and motion imitation baselines, and
+our Energy-Efficient Motion Planner using RL (EEMP-RL).
+
+Fig. 8. Results of teleoperation with our architecture to demonstrate robust-
+ness against disturbances on hardware. Using a joystick, we commanded
+the robot with velocities shown in blue arbitrarily selected, while orange
+indicates the actual velocity received from state estimation (left graph). The
+corresponding vertical leg positions are shown in the right graph.
+
+handles disturbance rejection. Fig. 8 shows an example of a
+trot gait, where the left plot shows the commanded forward
+velocity and the robot’s velocity from the state estimator. The
+vertical leg trajectories are shown on the right figure. From
+about 6.5 to 8.5 s, the vertical positions of the legs are zero
+indicating that all four legs are in stance. The left plot shows
+a forward walking speed in this period. This is a feature of
+the planner, the robot only executes a step when necessary,
+specifically, when the foot location is outside the specified
+ellipse. Thus, the body tracks the commanded velocity while
+conserving energy for some seconds by pushing the stance
+legs to move the body forward without taking a step.
+
+V. CONCLUSIONS
+
+A motion planner for legged robots was developed that is
+energy efficient. We show a 34.5% improvement in CoT over
+a baseline with fixed parameters for trot gait, and a 13.3%
+improvement in walk gait by employing a parameter design
+framework that uses a motion model based on Newtonian
+mechanics. Overall, we found that the walk gait used 59%
+of energy of the trot gait. For low to medium velocity, our
+method outperforms model-free RL, in CoT, manipulability,
+and velocity tracking. We show a 50.4% improvement in
+CoT over this baseline. We further validated our framework
+in hardware experiments, and could successfully demonstrate
+robustness against disturbances, such as slipping. Signif-
+icantly, we presented a motion planner that
+is easy to
+implement, computationally efficient, and saves energy by
+having the robot only make a step when necessary. Coupling
+of leg dynamics, other geometric shape representations, and
+providing further energy-efficient comparisons in hardware
+are left as future work.
+
+Rewards0 Mil100 Mil150 Mil0 Mil100 Mil150 Mil10 Mil0 MilTime stepsFlat TerrainRough TerrainFlat TerrainRough TerrainRough TerrainModel-free RLMotion ImitationEEMP-RL0Timein[s]0.3Velocityin[m/s]Walkingspeedv2Timein[s]00.050.1Positionin[m]Vertical LegPosition pz0.20.10.0-0.1-0.2-0.3246810124681012Front-LeftFront-RightRear-LeftRear-Right

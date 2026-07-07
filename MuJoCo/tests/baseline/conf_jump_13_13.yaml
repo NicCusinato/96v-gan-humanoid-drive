@@ -16,7 +16,7 @@ experiment:
           - "CMU/13/13_13_poses.npz"
 
   env_params:
-    env_name: MjxKBotV2
+    env_name: MjxKBotLegsV2
     headless: True
     horizon: 1000
     goal_type: GoalTrajMimic
@@ -41,7 +41,7 @@ experiment:
   # PPOJax hyperparameters
   hidden_layers: [512, 256]
   lr: 1e-4
-  num_envs: 1536
+  num_envs: 2560
   num_steps: 200
   total_timesteps: 400000000
   update_epochs: 4
@@ -73,16 +73,6 @@ control_config:
     control_type: PDControl
     control_params:
       p_gain:
-        - 300
-        - 100
-        - 100
-        - 100
-        - 100
-        - 300
-        - 100
-        - 100
-        - 100
-        - 100
         - 200
         - 200
         - 200
@@ -94,16 +84,6 @@ control_config:
         - 300
         - 40 
       d_gain:
-        - 6 
-        - 2 
-        - 2 
-        - 2 
-        - 2 
-        - 6
-        - 2 
-        - 2 
-        - 2 
-        - 2 
         - 5 
         - 5 
         - 5 
