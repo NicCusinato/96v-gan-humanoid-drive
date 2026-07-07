@@ -13,6 +13,8 @@ trials = {
     "jump_16_03": ("CMU/16/16_03_poses.npz", 200000000),
     "jump_16_09": ("CMU/16/16_09_poses.npz", 200000000),
     "backflip_87_04": ("CMU/87/87_04_poses.npz", 250000000),
+    "squat_22_14": ("CMU/22/22_14_poses.npz", 100000000),
+    "squat_23_14": ("CMU/23/23_14_poses.npz", 100000000),
 }
 
 base_config_path = "tests/conf_kbot_amass.yaml"

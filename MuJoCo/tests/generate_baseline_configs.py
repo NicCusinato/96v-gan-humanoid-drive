@@ -14,6 +14,8 @@ TRIALS = {
     "jump_75_01":     ("CMU/75/75_01_poses.npz",  400_000_000),
     "jump_75_03":     ("CMU/75/75_03_poses.npz",  400_000_000),
     "backflip_87_01": ("CMU/87/87_01_poses.npz",  600_000_000),
+    "squat_22_14":    ("CMU/22/22_14_poses.npz",  250_000_000),
+    "squat_23_14":    ("CMU/23/23_14_poses.npz",  250_000_000),
 }
 
 BASE_CONFIG = "tests/conf_kbot_amass.yaml"

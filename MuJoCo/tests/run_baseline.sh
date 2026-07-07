@@ -43,6 +43,8 @@ run_trial "jump_13_11"     "conf_jump_13_11"
 run_trial "jump_75_01"     "conf_jump_75_01"
 run_trial "jump_75_03"     "conf_jump_75_03"
 run_trial "backflip_87_01" "conf_backflip_87_01"
+run_trial "squat_22_14"    "conf_squat_22_14"
+run_trial "squat_23_14"    "conf_squat_23_14"
 
 echo ""
 echo "======================================================"

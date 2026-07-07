@@ -53,7 +53,7 @@ Objective: $\max_\theta \mathbb{E}[R] - \lambda (\mathbb{E}[C_{energy}] - \epsil
 - $\lambda$ is updated via dual gradient descent: $\lambda_{t+1} = \max(0, \lambda_t + \eta (\mathbb{E}[C] - \epsilon))$
 
 ### Next Steps (Implementation Plan)
-1. **Develop Baseline:** Let the current 11 active baseline configs finish training using the fixed `generate_baseline_configs.py` script.
+1. **Develop Baseline:** Let the current 13 active baseline configs finish training using the fixed `generate_baseline_configs.py` script.
 2. **Algorithm Implementation:** Extend `PPOJax` in LocoMuJoCo to support dual variables (PPO-Lagrangian) and expand the actor output to include $a_\alpha$.
 3. **Environment Modification:** Expose the activation parameter to the MuJoCo control step.
 4. **Validation:** Train a walking motion with the new Passive framework and compare the simulated Cost of Transport (CoT) against the Active Baseline.

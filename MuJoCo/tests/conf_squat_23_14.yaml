@@ -13,7 +13,7 @@ experiment:
         # We will use just a few CMU datasets for testing. 
         # These will be automatically retargeted using KBot's smpl config.
         rel_dataset_path:
-          - "CMU/38/38_03_poses.npz"
+          - "CMU/23/23_14_poses.npz"
 
   env_params:
     env_name: MjxKBotLegsV2

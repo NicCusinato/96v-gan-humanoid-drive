@@ -13,7 +13,7 @@ experiment:
         # We will use just a few CMU datasets for testing. 
         # These will be automatically retargeted using KBot's smpl config.
         rel_dataset_path:
-          - "CMU/38/38_03_poses.npz"
+          - "CMU/23/23_14_poses.npz"
 
   env_params:
     env_name: MjxKBotLegsV2
@@ -31,8 +31,6 @@ experiment:
       rpos_w_sum: 0.5
       rquat_w_sum: 0.3
       rvel_w_sum: 0.1
-      energy_coeff: 0.0005
-      regen_efficiency: 0.5
       sites_for_mimic:
         - upper_body_mimic
         - pelvis_mimic
@@ -43,9 +41,9 @@ experiment:
   # PPOJax hyperparameters
   hidden_layers: [512, 256]
   lr: 1e-4
-  num_envs: 1536
+  num_envs: 2560
   num_steps: 200
-  total_timesteps: 100000000
+  total_timesteps: 250000000
   update_epochs: 4
   proportion_env_reward: 0.0
   num_minibatches: 32
@@ -61,7 +59,7 @@ experiment:
   anneal_lr: false
   weight_decay: 0.0
   normalize_env: true
-  debug: true
+  debug: false
   n_seeds: 1
   vmap_across_seeds: true
   validation:
