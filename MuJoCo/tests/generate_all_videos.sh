@@ -3,7 +3,7 @@ source .venv_wsl/bin/activate
 
 echo "Scanning for trained models without videos..."
 
-find policies -name "*.pkl" | while read pkl; do
+find policies/Baseline_Active_Policy -name "*.pkl" | while read pkl; do
   dir=$(dirname "$pkl")
   if [ ! -f "$dir/kbot_walk.mp4" ]; then
     echo "=================================================="

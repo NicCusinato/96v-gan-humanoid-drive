@@ -446,11 +446,11 @@ between simulation and hardware.
 
 | Policy | Source | Joint Loading Character | Primary Tests |
 |--------|--------|------------------------|---------------|
-| `walk_07_12` | Baseline_Active_Policy | Periodic, moderate amplitude sinusoidal loading | T5 |
-| Squat (WBC) | `gait_generator.py` SQUAT mode | Slow, high-torque, quasi-static | T6 |
-| Step-in-place (WBC) | `gait_generator.py` STEP_IN_PLACE mode | Periodic with impact transients | T6 |
-| `jump_75_01` | Baseline_Active_Policy | Impulsive, high peak torque, regen braking | T7 |
-| Passive walk (future) | Passive policy from hybrid constrained-activation framework | Reduced $\alpha$ → lower current | T8 |
+| `walk` | Active & Passive Policies | Periodic, moderate amplitude sinusoidal loading | T5, T8 |
+| `run` | Active & Passive Policies | High frequency periodic loading | T8 |
+| `jump` | Active & Passive Policies | Impulsive, high peak torque, regen braking | T7, T8 |
+| `squat` | Active Policy | Slow, high-torque, quasi-static | T6 |
+| `step_in_place` | Active Policy | Periodic with impact transients | T6 |
 
 ---
 
@@ -540,12 +540,19 @@ loading.
 - Maximum continuous torque at thermal limit for each configuration
 - Show that 96V operation allows significantly longer sustained peak torque due to lower $I^2 R$ heating.
 
+### Phase A Conclusion — Parameter Optimization
+
+Before proceeding to Phase B, the data from T1–T4 must be used to **select the optimal FOC parameters** for the GaN drive. These locked-in parameters will define the "GaN-advanced" configuration used for all policy replay tests:
+
+1. **Optimal $f_{sw}$:** Chosen from T2 to balance switching losses against current ripple.
+2. **Optimal Dead Time:** Chosen from T3 to maximize Z-width (transparency) without causing shoot-through.
+3. **FOC Tuning:** Current loop PI gains ($K_p, K_i$) optimized for the selected $f_{sw}$ and 96V bus to ensure maximum tracking bandwidth.
+
 ---
 
 ### Phase B — Policy-Driven Dynamic Loading
 
-> **Prerequisites:** T1–T4 complete. Measurement chain validated. Policy trajectory files
-> exported (see §4). Pendulum arm inertia verified.
+> **Prerequisites:** T1–T4 complete. Measurement chain validated. Optimal GaN parameters ($f_{sw}$, dead time, PI gains) locked in based on Phase A results. Policy trajectory files exported (see §4). Pendulum arm inertia verified.
 
 ### T5 — Walking Policy Replay
 
@@ -553,7 +560,7 @@ loading.
 
 | Parameter | Value |
 |-----------|-------|
-| Policy | `walk_07_12` (hip pitch or knee trajectory) |
+| Policy | `walk` policy trajectory (active) |
 | Duration | 60 s continuous (≈60 gait cycles at 1 Hz stepping) |
 | Pendulum arm | Config A (knee) or Config B (hip) |
 | Logging rate | ≥ 10 kHz synchronised |
@@ -573,8 +580,8 @@ loading.
 
 | Parameter | Value |
 |-----------|-------|
-| Squat profile | 0.3 Hz sinusoidal, 15 cm depth equivalent |
-| Step profile | 1 Hz stepping, 4 cm lift equivalent |
+| Policy | `squat` and `step_in_place` policies |
+| Profile | 0.3 Hz (squat) and 1 Hz (step) |
 | Duration | 30 s squat + 60 s stepping |
 | Focus metrics | Peak $\tau$, peak $I$, bus ripple (squat); CoT, transient quality (step) |
 
@@ -589,7 +596,7 @@ impulsive loading.
 
 | Parameter | Value |
 |-----------|-------|
-| Profile | `jump_75_01` jump trajectory |
+| Profile | `jump` policy trajectory (active) |
 | Duration | 2 s per jump × 5 repetitions, 30 s rest between |
 | Focus metric | Peak current, peak power, regen energy, bus voltage transient |
 
@@ -606,7 +613,7 @@ versus the standard active baseline.
 
 | Parameter | Value |
 |-----------|-------|
-| Profiles | Active walk_07_12 vs. Passive walk (once trained) |
+| Profiles | Active vs. Passive implementations of `walk`, `run`, and `jump` |
 | Duration | 60 s each |
 | Controlled variables | Same pendulum arm, same inverter, same motor, same speed |
 

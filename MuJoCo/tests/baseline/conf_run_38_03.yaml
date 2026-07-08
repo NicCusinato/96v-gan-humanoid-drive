@@ -42,7 +42,7 @@ experiment:
   hidden_layers: [512, 256]
   lr: 1e-4
   num_envs: 2560
-  num_steps: 200
+  num_steps: 400
   total_timesteps: 250000000
   update_epochs: 4
   proportion_env_reward: 0.0
