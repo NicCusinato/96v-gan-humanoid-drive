@@ -12,10 +12,10 @@ In our previous attempts, simply adding a large energy penalty to the reward fun
 - **Policy Modification:** The actor network outputs both joint position targets $a_q$ and a per-joint activation parameter $a_\alpha \in [0,1]$.
 - **Control Law:** $\tau = \alpha \cdot (k_p(q^* - q) + k_d(\dot{q}^* - \dot{q}))$
 - **Reward / Training:** They apply a passive action reward $r_{a_\alpha} = 1 / \|a_\alpha\|$, scaled by a small factor. To prevent the policy from getting stuck at small $\alpha$, they use a curriculum decay for a minimum activation threshold $\alpha_0$ from 0.5 to 0.
-- **Benefits:** Direct mechanical interpretation; allows the robot to "relax" specific joints (like the knee during the swing phase), exploiting natural pendulum dynamics. 
+- **Benefits:** Direct mechanical! interpretation; allows the robot to "relax" specific joints (like the knee during the swing phase), exploiting natural pendulum dynamics. 
 - **Shortcomings:** Requires careful tuning of the curriculum decay and the passive reward scale to avoid collapsing into a fully passive (falling) state prematurely.
 
-### 2. ECO: Energy-Constrained Optimization (ECO_Energy-Constrained_Optimization_With_Reinforcement_Learning_for_Humanoid_Walking)
+### 2. ECO: Energy-Constrained Optimization !(ECO_Energy-Constrained_Optimization_With_Reinforcement_Learning_for_Humanoid_Walking)
 - **Concept:** Treats energy consumption as a strict inequality constraint using Constrained RL (PPO-Lagrangian) rather than as a soft penalty in the reward function.
 - **Methodology:** The energy cost is defined as the absolute mechanical power $C_1 = \sum |\tau_j \cdot \dot{q}_j|$. The policy is optimized to maximize task reward subject to $J_{C1}(\pi) \leq b_1$. 
 - **Benefits:** Solves the exact problem we faced! By separating energy into a constraint, the policy does not collapse. The Lagrangian multiplier automatically adjusts the penalty weight dynamically during training based on whether the energy constraint $b_1$ is violated.

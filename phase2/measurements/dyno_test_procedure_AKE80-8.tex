@@ -319,13 +319,23 @@ more voltage margin and the efficiency is highest.
 \subsection{3. Inertia Leg Design --- Pendulum Arm
 Fixture}\label{inertia-leg-design-pendulum-arm-fixture}
 
+\begin{quote}
+\textbf{Important Hardware Split:} Phase A tests (static
+characterisation, steady-state \((T, \omega)\) grids) require constant
+torque at constant speed, which mathematically cannot be achieved on a
+swinging pendulum. \textbf{Phase A must be performed on a standard
+active dynamometer} (motor coupled to a load motor). \textbf{Phase B
+(dynamic policy replay)} requires realistic transient gravitational
+loading, which is provided by the pendulum arm fixture detailed below.
+\end{quote}
+
 \subsubsection{3.1 Concept}\label{concept}
 
-The test stand uses the simplest possible layout: the AKE80-8 motor is
-\textbf{clamped to the edge of a sturdy table} with its output shaft
-pointing horizontally. A rigid bar (the ``leg'') is bolted to the output
-shaft and hangs downward under gravity, free to swing in the vertical
-plane.
+For Phase B policy testing, rather than machining steel flywheel discs,
+the motor is clamped securely to the edge of a sturdy workbench with its
+shaft horizontal. A steel or aluminium flat bar is attached to the
+output shaft via a rigid jaw coupler, pointing downwards under gravity,
+free to swing in the vertical plane.
 
 \begin{verbatim}
     ┌─────────────────────────┐
@@ -888,19 +898,53 @@ transients & T6 \\
 
 \subsection{5. Test Matrix}\label{test-matrix}
 
-All tests are run on the \textbf{96V GaN inverter board} driving the
-AKE80-8 motor with the pendulum arm. To demonstrate the benefits of the
-GaN architecture without needing a separate Si board, we define a
-\textbf{``Si-equivalent baseline''} (48V bus, 20--50 kHz \(f_{sw}\), 500
-ns dead time) and compare it against the \textbf{``GaN-advanced''}
-configuration (96V bus, up to 100 kHz \(f_{sw}\), \textless100 ns dead
-time).
+All tests evaluate the \textbf{96V GaN inverter board} driving the
+AKE80-8 motor. To demonstrate the benefits of the GaN architecture
+without needing a separate Si board, we define a \textbf{``Si-equivalent
+baseline''} (48V bus, 20--50 kHz \(f_{sw}\), 500 ns dead time) and
+compare it against the \textbf{``GaN-advanced''} configuration (96V bus,
+up to 100 kHz \(f_{sw}\), \textless100 ns dead time).
 
-Tests are ordered so that \textbf{hardware characterisation comes first}
-(T1--T4), followed by \textbf{policy-driven dynamic loading} (T5--T8).
+\textbf{Test order:} Phase 0 (Sim) → Phase A (T1--T4) → Phase B
+(T5--T8). Allow the motor to cool to ambient between physical tests.
 
-\textbf{Test order:} T1 → T2 → T3 → T4 → T5 → T6 → T7 → T8. Allow the
-motor to cool to ambient between tests.
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsubsection{Phase 0 --- MATLAB/Simulink Co-Simulation (Virtual
+Dyno)}\label{phase-0-matlabsimulink-co-simulation-virtual-dyno}
+
+\textbf{Purpose:} Establish a theoretical ``ground truth'' performance
+baseline derived directly from MOSFET and motor datasheet parameters,
+before any physical hardware is spun.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Virtual Dyno Simulation:} Model the GaN inverter, the AKE80-8
+  motor, and a standard load motor in Simscape Electrical. Run nested
+  loops commanding constant speeds and constant load torques to generate
+  a theoretical \((T, \omega)\) efficiency heatmap.
+\item
+  \textbf{Loss Breakdown:} Extract theoretical switching vs.~conduction
+  loss ratios for both the ``Si-baseline'' and ``GaN-advanced''
+  parameters.
+\item
+  \textbf{FOC Pre-Tuning:} Safely tune the PI gains (\(K_p, K_i\)) for
+  the 96V system in simulation to ensure stable tracking bandwidth
+  before running high-power physical tests.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsubsection{Phase A --- Hardware Characterisation (Standard
+Dyno)}\label{phase-a-hardware-characterisation-standard-dyno}
+
+\begin{quote}
+\textbf{Prerequisites:} Phase 0 theoretical baselines established. Motor
+mounted to the \textbf{Standard Active Dynamometer} and coupled to the
+load motor.
+\end{quote}
 
 \subsubsection{T1 --- Static Efficiency Map \& Voltage
 Comparison}\label{t1-static-efficiency-map-voltage-comparison}
@@ -925,10 +969,10 @@ Value
 \endlastfoot
 Configurations & \textbf{48V} (Si-baseline \(f_{sw}\)/DT) vs
 \textbf{96V} (GaN \(f_{sw}\)/DT) \\
-Load & Pendulum arm swinging at constant amplitude (set by position
-command) \\
-Torques & 1, 3, 6, 9, 12 Nm (output shaft) \\
-Speeds & 10, 30, 60, 100, 150 rpm (output shaft) \\
+Setup & \textbf{Standard Active Dynamometer} (motor coupled to load
+motor) \\
+Torques & 1, 3, 6, 9, 12 Nm (held constant by load motor) \\
+Speeds & 10, 30, 60, 100, 150 rpm (held constant by drive motor) \\
 Hold time & 10 s per point (after thermal settling) \\
 Logging & V\_bus, I\_bus, τ\_shaft, ω\_shaft, T\_case, T\_heatsink \\
 \end{longtable}
@@ -948,25 +992,17 @@ trade-off, showing that GaN can operate at high \(f_{sw}\) without the
 severe efficiency penalty seen in Si.
 
 {\def\LTcaptype{none} % do not increment counter
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.6111}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.3889}}@{}}
+\begin{longtable}[]{@{}ll@{}}
 \toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-Parameter
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Value
-\end{minipage} \\
+Parameter & Value \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-Profile & Fixed sinusoidal oscillation (e.g.~±30° at 1 Hz on pendulum
-arm) \\
+Profile & Constant speed \(\omega\), varying load torque \\
 \(f_{sw}\) values & 20, 50, 75, 100 kHz \\
 Duration & 60 s per frequency \\
-Controlled variables & Same bus voltage (96V), same motion profile, same
-dead time \\
+Setup & Standard Active Dynamometer, fixed 96V bus, same dead time \\
 \end{longtable}
 }
 
@@ -998,11 +1034,10 @@ Value
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-Profile & Zero-torque command (transparency) \& high-stiffness position
-hold \\
+Profile & Constant speed, constant load torque (e.g.~100 RPM, 6 Nm) \\
 Dead times & 500 ns (Si-equivalent), 200 ns, 100 ns, 50 ns
 (GaN-optimised) \\
-Controlled variables & \(f_{sw}\) = 50 kHz, 96V bus \\
+Setup & Standard Active Dynamometer, 50 kHz \(f_{sw}\), 96V bus \\
 \end{longtable}
 }
 
@@ -1034,7 +1069,9 @@ Value
 \endlastfoot
 Configurations & \textbf{48V} (Si-baseline) vs \textbf{96V}
 (GaN-advanced) \\
-Profile & Continuous oscillation at the worst-case (T,ω) from T1 \\
+Profile & Continuous steady-state operation at the worst-case
+\((T,\omega)\) from T1 \\
+Setup & Standard Active Dynamometer \\
 Duration & 20--30 min or until \(dT/dt < 0.5\) °C/min \\
 Logging & T\_case, T\_heatsink, T\_winding, T\_ambient @ 1 Hz;
 electrical @ 10 kHz \\
@@ -1077,8 +1114,8 @@ Loading}\label{phase-b-policy-driven-dynamic-loading}
 \begin{quote}
 \textbf{Prerequisites:} T1--T4 complete. Measurement chain validated.
 Optimal GaN parameters (\(f_{sw}\), dead time, PI gains) locked in based
-on Phase A results. Policy trajectory files exported (see §4). Pendulum
-arm inertia verified.
+on Phase A results. \textbf{Motor moved to Pendulum Arm Fixture.} Policy
+trajectory files exported (see §4). Pendulum arm inertia verified.
 \end{quote}
 
 \subsubsection{T5 --- Walking Policy

@@ -1,9 +1,17 @@
-# Dyno Test Procedure — CubeMars AKE80-8 with Inertia Leg & LocoMuJoCo Policy Replay
+# Drive System Test Procedure — 96V GaN Inverter (EPC91200)
 
-**Phase 2 | Status: Draft | Date: 2026-07-07**
-**Related KANs:** KAN-56 (comparative test framework)
-**Motor Under Test:** CubeMars AKE80-8 KV30 (QDD actuator, 8:1 planetary)
-**Board Under Test:** 96V GaN inverter (KAN-54) evaluated at both 48V (Si-equivalent baseline) and 96V.
+**Phase 2 | Status: Draft | Date: 2026-07-14**  
+**Related KANs:** KAN-56 (comparative test framework)  
+**Motor Under Test (Phase 2):** CubeMars AKE80-8 KV30 — ankle-surrogate validation motor  
+**Motor Under Test (Phase 3):** Custom AKE90-KV35 — actual knee and hip joints  
+**Board Under Test:** 96V GaN inverter — EPC91200 (EPC2305 eGaN FETs) — evaluated at 48V and 96V bus  
+**Two Parallel Tracks:**  
+- **Path A** — Full active dynamometer (separate load motor + torque/speed sensors). Preferred.  
+- **Path B** — Pendulum arm only (no load motor). Fallback if dyno cannot be established.
+
+> **Test sequence:** Phase 2a runs the AKE80-8 to validate the rig and methodology. Phase 2b repeats all the same layers with the custom AKE90-KV35 — this produces the actual thesis data. Phase 3 integrates the characterised AKE90s into the physical leg. The same EPC91200 board is used throughout all phases.
+
+> Both paths produce publishable thesis data. Path A gives a full efficiency map and quantitative loss breakdown. Path B gives controller comparison, thermal characterisation, and qualitative efficiency at discrete operating points.
 
 ---
 
@@ -27,37 +35,65 @@ locomotion policies. This bridges the gap between:
 
 | Claim | Test(s) That Provide Evidence |
 |-------|-------------------------------|
-| 96V GaN achieves higher cycle-averaged efficiency than a 48V Si-equivalent baseline under gait loading | T5, T6 |
-| GaN's lower switching losses enable higher $f_{sw}$ and smaller dead time, improving Z-width (transparent impedance) | T2, T3 |
-| Higher bus voltage reduces $I_{RMS}$ and thermal stress for the same mechanical output | T1, T4 |
-| Policy-driven load profiles produce different loss distributions than static grids | T1 vs T5/T6 |
-| Passive (activation-modulated) policies reduce electrical CoT versus active baselines | T8 |
-| GaN zero-reverse-recovery enables faster regen braking during dynamic motions | T7 |
+| 96V operation reduces phase current and copper losses for the same mechanical output | L1, A-T1, B-T1 |
+| GaN enables higher $f_{sw}$ without the severe efficiency penalty seen in Si | A-T2, B-T2 |
+| Smaller dead time improves Z-width (impedance transparency) and reduces current distortion | A-T3, B-T3 |
+| GaN zero-reverse-recovery enables cleaner regenerative braking | A-T4 |
+| Controller architecture (RL → Duke → ECO → Modified) progressively improves bandwidth, efficiency, and thermal performance | A-T5/B-T4 |
+| Policy-driven load profiles produce different loss distributions than static grids | A-T1 vs A-T6 |
 
-### 1.3 Why the AKE80-8?
+### 1.3 Motor Sequence — Three-Step Test Progression
 
-The CubeMars AKE80-8 is a commercially available QDD actuator with an 8:1 planetary gearbox.
-Its specifications bracket the KBot leg actuators:
+| Step | Motor | Purpose |
+|------|-------|---------|
+| **Phase 2a** | AKE80-8 (ankle surrogate) | Validate test rig, instrumentation, and methodology at lower risk |
+| **Phase 2b** | Custom AKE90-KV35 (knee/hip) | Repeat all Layers 1–5 — this is the actual thesis characterisation data |
+| **Phase 3** | Custom AKE90-KV35 in leg | System-level gait validation with full leg assembly |
 
-| Parameter | AKE80-8 | KBot Hip/Knee (RS-04) | KBot Ankle (RS-02) |
-|-----------|---------|----------------------|-------------------|
-| Gear ratio | 8:1 | 9:1 | 7.75:1 |
-| Peak torque | 30 Nm | 120 Nm | 17 Nm |
-| $K_t$ | 0.32 Nm/A | 2.1 Nm/A | 1.22 Nm/A |
-| Rated voltage | 48 V | — | — |
-| Pole pairs | 21 | — | — |
+**The same EPC91200 board and firmware are used across all three steps.** This is intentional — it proves the board works across motor sizes and confirms that Phase 2a methodology transfers cleanly to Phase 2b.
 
-The AKE80-8 can serve as a **surrogate joint actuator** for dyno testing: its gear ratio and
-QDD architecture are representative of humanoid leg joints, while its smaller torque rating
-keeps the dyno power requirements manageable. All results are expressed in per-unit or
-normalised form so they transfer to the full-scale RS-04/RS-02 drives.
+| Parameter | AKE80-8 | Custom AKE90-KV35 |
+|-----------|---------|-------------------|
+| Role | Rig validation (ankle surrogate) | Thesis data + leg joint motor |
+| KV | 30 RPM/V | 35 RPM/V |
+| Kt | 0.32 Nm/A | 0.272 Nm/A |
+| R_ph | 435 mΩ | 82 mΩ |
+| L_ph | 495 µH | 117.5 µH |
+| Pole pairs | 21 | 21 |
+| Peak torque | 30 Nm (8:1 geared output) | ~10.9 Nm (motor shaft) |
+| Rated voltage | 48V nominal | 48V nominal (tested at 96V) |
 
-> **96V operation note:** The AKE80-8 is rated at 48V nominal. At 96V, the motor sees 2×
-> voltage headroom, which (a) doubles the theoretical no-load speed ceiling from 195 to ~390 rpm,
-> (b) halves the phase current for the same shaft power ($P = V \cdot I$), reducing $I^2 R$
-> winding losses by up to 4×, and (c) gives the FOC current loop more voltage margin for faster
-> transient response. The motor winding insulation must be verified for 96V operation before
-> testing.
+> **96V operation note:** Both motors are rated at 48V. At 96V, both see 2× voltage headroom — halving I_RMS, reducing copper losses by ~4×, and extending the speed range. Winding insulation must be verified at 250V DC (megohmmeter) before 96V testing on either motor.
+
+### 1.4 Incremental Test Structure — The Core Thesis Narrative
+
+Each layer of the test programme isolates **exactly one variable** so the contribution of each upgrade is unambiguous:
+
+```
+Layer 0 — Simulation baseline (MATLAB/Simulink virtual dyno)
+    └── Theoretical efficiency maps, loss breakdown, FOC pre-tuning
+
+Layer 1 — Voltage uplift: 48V → 96V (same GaN board, standard RL controller)
+    └── Show: lower I_RMS, lower copper loss, higher switching loss, net η gain
+
+Layer 2 — Switching frequency optimisation (96V, standard RL)
+    └── Show: optimal fsw tradeoff, current ripple vs switching loss
+
+Layer 3 — Dead-time / Z-width optimisation (96V, optimal fsw)
+    └── Show: THD reduction, torque ripple reduction, impedance improvement
+
+Layer 4 — Regenerative braking characterisation (96V, optimal fsw+DT)
+    └── Show: zero-Qrr GaN advantage, regen waveforms, energy capture
+
+Layer 5 — Controller upgrade (96V, optimal fsw, optimal DT)
+    ├── Standard RL controller        → baseline bandwidth & efficiency
+    ├── Duke controller               → disturbance rejection & Z-width
+    ├── ECO controller                → efficiency-optimal field weakening
+    └── Modified controller           → combined improvements
+         └── Each: bandwidth, tracking error, η, losses, temperature
+```
+
+Every layer produces the same standard outputs: efficiency (η), loss breakdown (P_Cu, P_sw, P_Fe), thermal rise (ΔT_junction, ΔT_winding), current waveforms (I_RMS, THD), and where possible a torque–speed efficiency map.
 
 ---
 
@@ -129,12 +165,14 @@ region, where the current loop has more voltage margin and the efficiency is hig
 
 ## 3. Inertia Leg Design — Pendulum Arm Fixture
 
+> **Important Hardware Split:** Phase A tests (static characterisation, steady-state $(T, \omega)$ grids) require constant torque at constant speed, which mathematically cannot be achieved on a swinging pendulum. **Phase A must be performed on a standard active dynamometer** (motor coupled to a load motor). **Phase B (dynamic policy replay)** requires realistic transient gravitational loading, which is provided by the pendulum arm fixture detailed below.
+
 ### 3.1 Concept
 
-The test stand uses the simplest possible layout: the AKE80-8 motor is **clamped to the edge
-of a sturdy table** with its output shaft pointing horizontally. A rigid bar (the "leg") is
-bolted to the output shaft and hangs downward under gravity, free to swing in the vertical
-plane.
+For Phase B policy testing, rather than machining steel flywheel discs, the motor is clamped
+securely to the edge of a sturdy workbench with its shaft horizontal. A steel or aluminium
+flat bar is attached to the output shaft via a rigid jaw coupler, pointing downwards under
+gravity, free to swing in the vertical plane.
 
 ```
     ┌─────────────────────────┐
@@ -279,14 +317,65 @@ the exact magnitude difference is within 25%.
 
 ### 3.5 Fixture Bill of Materials
 
-| Item | Specification | Qty | Purpose |
-|------|--------------|-----|--------|
-| Table clamp / L-bracket | Steel, ≥ M8 bolts, rated ≥ 50 Nm reaction | 1 | Secure motor to table edge |
-| Shaft coupler | Rigid jaw coupler, Ø8 mm bore (match AKE80-8 shaft) | 1 | Connect motor to arm |
-| Steel flat bar | 25 × 6 mm, 1045 steel, 300–500 mm length | 1 | Pendulum arm |
-| Clamp-on masses | 0.5 kg and 1.0 kg, split-collar type | 2–3 | Adjustable inertia |
-| Shaft collar / set screws | Match coupler bore | 2 | Retain masses on bar |
-| End stop bolts (optional) | M6 shoulder bolts in clamp bracket | 2 | Limit swing angle to ±90° |
+#### Path B — Pendulum Arm Only
+
+| Item | Specification | Qty | Make / Buy | Notes |
+|------|--------------|-----|------------|-------|
+| Motor mount bracket | PAHT-CF 3D printed or aluminium plate | 1 | **Make (3D print)** | See §3.6 for material guidance |
+| Table clamp / L-bracket | Steel, ≥ M8 bolts, rated ≥ 50 Nm reaction | 1 | Buy / weld | Must resist full pendulum reaction torque |
+| Shaft coupler | Rigid jaw coupler, bore matched to AKE90 output shaft | 1 | Buy | Measure AKE90 shaft OD before ordering |
+| Pendulum arm (flat bar) | 25 × 6 mm 1045 steel, 300–500 mm length | 1 | Buy (stock) | Cut to length, drill tip hole |
+| Clamp-on masses | 0.5 kg and 1.0 kg, split-collar type | 2–3 | Buy | Sliders allow inertia fine-tuning |
+| Shaft collar | Match coupler bore | 2 | Buy | Retain arm on shaft |
+| Rubber end stops | M6 shoulder bolt + rubber pad | 2 | Make | Limit swing to ±100°, prevents cable wrap |
+| M4/M6 hardware | Assorted bolts, washers, lock nuts | 1 set | Buy | |  
+
+#### Path A — Additional Dyno Equipment
+
+| Item | Specification | Qty | Make / Buy | Notes |
+|------|--------------|-----|------------|-------|
+| Load motor | BLDC/PMSM, ≥ 1.5 kW, 96V compatible, or AC servo with regenerative drive | 1 | Buy/borrow | Must match or exceed AKE90 power |
+| Inline torque sensor | ≥ 15 Nm range, ≤ 0.1% FS accuracy, ≥ 1 kHz BW | 1 | Buy | Key for efficiency map accuracy |
+| Flexible shaft coupling | Lovejoy or similar, rated torque ≥ 20 Nm | 1 | Buy | Allows small misalignment |
+| Motor mounting plate | 10 mm aluminium or steel, four-bolt pattern | 1 | **CNC** | Must be rigid — see §3.7 |
+| Load motor driver | Regenerative AC servo drive or matched BLDC drive | 1 | Buy | Must be able to absorb regen power |
+| Adjustable base plate | 20 mm aluminium T-slot plate or welded frame | 1 | **CNC or weld** | Aligns both motors on same axis |
+
+---
+
+### 3.6 PAHT-CF 3D Print — Material Guidance for Motor Mount
+
+PAHT-CF (Polyamide High-Temperature + Carbon Fibre) is suitable for the **motor mount bracket and pendulum arm fixture** under the following conditions:
+
+#### Key Material Properties
+
+| Property | PAHT-CF (printed) | Requirement | Verdict |
+|----------|-------------------|-------------|--------|
+| Tensile strength (XY plane) | ~100–110 MPa | Bolt bearing loads < 30 MPa | ✅ Pass |
+| Tensile strength (Z axis, inter-layer) | ~30–50 MPa | **Avoid Z-axis loading** | ⚠️ Orientation critical |
+| Flexural modulus | ~7–8 GPa | Stiff bracket, low deflection | ✅ Pass |
+| Heat deflection temperature | ~170–185°C | Motor surface < 120°C | ✅ Pass |
+| Creep under sustained load + heat | Moderate | Not suitable for sustained clamping force | ⚠️ Use metal inserts |
+
+#### Design Rules for 3D Printed Parts
+
+- **Print orientation:** Part must be oriented so that bolt loads are in the **XY print plane** (parallel to layers), not pulling layers apart (Z-axis).
+- **Metal thread inserts:** Use brass heat-set inserts (M4 or M6) at all bolt locations. Do not thread directly into PAHT-CF — it will strip under repeated torque.
+- **Wall thickness:** Minimum 4 mm walls around all fastener locations. Infill ≥ 60%, gyroid or grid pattern.
+- **Contact area:** Large flat mating faces between bracket and table clamp. Distribute load over as large an area as possible.
+- **Do not use for:** Structural members where sustained tensile load acts perpendicular to layers, or where torque reaction must be absorbed by the printed walls alone.
+
+#### What to 3D Print vs. What to CNC
+
+| Component | Material | Method | Reason |
+|-----------|----------|--------|--------|
+| Motor mount / bracket | PAHT-CF | **3D print** | Low sustained load, complex geometry, heat resistant |
+| Pendulum arm adapter / coupler hub | PAHT-CF | **3D print** | Low stress, easy to iterate |
+| Inertia mass spacers | PAHT-CF | **3D print** | Not load-bearing |
+| Motor alignment plate (Path A) | 6061 Aluminium | **CNC** | Precision required for shaft alignment, sustained reaction torque |
+| Dyno base plate (Path A) | 6061 Aluminium or steel | **CNC or weld** | Stiffness critical — deflection would affect torque measurement |
+| Pendulum arm (flat bar) | 1045 steel | **Stock (buy)** | Simple geometry, cut to length |
+| Tip mass clamp collar | 6061 Aluminium | **CNC or buy** | Must grip reliably under swing loads |
 
 ### 3.6 Range-of-Motion Considerations
 
@@ -456,103 +545,187 @@ between simulation and hardware.
 
 ## 5. Test Matrix
 
-All tests are run on the **96V GaN inverter board** driving the AKE80-8 motor with the pendulum
-arm. To demonstrate the benefits of the GaN architecture without needing a separate Si board,
-we define a **"Si-equivalent baseline"** (48V bus, 20–50 kHz $f_{sw}$, 500 ns dead time) and
-compare it against the **"GaN-advanced"** configuration (96V bus, up to 100 kHz $f_{sw}$,
-<100 ns dead time).
+Tests follow the **incremental upgrade structure** defined in §1.4. Each layer changes exactly one variable. Both Path A (dyno) and Path B (pendulum) tests are defined. Run Path A where possible; Path B is the standalone fallback.
 
-Tests are ordered so that **hardware characterisation comes first** (T1–T4), followed by
-**policy-driven dynamic loading** (T5–T8).
+**Test order (both paths):** Layer 0 (Sim) → Layer 1 (Voltage) → Layer 2 (fsw) → Layer 3 (Dead time) → Layer 4 (Regen, Path A only) → Layer 5 (Controllers)  
+Allow motor to cool to within 5°C of ambient between every test.
 
-**Test order:** T1 → T2 → T3 → T4 → T5 → T6 → T7 → T8.
-Allow the motor to cool to ambient between tests.
+---
 
-### T1 — Static Efficiency Map & Voltage Comparison
+### Layer 0 — MATLAB/Simulink Virtual Dyno (Both Paths)
 
-**Purpose:** Establish the $(T, \omega)$ efficiency grid as a reference, and prove the
-bus voltage advantage (48V vs 96V) under steady-state conditions.
+**Purpose:** Theoretical baseline before any hardware is powered. Validates the model and pre-tunes FOC gains.
 
-| Parameter | Value |
-|-----------|-------|
-| Configurations | **48V** (Si-baseline $f_{sw}$/DT) vs **96V** (GaN $f_{sw}$/DT) |
-| Load | Pendulum arm swinging at constant amplitude (set by position command) |
-| Torques | 1, 3, 6, 9, 12 Nm (output shaft) |
-| Speeds | 10, 30, 60, 100, 150 rpm (output shaft) |
-| Hold time | 10 s per point (after thermal settling) |
-| Logging | V_bus, I_bus, τ_shaft, ω_shaft, T_case, T_heatsink |
+| Sub-test | What it produces |
+|----------|------------------|
+| Virtual efficiency map sweep (T × ω grid) | Predicted η(T,ω) for 48V and 96V GaN configurations |
+| Loss breakdown | Predicted P_sw, P_cond, P_Cu split at each operating point |
+| FOC PI pre-tuning | Safe K_p, K_i for 48V and 96V before high-power testing |
+| fsw sensitivity sweep | Predicted optimal switching frequency range |
 
-**Analysis:** Generate efficiency heatmap $\eta(T, \omega)$ for each configuration.
-Compare $I_{RMS}$ between 48V and 96V (expecting ≈50% reduction at 96V). These maps
-are the fundamental dataset — later policy tests will overlay their operating trajectories
-onto these maps.
+**Scripts:** `VirtualSpeedDynoParams.m`, `plot_thesis_figures.m`  
+**Output:** `thesis_sim_data.mat`, 12 thesis figures
 
-### T2 — Switching Frequency Sweep
+---
 
-**Purpose:** Quantify the efficiency vs. switching frequency trade-off, showing that
-GaN can operate at high $f_{sw}$ without the severe efficiency penalty seen in Si.
+### Layer 1 — Voltage Uplift: 48V → 96V
+
+**Variable changed:** Bus voltage only. Everything else held constant (same standard RL controller, same nominal fsw = 40 kHz, same dead time = 300 ns).
+
+#### Path A-L1 — Efficiency Map (Dyno)
 
 | Parameter | Value |
 |-----------|-------|
-| Profile | Fixed sinusoidal oscillation (e.g. ±30° at 1 Hz on pendulum arm) |
-| $f_{sw}$ values | 20, 50, 75, 100 kHz |
-| Duration | 60 s per frequency |
-| Controlled variables | Same bus voltage (96V), same motion profile, same dead time |
+| Configurations | 48V GaN vs 96V GaN (same board, same firmware) |
+| Torques | 1, 2.5, 4.5, 6.8, 9.0 Nm (motor shaft) |
+| Speeds | 191, 478, 955, 1337, 1671 RPM (= 20, 50, 100, 140, 175 rad/s) |
+| Hold time | 10 s per point after settling |
+| Logging | V_bus, I_bus, τ_shaft, ω_shaft, T_case, T_FET, T_winding |
 
-**Analysis:**
-- Plot $\eta_{cycle}$ vs. $f_{sw}$ (expect a relatively flat curve for GaN)
-- Current ripple $\Delta I_{pp}$ vs. $f_{sw}$
-- EMI spectrum comparison at each $f_{sw}$ (if spectrum analyser available)
+**Key outputs:** Full η(T,ω) heatmaps for 48V and 96V; I_RMS comparison (expect ~50% reduction at 96V); copper loss reduction (expect ~75% at same torque); switching loss increase (expect ~2× at 96V).
 
-### T3 — Dead Time & Z-Width Characterisation
-
-**Purpose:** Directly measure the control benefits of GaN's switching speed. Smaller
-dead time reduces voltage distortion, which in turn improves the "Z-width" — the range
-of mechanical impedances (from free-swinging transparency to stiff position holding) the
-drive can render without instability.
+#### Path B-L1 — Voltage Comparison (Pendulum)
 
 | Parameter | Value |
 |-----------|-------|
-| Profile | Zero-torque command (transparency) & high-stiffness position hold |
-| Dead times | 500 ns (Si-equivalent), 200 ns, 100 ns, 50 ns (GaN-optimised) |
-| Controlled variables | $f_{sw}$ = 50 kHz, 96V bus |
+| Operating points | 3 fixed points: low (1 Nm / 191 RPM), mid (4.5 Nm / 955 RPM), peak (9 Nm / 955 RPM) |
+| Method | Pendulum held at fixed angle by motor, measuring I_bus and V_bus. Gravity torque = known (m·g·L·sin θ). |
+| Logging | V_bus, I_bus, I_phase (×3), T_case |
 
-**Analysis:**
-- **Z-width:** Measure uncommanded drag torque (friction) during manual backdriving at zero torque.
-- Voltage distortion and phase current THD at different dead times.
-- Show that 50 ns dead time allows significantly higher virtual stiffness before limit cycles (chatter) occur.
+**Key outputs:** η at 3 discrete points for 48V vs 96V; I_RMS comparison; partial loss segregation (P_Cu known from I_RMS and R_ph).
 
-### T4 — Thermal Soak
+---
 
-**Purpose:** Characterise steady-state thermal performance at worst-case operating point
-(highest losses from T1 map). Determines the continuous rating of the drive under realistic
-loading.
+### Layer 2 — Switching Frequency Optimisation
+
+**Variable changed:** fsw only. Hold 96V bus, standard RL controller, dead time = 300 ns.
+
+**Fixed operating point:** T = 4.5 Nm, ω = 100 rad/s (mid-rated, mid-speed)
+
+#### Path A-L2 (Dyno) and Path B-L2 (Pendulum)
 
 | Parameter | Value |
 |-----------|-------|
-| Configurations | **48V** (Si-baseline) vs **96V** (GaN-advanced) |
-| Profile | Continuous oscillation at the worst-case (T,ω) from T1 |
-| Duration | 20–30 min or until $dT/dt < 0.5$ °C/min |
-| Logging | T_case, T_heatsink, T_winding, T_ambient @ 1 Hz; electrical @ 10 kHz |
+| fsw sweep | 20, 40, 60, 80, 100 kHz |
+| Configurations | 96V GaN |
+| Duration per point | 60 s (dyno) / 30 s hold (pendulum) |
+| Logging | V_bus, I_bus, I_phase, τ, ω, T_case, T_FET |
+| Also capture (scope) | Phase current waveform at each fsw — measure peak-to-peak ripple ΔI_pp |
 
-**Analysis:**
-- Thermal time constant $\tau_{th}$ from exponential fit
-- Maximum continuous torque at thermal limit for each configuration
-- Show that 96V operation allows significantly longer sustained peak torque due to lower $I^2 R$ heating.
+**Key outputs:**  
+- Total loss vs. fsw (should be relatively flat for GaN; motor loss dominant)  
+- Switching loss vs. fsw (linear increase)  
+- Motor loss vs. fsw (approximately flat — motor copper loss not frequency dependent)  
+- Phase current ripple ΔI_pp vs. fsw (decreases as ~1/fsw)  
+- From these two curves, select the **optimal fsw** (minimum total loss or maximum η)  
 
-### Phase A Conclusion — Parameter Optimization
+**Decision point:** Lock in optimal fsw before Layer 3.
 
-Before proceeding to Phase B, the data from T1–T4 must be used to **select the optimal FOC parameters** for the GaN drive. These locked-in parameters will define the "GaN-advanced" configuration used for all policy replay tests:
+---
 
-1. **Optimal $f_{sw}$:** Chosen from T2 to balance switching losses against current ripple.
-2. **Optimal Dead Time:** Chosen from T3 to maximize Z-width (transparency) without causing shoot-through.
-3. **FOC Tuning:** Current loop PI gains ($K_p, K_i$) optimized for the selected $f_{sw}$ and 96V bus to ensure maximum tracking bandwidth.
+### Layer 3 — Dead Time Optimisation
+
+**Variable changed:** Dead time only. Hold 96V bus, optimal fsw from Layer 2, standard RL controller.
+
+**Fixed operating point:** T = 4.5 Nm, ω = 100 rad/s
+
+#### Path A-L3 (Dyno) and Path B-L3 (Pendulum)
+
+| Parameter | Value |
+|-----------|-------|
+| Dead time sweep | 500, 300, 200, 100, 50 ns |
+| Logging (electrical) | I_phase waveform, V_phase, THD calculation |
+| Logging (mechanical) | τ_shaft (Path A only); backdrive drag torque at I_cmd = 0 |
+| Z-width test | At each dead time, command I_cmd = 0 and manually backdrive — measure resistance (drag torque) |
+
+**Key outputs:**  
+- Phase current THD vs. dead time (lower DT → lower distortion)  
+- Torque ripple vs. dead time  
+- Z-width (backdrive drag) vs. dead time — shows improvement in transparency  
+- **Minimum safe dead time** (just before shoot-through risk)  
+
+**Decision point:** Lock in optimal dead time before Layer 4/5.
+
+---
+
+### Layer 4 — Regenerative Braking & Reverse Recovery (Path A Only)
+
+**Variable changed:** Quadrant of operation (braking). Hold 96V bus, optimal fsw, optimal DT.
+
+> This test requires active load motor to force the motor-under-test into generating mode. Cannot be done reliably on pendulum alone (gravity can drive regen briefly, but not in a controlled repeatable way).
+
+| Parameter | Value |
+|-----------|-------|
+| Test | Run motor at 100 rad/s under load motor control, then command regen braking torque |
+| Braking levels | 20%, 50%, 100% of rated braking torque |
+| Capture | Scope: V_DS switching waveform during regen commutation — show zero Qrr recovery |
+| Logging | V_bus, I_bus (sign change = regen), I_phase, τ, ω |
+| Duration | 5 × 10 s braking events per level |
+
+**Key outputs:**  
+- Regen energy captured: E_regen = ∫ V_bus × |I_bus| dt during braking  
+- FET waveform showing zero reverse-recovery (vs. Si body diode ringing)  
+- Regen efficiency at each braking level  
+- Bus voltage transient during step-into-regen  
+
+---
+
+### Layer 5 — Controller Comparison
+
+**Variable changed:** Control law. Hold 96V bus, optimal fsw, optimal dead time from Layers 2–3.
+
+Four controllers tested in sequence — **every other variable is held constant**:
+
+| Controller | Description |
+|-----------|-------------|
+| Standard RL | Basic FOC with fixed PI gains (pole-zero cancellation) |
+| Duke controller | PD + feedforward impedance controller for backdrivability |
+| ECO controller | Efficiency-optimal field weakening / MTPA (maximum torque per amp) |
+| Modified controller | Your combined improved version — reduced dead-time, adaptive gains |
+
+#### Path A-L5 (Dyno) — Full Comparison
+
+| Metric | Method |
+|--------|--------|
+| Efficiency map | Run same T × ω grid as Layer 1 for each controller |
+| Bandwidth | Step torque command, measure rise time and overshoot |
+| Z-width | Backdrive drag at I_cmd = 0 |
+| Thermal rise | 10 min soak at rated operating point |
+| Current quality | THD, I_peak, I_RMS at fixed operating point |
+
+#### Path B-L5 (Pendulum) — Controller Comparison
+
+| Metric | Method |
+|--------|--------|
+| Position tracking | Sinusoidal reference trajectory at 0.5, 1, 2 Hz. Measure tracking error (RMS). |
+| Step response | Step position reference. Measure rise time, settling time, overshoot. |
+| Backdrive transparency | Manual push at I_cmd = 0. Measure apparent drag (qualitative + current feedback). |
+| Thermal rise | 5 min sinusoidal cycling at rated torque equivalent. T_FET vs time. |
+| Efficiency (discrete) | At 3 fixed pendulum operating points (same as Layer 1 Path B). |
+
+**Key outputs for all controllers:** η, I_RMS, ΔT_junction, tracking bandwidth, Z-width score, THD
+
+---
+
+### Layer 6 — Dynamic Policy Replay (Both Paths, if Time Permits)
+
+> **Prerequisite:** Layers 1–5 complete. Optimal configuration locked in. Policy trajectories exported from LocoMuJoCo simulation.
+
+Replay walking, squat, and jump policy trajectories on the physical hardware. Compare cycle-averaged efficiency between the optimal GaN configuration and the baseline. Overlays operating trajectory on the static efficiency map from Layer 1.
+
+| Policy | Primary metric |
+|--------|---------------|
+| Walk (1 Hz) | Cycle-averaged η, I_RMS, thermal rise over 60 s |
+| Squat (0.3 Hz) | High-torque conduction loss stress test |
+| Jump | Peak power, regen energy capture, bus transient |
+
+See §4 for full policy pipeline.
 
 ---
 
 ### Phase B — Policy-Driven Dynamic Loading
 
-> **Prerequisites:** T1–T4 complete. Measurement chain validated. Optimal GaN parameters ($f_{sw}$, dead time, PI gains) locked in based on Phase A results. Policy trajectory files exported (see §4). Pendulum arm inertia verified.
+> **Prerequisites:** T1–T4 complete. Measurement chain validated. Optimal GaN parameters ($f_{sw}$, dead time, PI gains) locked in based on Phase A results. **Motor moved to Pendulum Arm Fixture.** Policy trajectory files exported (see §4). Pendulum arm inertia verified.
 
 ### T5 — Walking Policy Replay
 
