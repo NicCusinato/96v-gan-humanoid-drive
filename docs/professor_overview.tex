@@ -1,0 +1,227 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{mathptmx} % Times New Roman font
+\usepackage{booktabs} % For professional tables
+\usepackage{tabularx} % For tables with text wrapping
+\usepackage{enumitem} % For compact lists
+\usepackage{hyperref} % For links
+
+% Formatting tweaks
+\usepackage{parskip} % Adds natural space between paragraphs and sections
+
+\title{\vspace{-1.5cm}\textbf{96V GaN Humanoid Joint Drive}\\ \large Research Overview \& Test Plan}
+\author{\textbf{Prepared by:} Nicholas Cusinato \quad \textbf{For:} [Professor Name]}
+\date{July 14, 2026}
+
+\begin{document}
+
+\maketitle
+\vspace{-0.5cm}
+
+\section*{Project Summary}
+Designing and validating a 96V GaN-based motor drive (EPC91200, EPC2305 eGaN FETs) for humanoid robot leg joints. Compared against a 48V Si-equivalent baseline, this project aims to prove:
+
+\begin{itemize}[noitemsep, topsep=0pt]
+    \item \textbf{Higher efficiency} — lower phase current at doubled voltage reduces copper losses by up to $4\times$
+    \item \textbf{Lower thermal load} — cooler FETs and windings at the same shaft power output
+    \item \textbf{Reduced total drive loss} — switching, conduction, and iron losses compared across voltage and frequency
+    \item \textbf{Improved backdrivability (Z-width)} — faster GaN switching enables smaller dead-times, reducing torque distortion and improving transparency
+    \item \textbf{Effective regenerative braking} — zero reverse-recovery in GaN allows clean 4-quadrant operation; regen energy captured and quantified
+    \item \textbf{Better gait tracking} — higher control bandwidth and lower friction enables more accurate trajectory following
+    \item \textbf{More human-like motion} — passive policy (Duke + ECO hybrid) reduces unnecessary joint activation, lowering CoT and producing smoother, more natural gait
+\end{itemize}
+
+\vspace{0.3cm}
+\noindent
+\begin{tabularx}{\textwidth}{@{}l l l X@{}}
+\toprule
+\textbf{Phase} & \textbf{Description} & \textbf{Motor} & \textbf{Hardware} \\
+\midrule
+\textbf{1 — Simulation} & Virtual dyno baseline; FOC pre-tuning & Both modelled & MATLAB/Simulink \\
+\textbf{2a — Rig Validation} & Validate test setup at lower power & AKE80-8 (ankle) & EPC91200 \\
+\textbf{2b — Characterisation} & Full test matrix — actual thesis data & Custom AKE90-KV35 & EPC91200 (same) \\
+\textbf{3 — Leg Validation} & Integrate into physical leg, test gait & Custom AKE90-KV35 & EPC91200 \\
+\bottomrule
+\end{tabularx}
+
+\vspace{0.3cm}
+\noindent \textit{Why this sequence?} Starting with the AKE80-8 lets us shake out the test rig and methodology at lower risk before running the custom AKE90 motors through the full test matrix. The same EPC91200 board is used from Phase 2a through Phase 3 — demonstrating the board's versatility and ensuring a clean apples-to-apples comparison at every step.
+
+\section*{Phase 1 — Simulation}
+Simulink/Simscape virtual dynamometer used to generate theoretical baselines and pre-tune FOC gains before any hardware runs. All simulation plots act as predicted reference curves that real data will be plotted against.
+
+\vspace{0.2cm}
+\noindent
+\begin{tabularx}{\textwidth}{@{}l X@{}}
+\toprule
+\textbf{Test} & \textbf{Output} \\
+\midrule
+Torque $\times$ speed efficiency sweep (48V / 96V) & Efficiency contour maps ($\eta$ vs $T$, $\omega$) for both configs \\
+Loss breakdown at each operating point & Stacked bar charts: $P_{Cu}$, $P_{sw}$ (switching), $P_{Fe}$ (iron) \\
+Switching frequency sweep (20–100 kHz) & Total loss vs $f_{sw}$; motor loss vs $f_{sw}$; inverter loss vs $f_{sw}$ \\
+Voltage comparison at fixed operating point & $\eta$, $I_{RMS}$, loss split — 48V vs 96V side by side \\
+FOC PI gain tuning & Pre-validated current loop gains for hardware \\
+\bottomrule
+\end{tabularx}
+
+\section*{Phase 2 — Drive Characterisation Tests}
+Tests are run incrementally — \textbf{one variable changes at a time} — so each result directly attributes an improvement to a specific design choice. Phase 2a runs the AKE80-8 to validate the test rig; Phase 2b repeats with the AKE90-KV35 for thesis data.
+
+\subsection*{Test Hardware Options}
+\noindent
+\begin{tabularx}{\textwidth}{@{}l X X@{}}
+\toprule
+\textbf{Path} & \textbf{Setup} & \textbf{What it enables} \\
+\midrule
+\textbf{A — Active Dyno} (preferred) & Motor coupled to a load motor with torque sensor & Full efficiency map, regen tests, any operating point \\
+\textbf{B — Pendulum Arm} & Motor drives a calibrated pendulum arm & Discrete efficiency points, thermal, controller comparison \\
+\bottomrule
+\end{tabularx}
+
+\subsection*{T1 — Voltage Comparison: 48V vs 96V}
+Fixed: same motor, same GaN board, standard RL controller, same $f_{sw}$. Variable: Bus voltage.
+
+\vspace{0.2cm}
+\noindent
+\begin{tabularx}{\textwidth}{@{}l X@{}}
+\toprule
+\textbf{Measured} & \textbf{Expected Result} \\
+\midrule
+$\eta(T, \omega)$ efficiency map & 96V map shows higher $\eta$ across most of the grid \\
+$I_{RMS}$ at same torque output & $\sim 50\%$ lower at 96V \\
+Copper loss $P_{Cu} = 3 \cdot I^2 \cdot R$ & $\sim 75\%$ lower at 96V \\
+Switching loss $P_{sw}$ & $\sim 2\times$ higher at 96V (same $f_{sw}$, higher voltage per switch) \\
+Peak FET and winding temperature & Lower at 96V for same shaft power \\
+\bottomrule
+\end{tabularx}
+
+\subsection*{T2 — Switching Frequency Sweep}
+Fixed: 96V bus, standard RL controller. Variable: $f_{sw}$ swept at 20/40/60/80/100 kHz. \textit{Also run at 48V to show comparison.}
+
+\vspace{0.2cm}
+\noindent
+\begin{tabularx}{\textwidth}{@{}l X X@{}}
+\toprule
+\textbf{Measured} & \textbf{48V Result} & \textbf{96V Result} \\
+\midrule
+Total actuator loss vs $f_{sw}$ & Increases with $f_{sw}$ (Si-like) & Flatter curve (GaN switching loss scales less severely) \\
+Inverter switching loss vs $f_{sw}$ & Linear increase & Linear increase, but from a lower base at same duty \\
+Phase current ripple $\Delta I_{pp}$ vs $f_{sw}$ & Decreases as $\sim 1/f_{sw}$ & Same \\
+\bottomrule
+\end{tabularx}
+
+\subsection*{T3 — Dead-Time Sweep}
+Fixed: 96V bus, optimal $f_{sw}$, standard RL. Variable: dead time swept from 500ns down to 50ns.
+
+\begin{itemize}[noitemsep, topsep=0pt]
+    \item \textbf{Measured:} Phase current THD, torque ripple, backdrive drag torque (Z-width) at $I_{cmd} = 0$.
+    \item \textbf{Expected:} All decrease linearly as dead time reduces, until shoot-through boundary is reached.
+\end{itemize}
+
+\subsection*{T4 — Regenerative Braking (Path A only)}
+Fixed: 96V bus, optimal $f_{sw}$, optimal DT. Variable: braking torque level.
+
+\begin{itemize}[noitemsep, topsep=0pt]
+    \item \textbf{Measured:} Regen energy captured ($E_{regen} = \int V_{bus} \cdot |I_{bus}| dt$), $V_{DS}$ switching waveforms, bus voltage transients.
+    \item \textbf{Expected:} Demonstrates zero $Q_{rr}$ commutation vs Si body diode ringing.
+\end{itemize}
+
+\subsection*{T5 — Controller Comparison}
+Fixed: 96V, optimal $f_{sw}$, optimal DT. Variable: control law. Each tested in sequence.
+
+\vspace{0.2cm}
+\noindent
+\begin{tabularx}{\textwidth}{@{}l X@{}}
+\toprule
+\textbf{Controller} & \textbf{Architecture Summary} \\
+\midrule
+\textbf{Standard RL} & Fixed PD torque controller with soft energy penalty in reward. Known to collapse at high penalty weight. \\
+\textbf{Duke Humanoid} & Policy outputs joint targets + per-joint activation $\alpha \in [0,1]$. Torque gated as $\tau = \alpha \cdot \text{PD}(q^*, q)$. Passive reward $1/\|\alpha\|$ encourages joint relaxation. \\
+\textbf{ECO} & Energy treated as hard inequality constraint via PPO-Lagrangian. Lagrange multiplier self-tunes — prevents policy collapse. \\
+\textbf{Modified (Ours)} & Combines Duke's $\alpha$ gating with ECO's constrained training. Adds regen bonus tied to gait phases (heel strike, swing deceleration) to exploit high voltage GaN Quadrant IV operation. \\
+\bottomrule
+\end{tabularx}
+
+\vspace{0.2cm}
+\noindent \textbf{Metrics (all controllers):} Cycle-averaged efficiency $\eta$, Electrical Cost of Transport (CoT) per stride, $I_{RMS}$, Peak FET temperature, Gait tracking RMS error, Step response (bandwidth).
+
+\section*{Phase 3 — Leg Build \& System Validation}
+The validated drive from Phase 2 is integrated into a physical leg to validate the full system under real gait loading.
+
+\vspace{0.2cm}
+\noindent
+\begin{tabularx}{\textwidth}{@{}l l X@{}}
+\toprule
+\textbf{Joint} & \textbf{Motor} & \textbf{Notes} \\
+\midrule
+Hip pitch & Custom AKE90-KV35 & Same frame + gear ratio as standard AKE90; re-wound for 96V \\
+Knee & Custom AKE90-KV35 & Same \\
+Ankle & AKE80-8 (or custom) & 8:1 planetary \\
+\bottomrule
+\end{tabularx}
+
+\vspace{0.2cm}
+\noindent
+\begin{tabularx}{\textwidth}{@{}l X@{}}
+\toprule
+\textbf{Test} & \textbf{Data Collected} \\
+\midrule
+No-load joint sweep & Friction map, backlash, encoder calibration \\
+Automated gait replay & Simulated trajectory replayed on hardware \\
+Efficiency (sim vs real) & Measured $\eta$ overlaid on Phase 1 simulation maps \\
+Thermal soak & $\Delta T_{FET}$ and $\Delta T_{winding}$ vs time under repeated gait cycles \\
+Controller comparison & Repeat T5 metrics on real leg — CoT, $\eta$, tracking quality \\
+\bottomrule
+\end{tabularx}
+
+\section*{Parts \& Requirements}
+
+\subsection*{Phase 2 — Path B (Pendulum — can start immediately)}
+\noindent
+\begin{tabularx}{\textwidth}{@{}l l X@{}}
+\toprule
+\textbf{Item} & \textbf{Qty} & \textbf{Source / Details} \\
+\midrule
+AKE80-8 motor \& EPC91200 board & 1 & Available \\
+Motor mount bracket & 1 & 3D print PAHT-CF (brass inserts at bolt locations) \\
+Table clamp / L-bracket & 1 & Buy / weld \\
+Shaft coupler & 1 & Buy \\
+Steel flat bar pendulum arm & 1 & Buy \\
+Split-collar masses (0.5 kg + 1.0 kg) & 2–3 & Buy \\
+Instrumentation & 1 & Lab (DAQ, 100V PSU, Oscilloscope, 3$\times$ Hall probes) \\
+\bottomrule
+\end{tabularx}
+
+\subsection*{Phase 2 — Path A (Dyno — additional items)}
+\noindent
+\begin{tabularx}{\textwidth}{@{}l l X@{}}
+\toprule
+\textbf{Item} & \textbf{Qty} & \textbf{Source / Details} \\
+\midrule
+Load motor \& driver ($\geq$ 1.5 kW, regen) & 1 & Buy / borrow / lab? \\
+Inline torque sensor ($\geq$ 15 Nm) & 1 & Buy \\
+Motor alignment \& Dyno base plates & 1 & \textbf{CNC aluminium} \\
+\bottomrule
+\end{tabularx}
+
+\subsection*{Phase 3 — Leg Build}
+\noindent
+\begin{tabularx}{\textwidth}{@{}l l X@{}}
+\toprule
+\textbf{Item} & \textbf{Qty} & \textbf{Source / Details} \\
+\midrule
+Custom AKE90-KV35 motors & 2+ & Custom wound \\
+EPC91200 inverter boards & 2-3 & Additional units \\
+Leg structural links & 1 set & PAHT-CF (light load) or \textbf{CNC aluminium} (high load) \\
+Encoders \& Wiring harness & 1 set & Buy / Make \\
+\bottomrule
+\end{tabularx}
+
+\section*{Open Questions}
+\begin{enumerate}[noitemsep, topsep=0pt]
+    \item \textbf{Load motor availability} — Is a load motor available in the lab? (Determines Path A vs B order)
+    \item \textbf{CNC access} — Lab or outsource? (Affects timeline for Path A dyno setup)
+    \item \textbf{Phase 3 leg spec} — What are the joint torque and ROM requirements? (Determines PAHT-CF vs aluminium)
+\end{enumerate}
+
+\end{document}

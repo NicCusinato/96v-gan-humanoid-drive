@@ -1,0 +1,1803 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\newenvironment{Shaded}{}{}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.00,0.50,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{#1}}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.00,0.50,0.00}{\textbf{#1}}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs,array}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+% fallback for those not using the hyperref driver hyperxmp:
+\makeatletter
+\@ifundefined{xmpquote}{\newcommand{\xmpquote}[1]{#1}}{}
+\makeatother
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+\section{Dyno Test Procedure --- CubeMars AKE80-8 with Inertia Leg \&
+LocoMuJoCo Policy
+Replay}\label{dyno-test-procedure-cubemars-ake80-8-with-inertia-leg-locomujoco-policy-replay}
+
+\textbf{Phase 2 \textbar{} Status: Draft \textbar{} Date: 2026-07-07}
+\textbf{Related KANs:} KAN-56 (comparative test framework) \textbf{Motor
+Under Test:} CubeMars AKE80-8 KV30 (QDD actuator, 8:1 planetary)
+\textbf{Board Under Test:} 96V GaN inverter (KAN-54) evaluated at both
+48V (Si-equivalent baseline) and 96V.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{1. Objectives \& Thesis
+Contribution}\label{objectives-thesis-contribution}
+
+\subsubsection{1.1 Purpose}\label{purpose}
+
+This procedure defines the comprehensive \textbf{hardware-in-the-loop
+validation} of the 96V GaN drive hypothesis under realistic humanoid
+gait loading. It builds upon the static \((T, \omega)\) sweep
+methodology from \href{../../../docs/KAN-56_test_plan.md}{KAN-56} by
+first establishing a full steady-state performance baseline, and then
+extending the testing to subject the motor and inverter to
+\textbf{dynamic, time-varying torque/speed profiles} extracted directly
+from trained LocoMuJoCo locomotion policies. This bridges the gap
+between:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Simulation} --- where we have full-body dynamics, trained
+  policies, and predicted joint trajectories (from
+  \texttt{MuJoCo/policies/Baseline\_Active\_Policy/})
+\item
+  \textbf{Hardware} --- where we measure real electrical losses, real
+  thermal behaviour, and real switching waveforms on an actual motor
+  driven by a real inverter
+\end{itemize}
+
+\subsubsection{1.2 Thesis Claims
+Supported}\label{thesis-claims-supported}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.1842}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.8158}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Claim
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Test(s) That Provide Evidence
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+96V GaN achieves higher cycle-averaged efficiency than a 48V
+Si-equivalent baseline under gait loading & T5, T6 \\
+GaN's lower switching losses enable higher \(f_{sw}\) and smaller dead
+time, improving Z-width (transparent impedance) & T2, T3 \\
+Higher bus voltage reduces \(I_{RMS}\) and thermal stress for the same
+mechanical output & T1, T4 \\
+Policy-driven load profiles produce different loss distributions than
+static grids & T1 vs T5/T6 \\
+Passive (activation-modulated) policies reduce electrical CoT versus
+active baselines & T8 \\
+GaN zero-reverse-recovery enables faster regen braking during dynamic
+motions & T7 \\
+\end{longtable}
+}
+
+\subsubsection{1.3 Why the AKE80-8?}\label{why-the-ake80-8}
+
+The CubeMars AKE80-8 is a commercially available QDD actuator with an
+8:1 planetary gearbox. Its specifications bracket the KBot leg
+actuators:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}llll@{}}
+\toprule\noalign{}
+Parameter & AKE80-8 & KBot Hip/Knee (RS-04) & KBot Ankle (RS-02) \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Gear ratio & 8:1 & 9:1 & 7.75:1 \\
+Peak torque & 30 Nm & 120 Nm & 17 Nm \\
+\(K_t\) & 0.32 Nm/A & 2.1 Nm/A & 1.22 Nm/A \\
+Rated voltage & 48 V & --- & --- \\
+Pole pairs & 21 & --- & --- \\
+\end{longtable}
+}
+
+The AKE80-8 can serve as a \textbf{surrogate joint actuator} for dyno
+testing: its gear ratio and QDD architecture are representative of
+humanoid leg joints, while its smaller torque rating keeps the dyno
+power requirements manageable. All results are expressed in per-unit or
+normalised form so they transfer to the full-scale RS-04/RS-02 drives.
+
+\begin{quote}
+\textbf{96V operation note:} The AKE80-8 is rated at 48V nominal. At
+96V, the motor sees 2× voltage headroom, which (a) doubles the
+theoretical no-load speed ceiling from 195 to \textasciitilde390 rpm,
+(b) halves the phase current for the same shaft power
+(\(P = V \cdot I\)), reducing \(I^2 R\) winding losses by up to 4×, and
+(c) gives the FOC current loop more voltage margin for faster transient
+response. The motor winding insulation must be verified for 96V
+operation before testing.
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{2. AKE80-8 Motor
+Characterization}\label{ake80-8-motor-characterization}
+
+\subsubsection{2.1 Datasheet Parameters}\label{datasheet-parameters}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}lllll@{}}
+\toprule\noalign{}
+Parameter & Symbol & Value & Unit & Source \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Torque constant & \(K_t\) & 0.32 & Nm/A & Datasheet \\
+Back-EMF constant & \(K_e\) & 33 & V/krpm & Datasheet \\
+Phase-to-phase resistance & \(R_{pp}\) & 870 & mΩ & Datasheet \\
+Phase resistance (star) & \(R_{ph}\) & 435 & mΩ & \(R_{pp}/2\) \\
+Phase-to-phase inductance & \(L_{pp}\) & 990 & µH & Datasheet \\
+Phase inductance (star) & \(L_{ph}\) & 495 & µH & \(L_{pp}/2\) \\
+Motor constant & \(K_m\) & 0.34 & Nm/√W & Datasheet \\
+Pole pairs & \(p\) & 21 & --- & Datasheet \\
+Gear ratio & \(N\) & 8 & :1 & Datasheet \\
+Peak output torque & \(\tau_{peak}\) & 30 & Nm & Datasheet \\
+Rated output torque & \(\tau_{rated}\) & 12 & Nm & Datasheet \\
+Peak current & \(I_{peak}\) & 12 & A & Datasheet \\
+Rated current & \(I_{rated}\) & 4.8 & A & Datasheet \\
+No-load speed & \(\omega_{NL}\) & 195 & rpm & Datasheet (at 48V) \\
+Rated speed & \(\omega_{rated}\) & 150 & rpm & Datasheet \\
+Electrical time constant & \(\tau_e\) & 1.13 & ms & Datasheet \\
+Backlash & --- & 9 & arcmin & Datasheet \\
+Weight & --- & 570 & g & Datasheet \\
+\end{longtable}
+}
+
+\subsubsection{2.2 Pre-Test Measurements (To Be Filled
+In)}\label{pre-test-measurements-to-be-filled-in}
+
+Before any dynamic testing, measure and record these on the bench with
+the motor disconnected from the dyno:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2558}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.3488}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2558}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1395}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Parameter
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Measured Value
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Instrument
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Date
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(R_{pp}\) at 25°C & \_\_\_\_\_\_\_ mΩ & LCR meter / 4-wire DMM & \\
+\(L_{pp}\) at 1 kHz & \_\_\_\_\_\_\_ µH & LCR meter & \\
+\(K_e\) (spin at known RPM, measure open-circuit Vpp) & \_\_\_\_\_\_\_
+V/krpm & Scope + tachometer & \\
+Cogging torque peak & \_\_\_\_\_\_\_ Nm & Torque sensor, slow manual
+rotation & \\
+Rotor inertia \(J_m\) (optional) & \_\_\_\_\_\_\_ kg·m² & Spin-down
+deceleration test & \\
+\end{longtable}
+}
+
+\subsubsection{2.3 Torque--Speed Envelope}\label{torquespeed-envelope}
+
+The operating envelope shifts dramatically between 48V and 96V supply:
+
+\begin{verbatim}
+Torque (Nm)
+  30 ┤ ████████                          Peak (transient < 1s)
+     │ ████████
+  12 ┤ ████████████████████               Rated (continuous)
+     │ █████████████████████████
+   0 ┤──────────────────────────────────── Speed (rpm)
+     0    50   100   150   195  ~390
+         ◄── 48V ──►  ◄─── 96V ───►
+\end{verbatim}
+
+At 96V, the constant-torque region extends further because the inverter
+has more bus voltage to overcome the back-EMF at high speed:
+
+\[
+\omega_{max}(V_{bus}) = \frac{V_{bus} - I \cdot R_{ph}}{K_e} \approx \frac{V_{bus}}{K_e}
+\]
+
+This is the primary electrical advantage being tested: for a given gait
+trajectory \((q(t), \dot{q}(t), \tau(t))\), the 96V drive operates
+deeper inside its constant-torque region, where the current loop has
+more voltage margin and the efficiency is highest.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{3. Inertia Leg Design --- Pendulum Arm
+Fixture}\label{inertia-leg-design-pendulum-arm-fixture}
+
+\begin{quote}
+\textbf{Important Hardware Split:} Phase A tests (static
+characterisation, steady-state \((T, \omega)\) grids) require constant
+torque at constant speed, which mathematically cannot be achieved on a
+swinging pendulum. \textbf{Phase A must be performed on a standard
+active dynamometer} (motor coupled to a load motor). \textbf{Phase B
+(dynamic policy replay)} requires realistic transient gravitational
+loading, which is provided by the pendulum arm fixture detailed below.
+\end{quote}
+
+\subsubsection{3.1 Concept}\label{concept}
+
+For Phase B policy testing, rather than machining steel flywheel discs,
+the motor is clamped securely to the edge of a sturdy workbench with its
+shaft horizontal. A steel or aluminium flat bar is attached to the
+output shaft via a rigid jaw coupler, pointing downwards under gravity,
+free to swing in the vertical plane.
+
+\begin{verbatim}
+    ┌─────────────────────────┐
+    │        TABLE            │
+    │                         │
+    │   ┌──────────┐          │
+    │   │ AKE80-8  │◄── Clamped to table edge
+    │   │  Motor   │
+    └───┤          ├──────────┘
+        └────┬─────┘
+             │ Output shaft (horizontal)
+             │
+        ┌────┴────┐
+        │ Coupler │
+        └────┬────┘
+             │
+             │  ◄── Steel / aluminium bar ("leg")
+             │
+             │       Length L, adjustable masses
+             │
+             ●  ◄── Clamp-on mass (m_tip)
+             │
+             ▼ gravity
+\end{verbatim}
+
+This approach has three major advantages over a traditional
+flywheel-on-horizontal-shaft dyno:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Free gravity loading} --- the pendulum arm experiences real
+  configuration-dependent gravitational torque
+  \(G(q) = -m g L_{COM} \sin(q)\), exactly like a real leg joint. No
+  software feedforward or load motor is needed to emulate gravity.
+\item
+  \textbf{Physically intuitive} --- it literally looks like a swinging
+  leg segment, making the test setup easy to explain in the thesis and
+  to visitors.
+\item
+  \textbf{Simple construction} --- a bar, a coupler, and some clamp-on
+  masses. No precision machining of flywheel discs required.
+\end{enumerate}
+
+\subsubsection{3.2 Inertia Targets}\label{inertia-targets}
+
+The KBot's sagittal-plane leg model (from
+\href{../../MuJoCo/kbot/leg_params.py}{\texttt{leg\_params.py}}) defines
+the inertia the motor should ``see'' at the joint side (after the
+gearbox). Three configurations:
+
+\paragraph{Configuration A --- Knee Joint
+Equivalent}\label{configuration-a-knee-joint-equivalent}
+
+From \href{../../MuJoCo/kbot/leg_params.py}{\texttt{leg\_params.py}}
+Model A (hip locked, ankle locked):
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.3030}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2424}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2121}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2424}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Quantity
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Symbol
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Value
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Source
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Shank + foot inertia about knee & \(I_{distal}\) & 0.1000 kg·m² &
+\texttt{leg\_params.py} L89 \\
+Reflected motor inertia at joint & \(J_{reflected}\) & 0.04 kg·m² &
+\(N^2 J_m\) (RS-04) \\
+\textbf{Total joint-side inertia} & \(I_{total}\) & \textbf{0.1400
+kg·m²} & \texttt{leg\_params.py} L95 \\
+Distal mass & \(m_{distal}\) & 2.294 kg & \(m_2 + m_3\) \\
+Distal COM distance from knee & \(d_{COM}\) & 0.0966 m &
+\texttt{leg\_params.py} L102 \\
+Gravity torque constants & \(a_g, b_g\) & 0.069, −0.371 kg·m &
+\texttt{leg\_params.py} L107-108 \\
+\end{longtable}
+}
+
+\paragraph{Configuration B --- Hip Pitch
+Equivalent}\label{configuration-b-hip-pitch-equivalent}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2703}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2162}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1892}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.3243}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Quantity
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Symbol
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Value
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Derivation
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Thigh inertia at COM & \(I_1\) & 0.1272 kg·m² & \texttt{leg\_params.py}
+L41 \\
+Thigh mass & \(m_1\) & 5.297 kg & \texttt{leg\_params.py} L25 \\
+Thigh COM distance & \(\|r_1\|\) & 0.1944 m & \texttt{leg\_params.py}
+L34 \\
+Thigh parallel-axis at hip & \(I_{1,hip}\) & \(I_1 + m_1 \|r_1\|^2\) =
+0.327 kg·m² & Parallel axis theorem \\
+Shank+foot about hip (approx.) & \(I_{2+3,hip}\) & ≈ 0.441 kg·m² &
+\(I_{distal} + m_{distal} \cdot l_1^2\) \\
+Reflected motor inertia & \(J_{reflected}\) & 0.04 kg·m² & \(N^2 J_m\)
+(RS-04) \\
+\textbf{Total joint-side inertia} & \(I_{hip,total}\) & \textbf{≈ 0.808
+kg·m²} & Sum \\
+Total distal mass & \(m_{leg}\) & 7.590 kg & \(m_1 + m_2 + m_3\) \\
+\end{longtable}
+}
+
+\paragraph{Configuration C --- Ankle Joint
+Equivalent}\label{configuration-c-ankle-joint-equivalent}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.3030}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2424}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2121}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2424}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Quantity
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Symbol
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Value
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Source
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Foot inertia at COM & \(I_3\) & 0.00189 kg·m² & \texttt{leg\_params.py}
+L43 \\
+Foot mass & \(m_3\) & 0.609 kg & \texttt{leg\_params.py} L27 \\
+Foot COM distance & \(\|r_3\|\) & 0.0353 m & \texttt{leg\_params.py}
+L36 \\
+Foot parallel-axis at ankle & \(I_{3,ankle}\) & \(I_3 + m_3 \|r_3\|^2\)
+= 0.00265 kg·m² & \\
+Reflected motor inertia & \(J_{reflected}\) & 0.0042 kg·m² & \(N^2 J_m\)
+(RS-02) \\
+\textbf{Total joint-side inertia} & \(I_{ankle,total}\) & \textbf{≈
+0.0069 kg·m²} & Sum \\
+\end{longtable}
+}
+
+\subsubsection{3.3 Pendulum Arm Sizing}\label{pendulum-arm-sizing}
+
+The pendulum arm must match \textbf{two quantities simultaneously}: the
+rotational inertia \(I_{target}\) and the gravity torque magnitude
+\(m g L_{COM}\) of the real leg segment.
+
+For a simple arm consisting of a light rigid bar (mass negligible) with
+a concentrated tip mass \(m_{tip}\) at distance \(L\) from the pivot:
+
+\[
+I_{arm} = m_{tip} \cdot L^2
+\] \[
+G_{arm}(q) = -m_{tip} \cdot g \cdot L \cdot \sin(q)
+\]
+
+Matching to the KBot values requires: \[
+m_{tip} = \frac{I_{target}}{L^2}, \qquad L = \frac{I_{target}}{m_{distal} \cdot d_{COM}}
+\]
+
+where \(m_{distal} \cdot d_{COM}\) is the first mass moment that sets
+the gravity torque amplitude. If the bar itself has significant mass
+\(m_{bar}\) distributed uniformly over length \(L_{bar}\), add
+\(\frac{1}{3} m_{bar} L_{bar}^2\) to the inertia.
+
+\paragraph{Pendulum Arm Sizing Table}\label{pendulum-arm-sizing-table}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.0870}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.2283}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1739}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.2174}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.2174}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.0761}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Config
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(I_{target}\) (kg·m²)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Bar Length \(L\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Tip Mass \(m_{tip}\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Gravity Torque Peak
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Notes
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{A --- Knee} & 0.140 & 0.30 m & 1.56 kg & 4.58 Nm & Matches KBot
+shank length \\
+\textbf{A --- Knee} & 0.140 & 0.40 m & 0.88 kg & 3.44 Nm & Longer bar,
+lighter mass \\
+\textbf{B --- Hip} & 0.808 & 0.40 m & 5.05 kg & 19.8 Nm & Heavy --- use
+thick steel bar \\
+\textbf{B --- Hip} & 0.808 & 0.50 m & 3.23 kg & 15.8 Nm & More
+manageable mass \\
+\textbf{C --- Ankle} & 0.0069 & 0.10 m & 0.69 kg & 0.68 Nm & Short stub
++ small mass \\
+\end{longtable}
+}
+
+\begin{quote}
+\textbf{Recommended starting configuration:} Config A with \(L = 0.30\)
+m (matches the KBot shank length \(l_2 = 0.292\) m) and
+\(m_{tip} \approx 1.6\) kg. Use a 25 mm × 6 mm steel flat bar
+(\(\approx 0.35\) kg for 300 mm length) with a 1.2 kg clamp-on mass at
+the tip. The bar's own inertia
+(\(\frac{1}{3} \times 0.35 \times 0.30^2 = 0.0105\) kg·m²) is small
+relative to the tip contribution (\(1.2 \times 0.30^2 = 0.108\) kg·m²),
+totalling \(\approx 0.119\) kg·m². Adjust tip mass position along the
+bar to fine-tune to the exact 0.140 kg·m² target.
+\end{quote}
+
+\subsubsection{3.4 Gravity Loading --- Built
+In}\label{gravity-loading-built-in}
+
+Unlike a horizontal-shaft flywheel dyno, the pendulum arm provides
+\textbf{real gravitational loading} automatically. The gravity torque at
+joint angle \(q\) (measured from the vertical hang-down position) is:
+
+\[
+G_{pend}(q) = -m_{tip} \cdot g \cdot L \cdot \sin(q)
+\]
+
+For Config A (\(m_{tip} = 1.56\) kg, \(L = 0.30\) m): - Peak gravity
+torque: \(1.56 \times 9.81 \times 0.30 = 4.59\) Nm - Compare to KBot
+knee gravity peak:
+\(g \cdot \sqrt{a_g^2 + b_g^2} = 9.81 \times 0.377 = 3.70\) Nm
+
+The pendulum slightly over-estimates the KBot knee gravity torque (4.59
+vs 3.70 Nm) because the KBot's COM is offset forward, not purely below
+the joint. This is an acceptable approximation for drive-system testing
+--- the motor sees realistic gravity-like loading, and the exact
+magnitude difference is within 25\%.
+
+\begin{quote}
+\textbf{For the non-policy tests (T1--T4 in §5), gravity loading simply
+adds realism.} The motor swings the pendulum back and forth while we
+measure efficiency. For later policy-replay tests, the gravity torque
+naturally shows up in the measured shaft torque.
+\end{quote}
+
+\subsubsection{3.5 Fixture Bill of
+Materials}\label{fixture-bill-of-materials}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1818}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.4242}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1515}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2424}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Item
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Specification
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Qty
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Purpose
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Table clamp / L-bracket & Steel, ≥ M8 bolts, rated ≥ 50 Nm reaction & 1
+& Secure motor to table edge \\
+Shaft coupler & Rigid jaw coupler, Ø8 mm bore (match AKE80-8 shaft) & 1
+& Connect motor to arm \\
+Steel flat bar & 25 × 6 mm, 1045 steel, 300--500 mm length & 1 &
+Pendulum arm \\
+Clamp-on masses & 0.5 kg and 1.0 kg, split-collar type & 2--3 &
+Adjustable inertia \\
+Shaft collar / set screws & Match coupler bore & 2 & Retain masses on
+bar \\
+End stop bolts (optional) & M6 shoulder bolts in clamp bracket & 2 &
+Limit swing angle to ±90° \\
+\end{longtable}
+}
+
+\subsubsection{3.6 Range-of-Motion
+Considerations}\label{range-of-motion-considerations}
+
+The pendulum can swing freely through 360° if the table overhang is
+sufficient. For most gait tests, the joint angle excursion is modest:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}lll@{}}
+\toprule\noalign{}
+Gait Mode & Typical Joint Excursion & Pendulum Swing \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Standing / static tests & ±5° & Negligible \\
+Squat & 0--60° (knee) & Moderate \\
+Walking & ±30° (hip pitch) & Moderate \\
+Jump & 0--90° (knee) & Large \\
+\end{longtable}
+}
+
+Ensure the table overhang allows at least ±100° of unobstructed swing.
+Install mechanical end stops (rubber bumpers on shoulder bolts) at ±100°
+to prevent the arm from wrapping around and hitting the table or wiring
+in case of a control fault.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{4. Policy-to-Hardware
+Pipeline}\label{policy-to-hardware-pipeline}
+
+\subsubsection{4.1 Overview}\label{overview}
+
+The pipeline converts a trained LocoMuJoCo policy into real-time motor
+commands:
+
+\begin{verbatim}
+┌──────────────────┐    ┌─────────────────┐    ┌──────────────────┐    ┌──────────┐
+│  Trained PPO     │    │  MuJoCo Rollout  │    │  Single-Joint    │    │  MCU     │
+│  Policy (.pkl)   │───►│  q(t), q̇(t),    │───►│  Trajectory      │───►│  Inverter│
+│                  │    │  τ(t) @ 50 Hz    │    │  Extraction      │    │  FOC     │
+└──────────────────┘    └─────────────────┘    └──────────────────┘    └──────────┘
+                                                       │
+                                                       ▼
+                                                ┌──────────────┐
+                                                │  CSV / Binary │
+                                                │  trajectory   │
+                                                │  file         │
+                                                └──────────────┘
+\end{verbatim}
+
+\subsubsection{4.2 Step 1 --- Policy Rollout in
+Simulation}\label{step-1-policy-rollout-in-simulation}
+
+Run each trained policy (from
+\texttt{MuJoCo/policies/Baseline\_Active\_Policy/}) in the full KBot
+MuJoCo model and record the complete state trajectory:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Pseudocode — run in the LocoMuJoCo training environment}
+\ControlFlowTok{for}\NormalTok{ policy\_name }\KeywordTok{in}\NormalTok{ [}\StringTok{"walk\_07\_12"}\NormalTok{, }\StringTok{"run\_38\_03"}\NormalTok{, }\StringTok{"jump\_75\_01"}\NormalTok{]:}
+\NormalTok{    policy }\OperatorTok{=}\NormalTok{ load\_policy(}\SpecialStringTok{f"policies/Baseline\_Active\_Policy/}\SpecialCharTok{\{}\NormalTok{policy\_name}\SpecialCharTok{\}}\SpecialStringTok{/PPOJax\_saved.pkl"}\NormalTok{)}
+\NormalTok{    env }\OperatorTok{=}\NormalTok{ make\_kbot\_env(model\_path}\OperatorTok{=}\StringTok{"kbot/robot\_legs.mjcf"}\NormalTok{)}
+    
+\NormalTok{    trajectory }\OperatorTok{=}\NormalTok{ []}
+\NormalTok{    obs }\OperatorTok{=}\NormalTok{ env.reset()}
+    \ControlFlowTok{for}\NormalTok{ step }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(N\_steps):}
+\NormalTok{        action }\OperatorTok{=}\NormalTok{ policy(obs)}
+\NormalTok{        obs, reward, done, info }\OperatorTok{=}\NormalTok{ env.step(action)}
+\NormalTok{        trajectory.append(\{}
+            \StringTok{"t"}\NormalTok{: step }\OperatorTok{*}\NormalTok{ env.dt,}
+            \StringTok{"qpos"}\NormalTok{: env.data.qpos.copy(),        }\CommentTok{\# All joint positions}
+            \StringTok{"qvel"}\NormalTok{: env.data.qvel.copy(),        }\CommentTok{\# All joint velocities  }
+            \StringTok{"ctrl"}\NormalTok{: env.data.ctrl.copy(),        }\CommentTok{\# All actuator commands}
+            \StringTok{"qfrc\_actuator"}\NormalTok{: env.data.qfrc\_actuator.copy()  }\CommentTok{\# Actual joint torques}
+\NormalTok{        \})}
+\NormalTok{    save\_trajectory(trajectory, }\SpecialStringTok{f"phase2/measurements/trajectories/}\SpecialCharTok{\{}\NormalTok{policy\_name}\SpecialCharTok{\}}\SpecialStringTok{.npz"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Alternatively, use the existing
+\href{../../MuJoCo/controllers/gait_replay.py}{\texttt{GaitReplay}}
+class with pre-recorded \texttt{.npz} clips to replay existing motion
+capture data through the WBC controller and record the resulting joint
+torques.
+
+\subsubsection{4.3 Step 2 --- Single-Joint Trajectory
+Extraction}\label{step-2-single-joint-trajectory-extraction}
+
+Extract the trajectory for the specific joint being tested (e.g., left
+knee pitch):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Extract single{-}joint trajectory for dyno replay}
+\NormalTok{joint\_idx }\OperatorTok{=} \DecValTok{18}  \CommentTok{\# dof\_left\_knee\_04 nn\_id from metadata.json}
+
+\NormalTok{q\_joint }\OperatorTok{=}\NormalTok{ trajectory[}\StringTok{"qpos"}\NormalTok{][:, joint\_qpos\_idx]     }\CommentTok{\# Joint{-}side position [rad]}
+\NormalTok{qdot\_joint }\OperatorTok{=}\NormalTok{ trajectory[}\StringTok{"qvel"}\NormalTok{][:, joint\_qvel\_idx]   }\CommentTok{\# Joint{-}side velocity [rad/s]}
+\NormalTok{tau\_joint }\OperatorTok{=}\NormalTok{ trajectory[}\StringTok{"qfrc\_actuator"}\NormalTok{][:, joint\_idx] }\CommentTok{\# Joint{-}side torque [Nm]}
+
+\CommentTok{\# Convert to motor{-}side quantities for the AKE80{-}8}
+\NormalTok{N }\OperatorTok{=} \DecValTok{8}  \CommentTok{\# AKE80{-}8 gear ratio}
+\NormalTok{q\_motor }\OperatorTok{=}\NormalTok{ N }\OperatorTok{*}\NormalTok{ q\_joint               }\CommentTok{\# Motor position [rad]}
+\NormalTok{qdot\_motor }\OperatorTok{=}\NormalTok{ N }\OperatorTok{*}\NormalTok{ qdot\_joint          }\CommentTok{\# Motor velocity [rad/s]}
+\NormalTok{tau\_motor }\OperatorTok{=}\NormalTok{ tau\_joint }\OperatorTok{/}\NormalTok{ N            }\CommentTok{\# Motor torque [Nm]}
+\NormalTok{I\_motor }\OperatorTok{=}\NormalTok{ tau\_motor }\OperatorTok{/}\NormalTok{ Kt\_AKE80      }\CommentTok{\# Motor current [A]  (Kt = 0.32 Nm/A)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{4.4 Step 3 --- Torque
+Scaling}\label{step-3-torque-scaling}
+
+The KBot RS-04 knee actuator (\(K_t = 2.1\) Nm/A, \(N = 9\),
+\(\tau_{peak} = 120\) Nm) is significantly larger than the AKE80-8.
+Direct replay of RS-04 torques would saturate the AKE80-8 (30 Nm peak).
+We apply per-unit normalisation:
+
+\[
+\tau_{AKE80}(t) = \tau_{policy}(t) \cdot \frac{\tau_{peak,AKE80}}{\tau_{peak,RS\text{-}04}}
+= \tau_{policy}(t) \cdot \frac{30}{120} = 0.25 \cdot \tau_{policy}(t)
+\]
+
+This preserves the \textbf{shape} of the torque waveform (which
+determines the loss profile) while scaling the \textbf{amplitude} to fit
+within the AKE80-8's capability. All efficiency results are then
+reported in per-unit form:
+
+\[
+\eta(\hat{\tau}, \hat{\omega}) \quad \text{where} \quad \hat{\tau} = \frac{\tau}{\tau_{rated}}, \quad \hat{\omega} = \frac{\omega}{\omega_{rated}}
+\]
+
+Similarly, scale velocity to respect the AKE80-8 speed limit:
+
+\[
+\omega_{AKE80}(t) = \omega_{policy}(t) \cdot \frac{\omega_{NL,AKE80}}{\omega_{NL,RS\text{-}04}}
+\]
+
+\subsubsection{4.5 Step 4 --- Gravity Compensation (Not
+Required)}\label{step-4-gravity-compensation-not-required}
+
+Because the pendulum arm fixture (§3.4) provides \textbf{real
+gravitational loading}, there is no need to inject a software gravity
+feedforward into the torque command. The motor naturally experiences
+configuration-dependent gravity torque from the swinging arm.
+
+The policy-derived torque command is sent directly:
+
+\[
+\tau_{cmd}(t) = \tau_{AKE80,scaled}(t)
+\]
+
+\begin{quote}
+\textbf{Note:} If the pendulum arm's gravity torque magnitude differs
+significantly from the KBot joint's gravity torque (see §3.4
+comparison), a small correction term can optionally be added:
+\(\Delta G = G_{KBot}(q) - G_{pend}(q)\), scaled appropriately. For this
+first test campaign, this correction is omitted --- the 25\% difference
+is acceptable for drive-system characterisation.
+\end{quote}
+
+\subsubsection{4.6 Step 5 --- Real-Time Streaming to
+MCU}\label{step-5-real-time-streaming-to-mcu}
+
+The final trajectory is streamed to the inverter MCU as a time-indexed
+table:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1410}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2179}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.3205}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2436}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.0769}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Time (ms)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(q_{ref}\) (rad)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\dot{q}_{ref}\) (rad/s)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(\tau_{ff}\) (Nm)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Mode
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0 & 0.000 & 0.000 & 0.120 & POS+FF \\
+20 & 0.015 & 0.750 & 0.135 & POS+FF \\
+40 & 0.058 & 1.420 & 0.189 & POS+FF \\
+\ldots{} & \ldots{} & \ldots{} & \ldots{} & \ldots{} \\
+\end{longtable}
+}
+
+The MCU interpolates between table entries at its internal control rate
+(≥20 kHz current loop). The control mode is PD position tracking with
+torque feedforward:
+
+\[
+\tau_{cmd} = K_p(q_{ref} - q) + K_d(\dot{q}_{ref} - \dot{q}) + \tau_{ff}
+\]
+
+This is identical to the controller in
+\href{../../docs/kbot_leg_control_math.md}{\texttt{kbot\_leg\_control\_math.md}}
+§5, ensuring consistency between simulation and hardware.
+
+\subsubsection{4.7 Which Policies to
+Replay}\label{which-policies-to-replay}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1455}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1455}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.4364}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2727}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Policy
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Source
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Joint Loading Character
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Primary Tests
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{walk} & Active \& Passive Policies & Periodic, moderate
+amplitude sinusoidal loading & T5, T8 \\
+\texttt{run} & Active \& Passive Policies & High frequency periodic
+loading & T8 \\
+\texttt{jump} & Active \& Passive Policies & Impulsive, high peak
+torque, regen braking & T7, T8 \\
+\texttt{squat} & Active Policy & Slow, high-torque, quasi-static & T6 \\
+\texttt{step\_in\_place} & Active Policy & Periodic with impact
+transients & T6 \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{5. Test Matrix}\label{test-matrix}
+
+All tests evaluate the \textbf{96V GaN inverter board} driving the
+AKE80-8 motor. To demonstrate the benefits of the GaN architecture
+without needing a separate Si board, we define a \textbf{``Si-equivalent
+baseline''} (48V bus, 20--50 kHz \(f_{sw}\), 500 ns dead time) and
+compare it against the \textbf{``GaN-advanced''} configuration (96V bus,
+up to 100 kHz \(f_{sw}\), \textless100 ns dead time).
+
+\textbf{Test order:} Phase 0 (Sim) → Phase A (T1--T4) → Phase B
+(T5--T8). Allow the motor to cool to ambient between physical tests.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsubsection{Phase 0 --- MATLAB/Simulink Co-Simulation (Virtual
+Dyno)}\label{phase-0-matlabsimulink-co-simulation-virtual-dyno}
+
+\textbf{Purpose:} Establish a theoretical ``ground truth'' performance
+baseline derived directly from MOSFET and motor datasheet parameters,
+before any physical hardware is spun.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Virtual Dyno Simulation:} Model the GaN inverter, the AKE80-8
+  motor, and a standard load motor in Simscape Electrical. Run nested
+  loops commanding constant speeds and constant load torques to generate
+  a theoretical \((T, \omega)\) efficiency heatmap.
+\item
+  \textbf{Loss Breakdown:} Extract theoretical switching vs.~conduction
+  loss ratios for both the ``Si-baseline'' and ``GaN-advanced''
+  parameters.
+\item
+  \textbf{FOC Pre-Tuning:} Safely tune the PI gains (\(K_p, K_i\)) for
+  the 96V system in simulation to ensure stable tracking bandwidth
+  before running high-power physical tests.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsubsection{Phase A --- Hardware Characterisation (Standard
+Dyno)}\label{phase-a-hardware-characterisation-standard-dyno}
+
+\begin{quote}
+\textbf{Prerequisites:} Phase 0 theoretical baselines established. Motor
+mounted to the \textbf{Standard Active Dynamometer} and coupled to the
+load motor.
+\end{quote}
+
+\subsubsection{T1 --- Static Efficiency Map \& Voltage
+Comparison}\label{t1-static-efficiency-map-voltage-comparison}
+
+\textbf{Purpose:} Establish the \((T, \omega)\) efficiency grid as a
+reference, and prove the bus voltage advantage (48V vs 96V) under
+steady-state conditions.
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.6111}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.3889}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Parameter
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Value
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Configurations & \textbf{48V} (Si-baseline \(f_{sw}\)/DT) vs
+\textbf{96V} (GaN \(f_{sw}\)/DT) \\
+Setup & \textbf{Standard Active Dynamometer} (motor coupled to load
+motor) \\
+Torques & 1, 3, 6, 9, 12 Nm (held constant by load motor) \\
+Speeds & 10, 30, 60, 100, 150 rpm (held constant by drive motor) \\
+Hold time & 10 s per point (after thermal settling) \\
+Logging & V\_bus, I\_bus, τ\_shaft, ω\_shaft, T\_case, T\_heatsink \\
+\end{longtable}
+}
+
+\textbf{Analysis:} Generate efficiency heatmap \(\eta(T, \omega)\) for
+each configuration. Compare \(I_{RMS}\) between 48V and 96V (expecting
+≈50\% reduction at 96V). These maps are the fundamental dataset ---
+later policy tests will overlay their operating trajectories onto these
+maps.
+
+\subsubsection{T2 --- Switching Frequency
+Sweep}\label{t2-switching-frequency-sweep}
+
+\textbf{Purpose:} Quantify the efficiency vs.~switching frequency
+trade-off, showing that GaN can operate at high \(f_{sw}\) without the
+severe efficiency penalty seen in Si.
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}ll@{}}
+\toprule\noalign{}
+Parameter & Value \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Profile & Constant speed \(\omega\), varying load torque \\
+\(f_{sw}\) values & 20, 50, 75, 100 kHz \\
+Duration & 60 s per frequency \\
+Setup & Standard Active Dynamometer, fixed 96V bus, same dead time \\
+\end{longtable}
+}
+
+\textbf{Analysis:} - Plot \(\eta_{cycle}\) vs.~\(f_{sw}\) (expect a
+relatively flat curve for GaN) - Current ripple \(\Delta I_{pp}\)
+vs.~\(f_{sw}\) - EMI spectrum comparison at each \(f_{sw}\) (if spectrum
+analyser available)
+
+\subsubsection{T3 --- Dead Time \& Z-Width
+Characterisation}\label{t3-dead-time-z-width-characterisation}
+
+\textbf{Purpose:} Directly measure the control benefits of GaN's
+switching speed. Smaller dead time reduces voltage distortion, which in
+turn improves the ``Z-width'' --- the range of mechanical impedances
+(from free-swinging transparency to stiff position holding) the drive
+can render without instability.
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.6111}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.3889}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Parameter
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Value
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Profile & Constant speed, constant load torque (e.g.~100 RPM, 6 Nm) \\
+Dead times & 500 ns (Si-equivalent), 200 ns, 100 ns, 50 ns
+(GaN-optimised) \\
+Setup & Standard Active Dynamometer, 50 kHz \(f_{sw}\), 96V bus \\
+\end{longtable}
+}
+
+\textbf{Analysis:} - \textbf{Z-width:} Measure uncommanded drag torque
+(friction) during manual backdriving at zero torque. - Voltage
+distortion and phase current THD at different dead times. - Show that 50
+ns dead time allows significantly higher virtual stiffness before limit
+cycles (chatter) occur.
+
+\subsubsection{T4 --- Thermal Soak}\label{t4-thermal-soak}
+
+\textbf{Purpose:} Characterise steady-state thermal performance at
+worst-case operating point (highest losses from T1 map). Determines the
+continuous rating of the drive under realistic loading.
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.6111}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.3889}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Parameter
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Value
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Configurations & \textbf{48V} (Si-baseline) vs \textbf{96V}
+(GaN-advanced) \\
+Profile & Continuous steady-state operation at the worst-case
+\((T,\omega)\) from T1 \\
+Setup & Standard Active Dynamometer \\
+Duration & 20--30 min or until \(dT/dt < 0.5\) °C/min \\
+Logging & T\_case, T\_heatsink, T\_winding, T\_ambient @ 1 Hz;
+electrical @ 10 kHz \\
+\end{longtable}
+}
+
+\textbf{Analysis:} - Thermal time constant \(\tau_{th}\) from
+exponential fit - Maximum continuous torque at thermal limit for each
+configuration - Show that 96V operation allows significantly longer
+sustained peak torque due to lower \(I^2 R\) heating.
+
+\subsubsection{Phase A Conclusion --- Parameter
+Optimization}\label{phase-a-conclusion-parameter-optimization}
+
+Before proceeding to Phase B, the data from T1--T4 must be used to
+\textbf{select the optimal FOC parameters} for the GaN drive. These
+locked-in parameters will define the ``GaN-advanced'' configuration used
+for all policy replay tests:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Optimal \(f_{sw}\):} Chosen from T2 to balance switching
+  losses against current ripple.
+\item
+  \textbf{Optimal Dead Time:} Chosen from T3 to maximize Z-width
+  (transparency) without causing shoot-through.
+\item
+  \textbf{FOC Tuning:} Current loop PI gains (\(K_p, K_i\)) optimized
+  for the selected \(f_{sw}\) and 96V bus to ensure maximum tracking
+  bandwidth.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsubsection{Phase B --- Policy-Driven Dynamic
+Loading}\label{phase-b-policy-driven-dynamic-loading}
+
+\begin{quote}
+\textbf{Prerequisites:} T1--T4 complete. Measurement chain validated.
+Optimal GaN parameters (\(f_{sw}\), dead time, PI gains) locked in based
+on Phase A results. \textbf{Motor moved to Pendulum Arm Fixture.} Policy
+trajectory files exported (see §4). Pendulum arm inertia verified.
+\end{quote}
+
+\subsubsection{T5 --- Walking Policy
+Replay}\label{t5-walking-policy-replay}
+
+\textbf{Purpose:} Measure cycle-averaged electrical efficiency under
+realistic periodic walking loading.
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}ll@{}}
+\toprule\noalign{}
+Parameter & Value \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Policy & \texttt{walk} policy trajectory (active) \\
+Duration & 60 s continuous (≈60 gait cycles at 1 Hz stepping) \\
+Pendulum arm & Config A (knee) or Config B (hip) \\
+Logging rate & ≥ 10 kHz synchronised \\
+\end{longtable}
+}
+
+\textbf{Analysis:} - Cycle-averaged efficiency:
+\(\eta_{cycle} = \frac{\int_0^{T_{cycle}} P_{out} \, dt}{\int_0^{T_{cycle}} P_{in} \, dt}\)
+- \(I_{RMS}\) per gait cycle - Thermal rise over 60 s - Loss
+segregation: conduction (\(I^2 R\)) vs switching
+(\(f_{sw} \cdot E_{sw}\)) - Overlay the trajectory's \((T, \omega)\)
+trace on the T1 efficiency map
+
+\subsubsection{T6 --- Squat and Step-in-Place
+Replay}\label{t6-squat-and-step-in-place-replay}
+
+\textbf{Purpose:} Characterise performance under two additional gait
+primitives: - \textbf{Squat} --- high-torque, low-speed quasi-static
+loading (worst case for conduction losses) - \textbf{Step-in-place} ---
+periodic loading with impact-like transients
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.6111}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.3889}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Parameter
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Value
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Policy & \texttt{squat} and \texttt{step\_in\_place} policies \\
+Profile & 0.3 Hz (squat) and 1 Hz (step) \\
+Duration & 30 s squat + 60 s stepping \\
+Focus metrics & Peak \(\tau\), peak \(I\), bus ripple (squat); CoT,
+transient quality (step) \\
+\end{longtable}
+}
+
+\textbf{Analysis:} - Squat: GaN's lower \(R_{DS(on)}\) advantage under
+high-current, low-speed stress - Step: Electrical Cost of Transport
+\(CoT_e\), current tracking at swing/stance transitions
+
+\subsubsection{T7 --- Jump Policy Replay}\label{t7-jump-policy-replay}
+
+\textbf{Purpose:} Characterise peak power delivery and regenerative
+braking under highly dynamic impulsive loading.
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.6111}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.3889}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Parameter
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Value
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Profile & \texttt{jump} policy trajectory (active) \\
+Duration & 2 s per jump × 5 repetitions, 30 s rest between \\
+Focus metric & Peak current, peak power, regen energy, bus voltage
+transient \\
+\end{longtable}
+}
+
+\textbf{Analysis:} - Peak instantaneous power
+\(P_{peak} = \tau_{peak} \cdot \omega_{peak}\) - Regenerative energy
+captured: \(E_{regen} = \int_{braking} P_{bus} \, dt\) (when
+\(I_{bus} < 0\)) - GaN advantage: zero-reverse-recovery diode loss
+during regen commutation
+
+\subsubsection{T8 --- Active vs.~Passive Policy
+Comparison}\label{t8-active-vs.-passive-policy-comparison}
+
+\textbf{Purpose:} Directly measure the electrical energy savings of the
+activation-modulated passive policy (from the
+\href{../../MuJoCo/docs/passive_policy_research.md}{Hybrid
+Constrained-Activation framework}) versus the standard active baseline.
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.6111}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.3889}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Parameter
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Value
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Profiles & Active vs.~Passive implementations of \texttt{walk},
+\texttt{run}, and \texttt{jump} \\
+Duration & 60 s each \\
+Controlled variables & Same pendulum arm, same inverter, same motor,
+same speed \\
+\end{longtable}
+}
+
+\textbf{Analysis:} -
+\(\Delta I_{RMS} = I_{RMS,active} - I_{RMS,passive}\) -
+\(\Delta P_{loss} = P_{loss,active} - P_{loss,passive}\) -
+\(\Delta \eta = \eta_{passive} - \eta_{active}\) - Per-joint activation
+parameter \(\alpha(t)\) correlation with measured current reduction
+
+\begin{quote}
+\textbf{Note:} This test requires the passive policy to be fully
+trained. If not ready by the time the dyno is operational, run T8 later
+as a follow-up. Tests T1--T7 are all executable with existing hardware
+and active baseline policies.
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{6. Instrumentation \& Measurement
+Setup}\label{instrumentation-measurement-setup}
+
+\subsubsection{6.1 Equipment List}\label{equipment-list}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.2250}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.4750}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Instrument
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Purpose
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Min. Specification
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+DC power supply (programmable) & Bus voltage source & 0--100 V, ≥ 15 A,
+current-limited \\
+Power analyser or precision shunt + DMM & DC bus power:
+\(P_{in} = V_{bus} \cdot I_{bus}\) & ±0.1\% accuracy, ≥ 100 kHz BW \\
+Inline torque sensor & Shaft torque \(\tau_{shaft}\) & ≥ 50 Nm range, ≤
+0.1\% FS accuracy \\
+Rotary encoder & Motor position \(\theta\), velocity \(\omega\) & ≥ 4096
+CPR, index pulse \\
+Current probes (×3) & Phase currents \(i_a, i_b, i_c\) & Hall-effect or
+Rogowski, ≥ 500 kHz BW \\
+Differential voltage probes (×2) & \(V_{bus}\) and \(V_{phase}\) & ≥ 100
+V, ≥ 100 MHz BW \\
+Thermocouples (×4) & \(T_{GaN/FET}\), \(T_{heatsink}\), \(T_{winding}\)
+(if accessible), \(T_{ambient}\) & Type K, ±1°C \\
+Oscilloscope & Switching waveform capture (\(V_{DS}\), \(V_{GS}\),
+\(i_{phase}\)) & ≥ 200 MHz, ≥ 1 GS/s \\
+DAQ system & Synchronised multi-channel logging & ≥ 10 kHz sample rate,
+≥ 8 channels \\
+LISN (optional) & Conducted EMI measurement & Per CISPR standards \\
+Spectrum analyser (optional) & EMI frequency analysis & 150 kHz -- 30
+MHz \\
+Thermal camera (optional) & Hotspot mapping & FLIR or equivalent \\
+\end{longtable}
+}
+
+\subsubsection{6.2 Measurement
+Architecture}\label{measurement-architecture}
+
+\begin{verbatim}
+                    ┌─────────────┐
+    DC Supply ──────┤ Power       │
+    (48V or 96V)    │ Analyser    ├──── V_bus, I_bus, P_in  ──► DAQ Ch 1-3
+                    └──────┬──────┘
+                           │ DC Bus
+                    ┌──────▼──────┐
+                    │  Inverter   │
+                    │  Board      │──── T_case (TC) ────────► DAQ Ch 7
+                    │  (GaN/Si)   │
+                    └──────┬──────┘
+                      3-ph │ AC    ──── i_a, i_b, i_c ─────► DAQ Ch 4-6
+                    ┌──────▼──────┐         (current probes)
+                    │  AKE80-8    │
+                    │  Motor      │──── T_winding (TC) ─────► DAQ Ch 8
+                    └──────┬──────┘
+                           │ Shaft
+                    ┌──────▼──────┐
+                    │  Torque     │──── τ_shaft ────────────► DAQ Ch 9
+                    │  Sensor     │──── ω_shaft ────────────► DAQ Ch 10
+                    └──────┬──────┘
+                           │
+                    ┌──────▼──────┐
+                    │  Pendulum   │
+                    │  Arm + Mass │
+                    └──────│──────┘
+                           │
+                           ● tip mass
+                           │
+                           ▼ gravity
+\end{verbatim}
+
+\subsubsection{6.3 Wiring \& Grounding
+Rules}\label{wiring-grounding-rules}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Star ground} --- single ground reference point for all
+  measurement equipment
+\item
+  \textbf{Identical DC bus wiring} for both inverter boards (same cable
+  length, gauge, connectors)
+\item
+  \textbf{Shield all analogue signals} --- twisted-pair or coax from
+  sensors to DAQ
+\item
+  \textbf{Keep current probe loops small} --- route phase wires through
+  probes close to inverter output
+\item
+  \textbf{Oscilloscope probe ground} --- use tip-and-barrel differential
+  probing for \(V_{DS}\); do NOT use scope ground clip at high-side
+\end{enumerate}
+
+\subsubsection{6.4 Safety Requirements}\label{safety-requirements}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{96V hazard} --- while below typical ``dangerous voltage''
+  thresholds, 96V can deliver lethal current through low-impedance
+  paths. Use insulated connectors, shrouded terminals, and do not work
+  on energised circuits.
+\item
+  \textbf{Emergency stop (E-stop)} --- hardware E-stop that disconnects
+  DC bus. Reachable from the operator position. Tested before every
+  session.
+\item
+  \textbf{Over-current protection} --- DC supply current limit set to 15
+  A. Inverter-side over-current trip at 15 A phase (both SW and HW).
+\item
+  \textbf{Swing zone clearance} --- the pendulum arm sweeps a vertical
+  arc. Mark a clear zone on the floor (radius = arm length + 15 cm
+  margin). No hands, cables, or equipment in the swing zone during
+  operation. Install mechanical end stops at ±100°.
+\item
+  \textbf{Thermal shutdown} --- software thermal limit at
+  \(T_{case} = 100°C\). Manual abort if any component exceeds 80°C
+  unexpectedly.
+\item
+  \textbf{Motor insulation check} --- before applying 96V, verify motor
+  winding insulation with a megohmmeter (hipot) at ≥ 250V DC, confirm ≥
+  100 MΩ.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{7. Test Procedures
+(Step-by-Step)}\label{test-procedures-step-by-step}
+
+\subsubsection{7.1 Common Pre-Test
+Checklist}\label{common-pre-test-checklist}
+
+Run this before \textbf{every} test session (adapted from KAN-56 §4.1):
+
+\begin{itemize}
+\tightlist
+\item[$\square$]
+  Visually inspect motor, clamp, coupler, pendulum arm, torque sensor,
+  and all wiring
+\item[$\square$]
+  Verify pendulum arm masses are secure (clamp screws tight, no play)
+\item[$\square$]
+  Confirm swing zone is clear of cables, tools, and personnel
+\item[$\square$]
+  Verify gate drive supplies (+5V for GaN, +12V for Si gate drivers)
+  with no HV applied
+\item[$\square$]
+  Verify encoder readings: rotate shaft by hand, confirm position and
+  velocity are correct
+\item[$\square$]
+  Verify thermocouple readings: all reading ambient ±2°C
+\item[$\square$]
+  Set DC supply current limit (15 A)
+\item[$\square$]
+  Power up at reduced bus voltage (20V), run no-load spin at low speed,
+  verify:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Phase currents are balanced
+  \item
+    No audible noise, vibration, or hot spots
+  \item
+    Switching waveforms (\(V_{DS}\), \(V_{GS}\)) are clean on scope
+  \end{itemize}
+\item[$\square$]
+  Ramp to full bus voltage (48V or 96V), repeat checks
+\item[$\square$]
+  Arm and test E-stop
+\item[$\square$]
+  Start DAQ logging, verify all channels are acquiring
+\item[$\square$]
+  Record ambient temperature and humidity in log
+\item[$\square$]
+  Document any deviations in \texttt{RESEARCH\_LOG.md}
+\end{itemize}
+
+\subsubsection{7.2 Per-Test Procedure
+Template}\label{per-test-procedure-template}
+
+For each test (T1--T8):
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Load the trajectory file} for this test onto the MCU (or
+  select the correct profile)
+\item
+  \textbf{Configure test parameters} (bus voltage, switching frequency,
+  pendulum arm config)
+\item
+  \textbf{Start DAQ recording} --- filename format:
+  \texttt{YYYY-MM-DD\_T\{N\}\_\{board\}\_\{fsw\}kHz\_\{Vbus\}V.csv}
+\item
+  \textbf{Start the trajectory replay} on the inverter
+\item
+  \textbf{Monitor} temperatures, currents, and bus voltage in real time
+  during the test
+\item
+  \textbf{Wait} for the prescribed duration
+\item
+  \textbf{Stop trajectory replay} and allow motor to coast to a stop
+\item
+  \textbf{Stop DAQ recording}
+\item
+  \textbf{Allow motor to cool} to within 5°C of ambient before next test
+\item
+  \textbf{Transfer raw data} to
+  \texttt{data\_raw/YYYY-MM-DD\_phase2\_dyno\_T\{N\}/}
+\item
+  \textbf{Log observations} in \texttt{RESEARCH\_LOG.md}
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{8. Data Processing \&
+Analysis}\label{data-processing-analysis}
+
+\subsubsection{8.1 Primary Metrics}\label{primary-metrics}
+
+All analysis scripts should be placed in
+\texttt{phase2/measurements/analysis/} and produce publication-ready
+figures.
+
+\paragraph{Instantaneous Efficiency}\label{instantaneous-efficiency}
+
+\[
+\eta(t) = \frac{P_{out}(t)}{P_{in}(t)} = \frac{\tau_{shaft}(t) \cdot \omega_{shaft}(t)}{V_{bus}(t) \cdot I_{bus}(t)}
+\]
+
+\paragraph{Cycle-Averaged Efficiency}\label{cycle-averaged-efficiency}
+
+\[
+\eta_{cycle} = \frac{\int_0^{T_{cycle}} \tau \cdot \omega \, dt}{\int_0^{T_{cycle}} V_{bus} \cdot I_{bus} \, dt}
+= \frac{E_{mech,cycle}}{E_{elec,cycle}}
+\]
+
+\paragraph{RMS Phase Current}\label{rms-phase-current}
+
+\[
+I_{RMS} = \sqrt{\frac{1}{T} \int_0^T i_a^2(t) \, dt}
+\]
+
+\paragraph{Electrical Cost of
+Transport}\label{electrical-cost-of-transport}
+
+\[
+CoT_e = \frac{E_{elec,cycle}}{m_{robot} \cdot g \cdot d_{stride}}
+\]
+
+where \(m_{robot} = 21.07\) kg (legs-only mass from
+\texttt{leg\_params.py}: \(2 \times (m_1 + m_2 + m_3)
++ \text{torso}\)), \(g = 9.81\) m/s², and \(d_{stride}\) is the
+displacement per gait cycle from the policy. Since we are testing a
+single joint, report this as a \textbf{per-joint contribution} to the
+total CoT.
+
+\paragraph{Loss Segregation}\label{loss-segregation}
+
+\[
+P_{total} = P_{in} - P_{out}
+\] \[
+P_{Cu} = 3 \cdot I_{RMS}^2 \cdot R_{ph}(T_{winding}) \quad \text{(copper losses)}
+\] \[
+P_{Fe} \approx P_{total} - P_{Cu} - P_{sw} \quad \text{(iron/core losses, by subtraction)}
+\] \[
+P_{sw} \approx f_{sw} \cdot (E_{on} + E_{off}) \quad \text{(switching losses, from waveform analysis)}
+\]
+
+Note: \(R_{ph}\) must be temperature-corrected using the measured
+winding temperature: \[
+R_{ph}(T) = R_{ph,25°C} \cdot \left(1 + \alpha_{Cu}(T - 25°C)\right), \quad \alpha_{Cu} = 0.00393 \, °C^{-1}
+\]
+
+\subsubsection{8.2 Thermal Analysis}\label{thermal-analysis}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Thermal time constant} \(\tau_{th}\): fit an exponential
+  \(T(t) = T_\infty - (T_\infty - T_0) e^{-t/\tau_{th}}\) to the soak
+  test temperature data
+\item
+  \textbf{Thermal resistance}
+  \(R_{th,j-a} = (T_{case} - T_{ambient}) / P_{loss}\) at steady state
+\end{itemize}
+
+\subsubsection{8.3 Statistical
+Requirements}\label{statistical-requirements}
+
+\begin{itemize}
+\tightlist
+\item
+  Each test must be repeated \textbf{≥ 3 times} (minimum)
+\item
+  Report \textbf{mean ± standard deviation} for all primary metrics
+\item
+  Use the same ambient conditions (within ±3°C) for all repeats
+\item
+  If any repeat deviates by \textgreater{} 2σ, investigate and either
+  explain or discard (with justification)
+\end{itemize}
+
+\subsubsection{8.4 Key Comparison Plots (for
+Thesis)}\label{key-comparison-plots-for-thesis}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Figure
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+X-axis
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Y-axis
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Curves
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Efficiency map & Speed (rpm) & Torque (Nm) & Colour = η; one map per
+inverter \\
+Walking efficiency time series & Time (s) & η(t), I(t), τ(t) & GaN vs Si
+overlay \\
+Cycle efficiency bar chart & Test (T1--T8) & η\_cycle (\%) & GaN vs Si
+side-by-side \\
+I\_RMS comparison & Gait mode & I\_RMS (A) & 48V vs 96V \\
+Thermal rise & Time (s) & ΔT (°C) & GaN vs Si during T2 \\
+Switching freq sweep & f\_sw (kHz) & η\_cycle (\%) & GaN and Si \\
+Loss breakdown & Component & P\_loss (W) & Stacked bar: P\_Cu, P\_sw,
+P\_Fe \\
+Voltage comparison & Metric & Value & 48V vs 96V on same plot \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{9. Expected Results \& Thesis
+Integration}\label{expected-results-thesis-integration}
+
+\subsubsection{9.1 Predicted Outcomes}\label{predicted-outcomes}
+
+Based on the inverter specifications and motor parameters:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.1951}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.5366}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.2683}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Metric
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Expected GaN Advantage
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Reasoning
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Cycle η (walking) & +2--4\% absolute & Lower \(R_{DS(on)}\) + zero
+reverse recovery \\
+\(I_{RMS}\) (96V vs 48V) & −45--50\% & \(I \propto P/V\); halving at
+doubled voltage \\
+Thermal rise & −30--40\% & \(P_{Cu} \propto I^2\); 4× reduction at
+96V \\
+Max usable \(f_{sw}\) & 100 kHz (GaN) vs 50 kHz (Si) & GaN zero-recovery
+allows aggressive timing \\
+η sensitivity to \(f_{sw}\) & Flat to 100 kHz (GaN); −1\%/25 kHz (Si) &
+GaN switching losses scale weakly with frequency \\
+Regen braking efficiency & +5--10\% (GaN) & No diode recovery losses
+during braking commutation \\
+\end{longtable}
+}
+
+\subsubsection{9.2 Thesis Chapter Mapping}\label{thesis-chapter-mapping}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.4444}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3889}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Test
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Chapter Section
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Figure/Table
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+T1 & Ch. 4: Motor \& Inverter Characterization & Fig. 4.x: Efficiency
+map overlay \\
+T2 & Ch. 4: Switching Frequency Study & Fig. 4.x: η vs f\_sw \\
+T3 & Ch. 4: Voltage Architecture & Fig. 4.x: 48V vs 96V comparison \\
+T4 & Ch. 4: Thermal Performance & Fig. 4.x: Thermal soak curves \\
+T5 & Ch. 5: Dynamic Performance & Fig. 5.x: Walking cycle efficiency \\
+T6 & Ch. 5: Dynamic Performance & Fig. 5.x: Squat \& stepping CoT \\
+T7 & Ch. 5: Dynamic Performance & Fig. 5.x: Jump peak power \& regen \\
+T8 & Ch. 6: Policy-Hardware Co-design & Fig. 6.x: Active vs passive
+energy \\
+\end{longtable}
+}
+
+\subsubsection{9.3 If Results Disagree with
+Predictions}\label{if-results-disagree-with-predictions}
+
+If the measured GaN advantage is smaller than predicted: 1. Check
+thermal management --- if GaN runs hotter than expected, \(R_{DS(on)}\)
+rises and advantage erodes 2. Check layout parasitics --- high loop
+inductance can cause ringing and increase switching losses 3. Check dead
+time --- too-conservative dead time on GaN wastes the zero-recovery
+advantage 4. Revisit the loss model: are iron losses (not captured in
+the conduction/switching model) dominating?
+
+Document all discrepancies in \texttt{RESEARCH\_LOG.md} with hypotheses
+and follow-up actions.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{10. File \& Data Organisation}\label{file-data-organisation}
+
+All files produced by this procedure should follow the project
+convention:
+
+\begin{verbatim}
+96v_gan_humanoid_drive/
+├── phase2/
+│   └── measurements/
+│       ├── dyno_test_procedure_AKE80-8.md   ← This document
+│       ├── trajectories/                     ← Extracted single-joint policy CSVs
+│       │   ├── walk_07_12_knee.csv
+│       │   ├── squat_knee.csv
+│       │   ├── step_in_place_knee.csv
+│       │   └── jump_75_01_knee.csv
+│       └── analysis/                         ← MATLAB/Python analysis scripts
+│           ├── plot_efficiency_map.py
+│           ├── plot_cycle_efficiency.py
+│           ├── loss_segregation.py
+│           └── thermal_analysis.py
+├── data_raw/
+│   ├── 2026-XX-XX_phase2_dyno_T1/
+│   ├── 2026-XX-XX_phase2_dyno_T2/
+│   └── ...
+└── notebooks/
+    └── RESEARCH_LOG.md                       ← Log every test session here
+\end{verbatim}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Appendix A --- AKE80-8 Winding Insulation Verification for
+96V}\label{appendix-a-ake80-8-winding-insulation-verification-for-96v}
+
+The AKE80-8 is rated for 48V. Operating at 96V requires:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Phase-to-ground insulation test}: Apply 250V DC between any
+  phase terminal and the motor housing using a megohmmeter. Confirm ≥
+  100 MΩ insulation resistance.
+\item
+  \textbf{Phase-to-phase insulation test}: Apply 250V DC between any two
+  phase terminals. Confirm ≥ 100 MΩ.
+\item
+  \textbf{Dielectric withstand (hipot)}: Apply 500V AC (or 700V DC) for
+  60 seconds between phases and ground. No breakdown.
+\item
+  \textbf{Thermal derating}: At 96V, if the motor is driven at higher
+  speed or power than the 48V rating, monitor winding temperature
+  carefully. The insulation class (typically Class B or F for CubeMars
+  motors) determines the maximum allowable temperature.
+\end{enumerate}
+
+\begin{quote}
+\textbf{If the motor fails any insulation test, do NOT proceed with 96V
+testing.} Use 48V only, or source a motor with verified higher voltage
+insulation.
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Appendix B --- Pendulum Arm Fixture Drawing
+Reference}\label{appendix-b-pendulum-arm-fixture-drawing-reference}
+
+A detailed technical drawing should be created in CAD (Fusion 360 or
+SolidWorks) for the pendulum arm fixture assembly. Key dimensions to
+specify:
+
+\begin{itemize}
+\tightlist
+\item
+  Table clamp geometry and bolt pattern
+\item
+  Shaft coupler bore diameter (match AKE80-8 output shaft, typically Ø8
+  mm)
+\item
+  Steel flat bar cross-section, length, and material (1045 steel)
+\item
+  Clamp-on mass dimensions and attachment method (set screw / split
+  collar)
+\item
+  Mass positions along bar for each inertia configuration (A, B, C)
+\item
+  Mechanical end stop locations (±100° from vertical)
+\item
+  Overall swing envelope (for safety zone marking)
+\end{itemize}
+
+Store drawing files in \texttt{phase2/mechanical/pendulum\_arm/}.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\emph{This is a living document. Update as hardware is built, tests are
+executed, and results come in. Link updates to the corresponding Jira
+ticket and log changes in \texttt{RESEARCH\_LOG.md}.}
+
+\end{document}

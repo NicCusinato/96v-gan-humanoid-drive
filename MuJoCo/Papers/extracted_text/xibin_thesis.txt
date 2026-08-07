@@ -1,0 +1,8288 @@
+MULTI-OBJECTIVE OPTIMIZATION FOR ENERGY-AWARE INVERSE 
+
+KINEMATICS OF ROBOTICS 
+
+by 
+
+Xibin Zhou 
+
+A Thesis 
+
+Submitted to the Faculty of Purdue University 
+
+In Partial Fulfillment of the Requirements for the degree of 
+
+Master of Science in Electrical and Computer Engineering 
+
+Department of Electrical and Computer Engineering 
+
+Hammond, Indiana 
+
+December 2024 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+  
+THE PURDUE UNIVERSITY GRADUATE SCHOOL 
+
+STATEMENT OF COMMITTEE APPROVAL 
+
+Dr. Lizhe Tan, Chair 
+
+Department of Electrical and Computer Engineering 
+
+Dr. Quamar Niyaz 
+
+Department of Electrical and Computer Engineering 
+
+Dr. Khair A. Al Shamaileh 
+
+Department of Electrical and Computer Engineering 
+
+Dr. Nasser Houshangi 
+
+Department of Electrical and Computer Engineering 
+
+Approved by: 
+
+Dr. Quamar Niyaz 
+
+2 
+
+ 
+ 
+ 
+Dedicated to my parents, Zhili Wang and Zongkui Zhou, who have always supported me. 
+
+3 
+
+ 
+ACKNOWLEDGMENTS 
+
+I would like to first thank my academic advisor and committee chair, Dr. Lizhe Tan, for 
+
+his patient guidance and constant encouragement throughout my graduate studies. I have learned 
+
+what it means to be a researcher and how to think like a researcher. 
+
+I  would  also  like  to  thank  the  committee  members,  Dr.  Quamar  Niyaz,  Dr.  Khair  Al 
+
+Shamaileh, and Dr. Nasser Houshangi, for their dedicated teaching, which helped me lay a solid 
+
+foundation of technical knowledge. 
+
+Also, I  would like to thank the Department of Electrical  and Computer Engineering for 
+
+providing  me  with  all  the  support,  including  grader,  graduate  teaching  assistant,  and  research 
+
+assistant positions, to complete my thesis research. 
+
+Additionally, I would like to thank Dr. Chenn Zhou and Kyle Toth for providing a research 
+
+opportunity  at  CIVS,  where  I  could  engage  in  several  projects  and  learn  from  industry 
+
+professionals. 
+
+4 
+
+ 
+ 
+ 
+TABLE OF CONTENTS 
+
+LIST OF TABLES .......................................................................................................................... 7 
+
+LIST OF FIGURES ........................................................................................................................ 8 
+
+LIST OF ABBREVIATIONS ....................................................................................................... 11 
+
+LIST OF SYMBOLS .................................................................................................................... 12 
+
+ABSTRACT .................................................................................................................................. 13 
+
+1. INTRODUCTION .................................................................................................................... 14 
+
+1.1 
+
+1.2 
+
+1.3 
+
+1.4 
+
+Background and significance ......................................................................................... 14 
+
+Literature review ............................................................................................................ 14 
+
+Research methodology ................................................................................................... 16 
+
+Thesis organization ......................................................................................................... 16 
+
+2. ENERGY-AWARE INVERSE KINEMATICS IN ROBOTICS ............................................. 18 
+
+2.1 
+
+2.2 
+
+Introduction .................................................................................................................... 18 
+
+Forward kinematics ........................................................................................................ 18 
+
+2.2.1  Denavit–Hartenberg parameters .............................................................................. 18 
+
+2.2.2 
+
+Forward kinematics modeling ................................................................................. 20 
+
+2.3 
+
+Inverse kinematics .......................................................................................................... 25 
+
+2.3.1 
+
+Existence of inverse kinematics solutions ............................................................... 25 
+
+2.3.2  Multiple solutions problem ..................................................................................... 26 
+
+2.3.3 
+
+Energy-aware inverse kinematics ............................................................................ 26 
+
+2.4  Workspace analysis ........................................................................................................ 27 
+
+3. MULTI-OBJECTIVE OPTIMIZATION ALGORITHMS ...................................................... 29 
+
+3.1 
+
+Introduction .................................................................................................................... 29 
+
+3.2  Optimization algorithms ................................................................................................. 29 
+
+3.2.1  Genetic algorithm .................................................................................................... 29 
+
+3.2.2 
+
+Particle swarm optimization .................................................................................... 34 
+
+3.3  Multi-objective optimization .......................................................................................... 37 
+
+3.3.1  Objective functions and weighted sum method ...................................................... 37 
+
+3.3.2  Weighted multi-objective genetic algorithm ........................................................... 38 
+
+3.3.3  Weighted multi-objective particle swarm optimization .......................................... 39 
+
+5 
+
+ 
+3.4 
+
+Pareto front in energy-aware inverse kinematics ........................................................... 40 
+
+4. EXPERIMENTS AND RESULTS ........................................................................................... 41 
+
+4.1 
+
+4.2 
+
+4.3 
+
+4.4 
+
+Inverse kinematics solutions for single points ................................................................ 41 
+
+Inverse kinematics solutions for trajectories .................................................................. 44 
+
+Simulation verification ................................................................................................... 52 
+
+Real robotic arm implementation ................................................................................... 54 
+
+5. CONCLUSION AND FUTURE WORK ................................................................................. 57 
+
+5.1 
+
+5.2 
+
+Conclusion ...................................................................................................................... 57 
+
+Future work .................................................................................................................... 57 
+
+APPENDIX A. ANALYTICAL SOLUTIONS FOR 6-DOF INVERSE KINEMATICS ........... 59 
+
+REFERENCES ............................................................................................................................. 60 
+
+PUBLICATIONS .......................................................................................................................... 64 
+
+6 
+
+ 
+ 
+ 
+LIST OF TABLES 
+
+Table 2.1. DH parameters for UR type collaborative robotic arms. ............................................. 19 
+
+Table 2.2. Specific DH parameters of the robotic arms. ............................................................... 24 
+
+Table 2.3. Joint angle ranges of the robotic arms. ........................................................................ 27 
+
+Table  4.1.  Performance  comparison  of  GA,  PSO,  WMOGA,  and  WMOPSO  in  single  point 
+experiments (average of 10 runs). ................................................................................................. 42 
+
+Table 4.2. Trajectory information. ................................................................................................ 45 
+
+Table 4.3. Performance comparison of WMOGA and WMOPSO in trajectory experiments. ..... 45 
+
+Table 4.4. Performance comparison between the developed algorithms and existing algorithm in 
+the reference. ................................................................................................................................. 52 
+
+7 
+
+ 
+ 
+ 
+LIST OF FIGURES 
+
+Figure 2.1. Cartesian coordinate system and DH parameters for a 6-DOF robotic arm. .............. 19 
+
+Figure 2.2. Robotic Arms. (a) myCobot 280 Pi [27]; (b) UR3 [29]. ............................................ 20 
+
+Figure 2.3. Robotic arm workspace. (a) Workspace of myCobot 280 Pi; (b) Workspace of myCobot 
+280 Pi on the XOY plane. ............................................................................................................. 28 
+
+Figure 2.4. Robotic arm workspace. (a) Workspace of UR3; (b) Workspace of UR3 on the XOY 
+plane. ............................................................................................................................................. 28 
+
+Figure 3.1. Chromosome representation in the genetic algorithm for 6-DOF robotic arms. ........ 30 
+
+Figure 3.2. Genetic algorithm flowchart. ...................................................................................... 32 
+
+Figure 3.3. The crossover process of chromosomes. .................................................................... 33 
+
+Figure 3.4. Pareto front. (a) Pareto front in two-objective optimization; (b) Pareto front in three-
+objective optimization (Pareto surface). ....................................................................................... 40 
+
+Figure 4.1. GA iteration with position and orientation objective functions. (a) myCobot 280 Pi; (b) 
+UR3. .............................................................................................................................................. 42 
+
+Figure 4.2. PSO iteration with position and orientation objective functions. (a) myCobot 280 Pi; 
+(b) UR3. ........................................................................................................................................ 43 
+
+Figure 4.3. WMOGA Pareto fronts. (a) myCobot 280 Pi; (b) UR3.............................................. 43 
+
+Figure 4.4. WMOPSO Pareto fronts. (a) myCobot 280 Pi; (b) UR3. ........................................... 44 
+
+Figure 4.5. The performances of the WMOGA for the myCobot 280 Pi on a circular trajectory. (a) 
+Comparison  between  the  target  trajectory  and  the  actual  trajectory;  (b)  Joint  angles  versus 
+trajectory points. ........................................................................................................................... 46 
+
+Figure 4.6. The performance of the WMOGA for the myCobot 280 Pi on a circular trajectory with 
+angles.  (a)  Comparison  between  the  target  trajectory  and  the  actual  trajectory;  (b)  Joint  angles 
+versus trajectory points. ................................................................................................................ 46 
+
+Figure 4.7. The performance of  the WMOGA  for  the myCobot 280 Pi  on a sine trajectory. (a) 
+Comparison  between  the  target  trajectory  and  the  actual  trajectory.  (b)  Joint  angles  versus 
+trajectory points. ........................................................................................................................... 47 
+
+Figure 4.8. The performance of the WMOPSO for the myCobot 280 Pi on a circular trajectory. (a) 
+Comparison  between  the  target  trajectory  and  the  actual  trajectory;  (b)  Joint  angles  versus 
+trajectory points. ........................................................................................................................... 47 
+
+8 
+
+ 
+Figure 4.9. The performance of the WMOPSO for the myCobot 280 Pi on a circular trajectory 
+with angles. (a) Comparison between the target trajectory and the actual trajectory; (b) Joint angles 
+versus trajectory points. ................................................................................................................ 48 
+
+Figure 4.10. The performance of the WMOPSO for the myCobot 280 Pi on a sine trajectory. (a) 
+Comparison between the target trajectory and the actual trajectory; (b) Joint angles versus tractor 
+points. ............................................................................................................................................ 48 
+
+Figure 4.11. The performance of the WMOGA for the UR3 on a circular trajectory. (a) Comparison 
+between the target trajectory and the actual trajectory; (b) Joint angles versus trajectory points. 49 
+
+Figure 4.12. The performance of the WMOGA for the UR3 on a circular trajectory with angles. 
+(a)  Comparison  between  the  target  trajectory  and  the  actual  trajectory;  (b)  Joint  angles  versus 
+trajectory points. ........................................................................................................................... 49 
+
+Figure 4.13. The performance of the WMOGA for the UR3 on a circular trajectory. (a) Comparison 
+between the target trajectory and the actual trajectory; (b) Joint angles versus trajectory points. 50 
+
+Figure  4.14.  The  performance  of  the  WMOPSO  for  the  UR3  on  a  circular  trajectory.  (a) 
+Comparison  between  the  target  trajectory  and  the  actual  trajectory;  (b)  Joint  angles  versus 
+trajectory points. ........................................................................................................................... 50 
+
+Figure 4.15. The performance of the WMOPSO for the UR3 on a circular trajectory with angles. 
+(a)  Comparison  between  the  target  trajectory  and  the  actual  trajectory;  (b)  Joint  angles  versus 
+trajectory points. ........................................................................................................................... 51 
+
+Figure 4.16. The performance of the WMOPSO for the UR3 on a sine trajectory. (a) Comparison 
+between the target trajectory and the actual trajectory; (b) Joint angles versus trajectory points. 51 
+
+Figure 4.17. Simulation of circular trajectories on myCobot 280 Pi. (a) WMOGA; (b)WMOPSO.
+....................................................................................................................................................... 52 
+
+Figure  4.18.  Simulation  of  circular  trajectories  each  with  an  orientation  angle  of  45  degrees 
+downward on myCobot 280 Pi. (a) WMOGA; (b) WMOPSO. .................................................... 53 
+
+Figure 4.19. Simulation of sine trajectories on myCobot 280 Pi. (a) WMOGA; (b) WMOPSO. 53 
+
+Figure 4.20. Simulation of circular trajectories on UR3. (a) WMOGA; (b) WMOPSO. ............. 53 
+
+Figure  4.21.  Simulation  of  circular  trajectories  each  with  an  orientation  angle  of  45  degrees 
+downward on UR3. (a) WMOGA; (b) WMOPSO. ...................................................................... 54 
+
+Figure 4.22. Simulation of sine trajectories on UR3. (a) WMOGA; (b) WMOPSO. ................... 54 
+
+Figure  4.23.  Real-world  robotic  arm  validation  or  circular  trajectories.  (a)  WMOGA;  (b) 
+WMOPSO. .................................................................................................................................... 55 
+
+9 
+
+ 
+Figure 4.24. Real-world robotic arm validation of circular trajectories with angled end effector. (a) 
+WMOGA; (b) WMOPSO. ............................................................................................................ 55 
+
+Figure 4.25. Real-world robotic arm validation of sine trajectories. (a) WMOGA; (b) WMOPSO.
+....................................................................................................................................................... 56 
+
+10 
+
+ 
+ 
+ 
+LIST OF ABBREVIATIONS 
+
+BFGS   
+
+Broyden–Fletcher–Goldfarb–Shanno 
+
+DH 
+
+DOF 
+
+FK 
+
+Denavit–Hartenberg 
+
+Degrees of Freedom 
+
+Forward Kinematics 
+
+FOPID  
+
+Fractional-Order Proportional-Integral-Derivative 
+
+GA 
+
+IK 
+
+IKP 
+
+LM 
+
+MOO   
+
+MOOP  
+
+PID 
+
+PSO 
+
+Genetic Algorithm 
+
+Inverse Kinematics 
+
+Inverse Kinematics Problem 
+
+Levenberg-Marquardt 
+
+Multi-Objective Optimization 
+
+Multi-Objective Optimization Problem 
+
+Proportional-Integral-Derivative 
+
+Particle Swarm Optimization 
+
+RMSE  
+
+Root Mean Square Error 
+
+UR 
+
+Universal Robots 
+
+WMOGA  Weighted Multi-Objective Genetic Algorithm 
+
+WMOPSO  Weighted Multi-Objective Particle Swarm Optimization 
+
+11 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+LIST OF SYMBOLS 
+
+A 
+
+C 
+
+f 
+
+r 
+
+S 
+
+φ 
+
+Amplitude 
+
+Frequency 
+cos()
+Radius 
+
+Phase 
+sin()
+
+12 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ABSTRACT 
+
+Inverse  kinematics  is  the  fundamental  study  of  robot  motion  in  space.  Usually,  the  control 
+
+command for a robot is only given by target position and orientation, in which the motions of the 
+
+joint motors are found from the inverse kinematics. For the specified position or orientation, there 
+
+are often multiple inverse kinematics solutions. The traditional method obtains all these solutions 
+
+and then selects one of them according to some rules, such as minimum energy, shortest distance, 
+
+shortest time, etc. In this thesis research, weighted multi-objective genetic algorithm (WMOGA) 
+
+and  weighted  multi-objective  particle  swarm  optimization  (WMOPSO)  are  developed  to  solve 
+
+energy-aware  inverse  kinematics  by  considering  that  the  energy  consumption  of  the  robot  is 
+
+proportional  to  the  total  amount  of  joint  rotations  to  the  target  pose.  Therefore,  the  objective 
+
+functions are proposed based on minimizing the target position error, target orientation error, and 
+
+total amount of joint rotations to obtain the inverse kinematics solution. The algorithms developed 
+
+in this thesis use a weighted sum of the multiple objective functions to iterate over a certain range 
+
+of weights to obtain the inverse kinematics solution within the required error range. Furthermore, 
+
+the proposed algorithm can be applied to the robotic model with any number of degrees of freedom. 
+
+The  trajectories  solved  by  the  proposed  WMOGA  and  WMOPSO  algorithms  are  verified  by 
+
+simulations and validated by the physical robotic arm. The achieved inverse kinematic solutions 
+
+demonstrate  a  promising  performance  and  have  the  potential  for  applications  of  the  inverse 
+
+kinematics of robotics. 
+
+13 
+
+ 
+ 
+ 
+1. INTRODUCTION 
+
+1.1  Background and significance 
+
+Technologies  such  as  robotics  and  autonomous  driving  are  gradually  entering  the  daily 
+
+lives of more and more people. The wish of “a computer on every desk, and in every home” has 
+
+become everyone having a robot buddy or two [1]. In this process, there are research topics such 
+
+as large models and embodied intelligence that focus on the interaction between robots and their 
+
+external environments [2]. Meanwhile, there is also room for improvement in the internal of robots. 
+
+With the development of modern industry and automation, numerous robotics companies 
+
+have  emerged,  producing  a  wide  variety  of  robotic  arms.  These  robotic  arms  can  be  mainly 
+
+categorized  into  two  types:  industrial  robotic  arms  and  collaborative  robotic  arms.  Industrial 
+
+robotic arms are used in factories to replace human labor, reduce production costs, and improve 
+
+efficiency.  They  can  also  perform  dangerous  tasks  that  would  otherwise  require  human 
+
+intervention. Most of them are designed with a centrosymmetric structure and have a large payload 
+
+and  fast  joint  rotation  speed  to  meet  manufacturing  needs.  Collaborative  robotic  arms  refer  to 
+
+robots  that  can  interact  directly  with  humans  within  a  collaborative  area.  In  other  words, 
+
+collaborative  robotic  arms  and  humans  can  work  in  the  same  area,  typically  utilizing  the  UR 
+
+(Universal Robots) type structure as an example. This thesis focuses on collaborative robotic arms, 
+
+aiming  to  study  their  kinematic  models  and  improve  their  precision  performance  with  energy 
+
+awareness. 
+
+1.2  Literature review 
+
+The concept of modern robotics originated in the 20th century. In 1954, George Devol was 
+
+granted the patent for Unimate, a robotic arm capable of transporting die-cast parts and welding 
+
+them in place [3]. In 1961, the first industrial robot in the world, Unimate, was installed on the 
+
+assembly  line  at  General  Motors,  marking  the  birth  of  industrial  robots.  Collaborative  robots 
+
+(cobots)  were  proposed  by  Northwestern  University  professors  Edward  Colgate  and  Michael 
+
+Peshkin to assist workers in working more efficiently rather than replacing their jobs, and to reduce 
+
+the risk of injury [4, 5]. In 2004, KUKA released the first collaborative robot, LBR3 [6]. In 2008, 
+
+Universal Robots from Denmark delivered their first collaborative robot, UR5, with a payload of 
+
+14 
+
+ 
+5  kilograms,  becoming  well-known  as  UR  structure  collaborative  robots.  Today,  collaborative 
+
+robots are rapidly developing, control methods are continuously evolving, and inverse kinematics 
+
+should be rethought. 
+
+The inverse kinematics problem (IKP) is a solvable problem. Its challenge is not what the 
+
+solution is, but how to find the optimal solution. For a robotic arm, the most common action is to 
+
+pick and place, and in order to make the end effector reach the target pose more accurately, the 
+
+inverse  kinematics  of  the  robotic  arm  need  to  be  investigated  to  solve  for  the  optimal  control 
+
+amount of the robotic arm. Although there are traditional solutions for inverse kinematics, such as 
+
+analytical solutions and numerical solutions, the analytical solution is usually only applicable to 
+
+robotic arms with simple geometrical structures or kinematic characteristics, and it becomes very 
+
+difficult  or  even  impossible  to  solve  the  analytical  solution  for  the  robotic  arms  with  complex 
+
+structure  or  high  degrees  of  freedom  [7].  Similarly,  the  numerical  solution  requires  a  lot  of 
+
+computation and time, especially for the high degrees of freedom robotic arms, and the accuracy 
+
+of the numerical solution depends on the choice of numerical algorithms, such as BFGS (Broyden–
+
+Fletcher–Goldfarb–Shanno)  and  Levenberg-Marquardt  (LM)  algorithms,  which  may  have 
+
+numerical errors and convergence problems [8-10]. Additionally, the geometric method is another 
+
+approach to solving the inverse kinematics. It involves rearranging the vertices of the robotic arm 
+
+joints in space to find the solution to the IKP [11]. The articles [12-16] transform the IKP into a 
+
+multi-objective  optimization  problem  (MOOP)  using  optimization-based  or  neural  network 
+
+methods such as particle swarm optimization algorithms or reinforcement learning. 
+
+However, energy is overlooked in this optimization problem. With the rapid increase in 
+
+energy consumption due to large models, generative pre-training transformers, and GPU clusters, 
+
+as well as the rising market share of electric vehicles [17-19], energy issues should be integrated 
+
+into optimization algorithms as much as possible. The work in [20-24] has applied the concept of 
+
+energy-aware in operating systems, routing, wireless networks, motion control, and robot control. 
+
+In  inverse  kinematics  and  motor  control,  energy-aware  can  still  be  considered  a  key  factor  for 
+
+solution  or  optimization,  thereby  reducing  energy  consumption  and  extending  the  lifetime  of 
+
+motors. 
+
+On the other hand, the reduction of robot energy consumption which can be considered as 
+
+a factor proportional to the total amount of joint rotations to the target pose can also lead to a longer 
+
+lifespan of the robots in use. This thesis focuses on developing weighted multi-objective genetic 
+
+15 
+
+ 
+and particle swarm optimization algorithms based on multi-objective optimization (MOO), which 
+
+incorporates minimizing the total amount of joint rotations to find the inverse kinematics. 
+
+1.3  Research methodology 
+
+This  thesis  is  focused  on  solving  the  inverse  kinematics  problem.  Therefore,  the  main 
+
+methodology  involves using mathematical tools  to evaluate the performance  of  the algorithms, 
+
+simulation  to  verify  the  results,  and  finally  running  the  results  on  a  physical  robot,  before 
+
+developing the algorithms for solving inverse kinematics, a robotic arm model needs to be created 
+
+to verify the accuracy of a solution and to enable iterations within the optimization algorithm. In 
+
+the works of Rokbani et al. [12-14], related algorithms have been attempted for multi-objective 
+
+optimization to solve the inverse kinematics of robotic arms, achieving high accuracy in obtaining 
+
+specified positions and orientations for the end effector. This thesis introduces energy-aware into 
+
+the  inverse  kinematics  problem  by  considering  that  the  energy  consumption  of  the  robot  is 
+
+proportional to the total amount of joint rotations to the target position. Based on this, the total 
+
+amount of joint rotations is incorporated as a third objective function and iterated alongside the 
+
+others to investigate the balance between precision and energy consumption in inverse kinematics. 
+
+The  proposed  energy-aware  algorithms  can  first  be  implemented  in  simulation 
+
+environments  to  evaluate  their  performance.  Then  testing  on  the  real  robotic  arm  can  also  be 
+
+conducted to validate algorithms under practical conditions. 
+
+1.4  Thesis organization 
+
+The thesis is structured into five chapters, including this introductory chapter. 
+
+Chapter  2  is  an  overview  of  the  methods  used  in  the  study  of  the  inverse  kinematics 
+
+problem  and  the  derivation  of  the  relevant  formulas.  It  includes  the  derivation  of  the  forward 
+
+kinematics of the robotic arm used, visualizing the structure model in MATLAB, and establishing 
+
+a forward kinematics model function to verify the inverse kinematics results. 
+
+Chapter 3 introduces two optimization algorithms and their implementation steps for the 
+
+inverse kinematics multi-objective optimization based on previous work to develop the energy-
+
+aware algorithms, that is, weighted multi-objective genetic algorithm (WMOGA) and weighted 
+
+multi-objective particle swarm optimization (WMOPSO). 
+
+16 
+
+ 
+Chapter 4 presents two groups of experiments and uses different robotic arm platforms, as 
+
+well as evaluates the performance of the algorithms. 
+
+Finally, Chapter 5 summarizes the work presented in this thesis, including future work. 
+
+17 
+
+ 
+ 
+ 
+2. ENERGY-AWARE INVERSE KINEMATICS IN ROBOTICS 
+
+2.1 
+
+Introduction 
+
+This  chapter  defines  and  analyzes  the  problem  of  energy-aware  inverse  kinematics.  It 
+
+begins with the  derivation of  forward kinematics, using  the  standard Denavit-Hartenberg  (DH) 
+
+method to establish the Cartesian coordinate system for the collaborative robotic arms studied in 
+
+this  thesis  and  deriving  the  corresponding  DH  parameters,  thereby  establishing  the  forward 
+
+kinematics model. In the inverse kinematics section, the existence of inverse kinematics solutions 
+
+and the multiple solutions problem are discussed, and an energy-aware function is defined for the 
+
+inverse kinematics problem, which is a key focus of this chapter. Finally, the Monte Carlo method 
+
+is used to analyze the two robotic arms studied, which provides the basis for setting target points 
+
+and creating trajectories in the later experimental section in Chapter 4. 
+
+2.2  Forward kinematics 
+
+2.2.1  Denavit–Hartenberg parameters 
+
+Forward kinematics is prior work in inverse kinematics for a robotic arm with a known 
+
+rigid body structure. In this thesis, the collaborative robotic arm is taken as the research object, 
+
+and  the  Cartesian  coordinate  system  is  established  to  conform  to  the  structure  of  several 
+
+collaborative  robotic  arms  currently  available  on  the  market,  and  the  standard  DH  (Denavit–
+
+Hartenberg) method is used to derive its DH parameters. 
+
+The  DH  parameter  method  was  proposed  by  Denavit  and  Hartenberg  in  1955.  It  is  a 
+
+systematic method to describe the links and joints in a serial link chain. This method is known as 
+
+the standard DH method, which is described in the textbook by Saeed B. Niku [25]. In 1986, Khalil 
+
+and  Kleinfinger  proposed  a  modified  DH  parameter,  in  which  the  joint  coordinate  system  is 
+
+established at the proximal end of the link, rather than the distal end, this method is known as the 
+
+modified DH method, which is adopted in the book by John J. Craig [26]. 
+
+This thesis focuses on the study of inverse kinematics. Due to the simplicity and generality 
+
+of the structure of the six degrees of freedom robotic arm under study, the standard DH convention 
+
+is adopted in this thesis for the establishment of the coordinate system and derivation. 
+
+18 
+
+ 
+Through  a  comparative  study  of  the  desktop-level  robotic  arm  myCobot  280  Pi  from 
+
+Elephant  Robotics  [27]  and  the  UR3  robotic  arm  from  Universal  Robots  [28],  the  Cartesian 
+
+coordinate system of the collaborative robotic arm structure is established, as shown in Figure 2.1. 
+
+4z
+
+5x
+
+5z
+
+5y
+
+5θ
+
+5d
+
+4x
+
+4y
+
+2a
+
+z
+
+6d
+
+6θ
+
+6z
+
+6y
+
+6x
+
+3y
+
+4d
+
+3z
+
+2z
+
+1z
+
+4θ
+
+3x
+
+2y
+
+3θ
+
+1x
+
+2x
+
+1y
+
+2θ
+
+0y
+
+0z
+
+3a
+
+1d
+
+y
+
+x
+
+1θ
+
+0x
+
+Figure 2.1. Cartesian coordinate system and DH parameters for a 6-DOF robotic arm. 
+
+Based on the established coordinate system, the DH parameters obtained using the standard 
+
+DH method are listed in Table 2.1. 
+
+Table 2.1. DH parameters for UR type collaborative robotic arms. 
+
+# 
+0-1 
+1-2 
+2-3 
+3-4 
+4-5 
+5-6 
+
+θ(rad) 
+θ1 
+θ2-π/2 
+θ3 
+θ4-π/2 
+θ5+π/2 
+θ6 
+
+a 
+0 
+-a2 
+-a3 
+0 
+0 
+0 
+
+α 
+π/2 
+0 
+0 
+π/2 
+-π/2 
+0 
+
+d 
+d1 
+0 
+0 
+d4 
+d5 
+d6 
+
+19 
+
+ 
+ 
+2.2.2  Forward kinematics modeling 
+
+The  collaborative  robotic  arms  studied  in  this  thesis  can  share  a  common  set  of  DH 
+
+parameters with different joint distances due to the same degrees of freedom and similar structures. 
+
+The two robotic arms studied are displayed in Figure 2.2. 
+
+(a) 
+
+(b) 
+
+Figure 2.2. Robotic Arms. (a) myCobot 280 Pi [27]; (b) UR3 [29]. 
+
+In optimization algorithms, one or more fitness functions are needed to minimize the error 
+
+for  each  iteration.  In  this  research,  the  output  of  the  optimization  algorithm  will  be  the  joint 
+
+rotational angles of the robotic arm, therefore it is necessary to establish a forward kinematic model 
+
+to convert the joint rotations into the position so that the position error can be minimized to find 
+
+the optimal solution. 
+
+The  control  for  the  precision  of  the  robotic  arm  in  this  study  lies  in  the  position  and 
+
+orientation of the end effector. The first step is the derivation of the position of the end effector, 
+
+which is written in the form of Equation (2.1), where n, o, and a are derived from the words of 
+
+normal, orientation, and approach, respectively. Since the z-axis coincides with the rotation axis 
+
+of the rotary joints, the robot approaches the object along the z-axis of the gripper, thus it is called 
+
+20 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+the approach-axis or a-axis. The orientation in which the gripper approaches the object is called 
+
+the orientation axis or o-axis. The x-axis is normal to both z- and a-axes, so it is called the normal-
+
+axis or the n-axis [25]. 
+
+F
+
+=
+
+
+
+
+
+
+
+
+n
+
+x
+
+n
+
+y
+
+n
+z
+0
+
+o
+
+x
+
+o
+
+y
+
+o
+z
+0
+
+a
+
+x
+
+a
+
+y
+
+a
+z
+0
+
+p
+
+x
+
+p
+
+y
+
+p
+z
+1
+
+
+
+
+
+
+
+
+    (2.1) 
+
+When  the  DH  parameters  are  known,  the  transformation  T  between  two  frames  can  be 
+
+written in Equation (2.2) listed below. 
+
+A
+
+=
+
+cos
+sin
+
+θ
+θ
+
+0
+
+0
+
+
+
+
+
+
+
+
+−
+
+θ α
+θ α
+
+sin cos
+cos cos
+α
+
+sin
+
+θ α
+sin sin
+−
+θ α
+sin
+cos
+α
+
+cos
+
+a
+
+a
+
+0
+
+0
+
+cos
+sin
+
+d
+
+1
+
+θ
+
+
+θ
+
+
+
+
+
+    (2.2) 
+
+For six degrees of freedom collaborative robotic arm with the DH parameters in Table 2.1 
+
+and  the  rotations  of  joint  θ1  to  θ6,  and  by  substituting  them  into  Equation  (2.2),  respectively, 
+
+Equations (2.3) to (2.8) can be obtained. 
+
+A
+1
+
+=
+
+
+
+
+
+
+
+
+cos
+
+sin
+
+θ
+1
+θ
+1
+
+0
+
+0
+
+0
+
+0
+
+1
+
+0
+
+sin
+−
+
+cos
+
+θ
+1
+θ
+1
+
+0
+
+0
+
+0
+
+0
+
+d
+1
+1
+
+
+
+
+
+
+
+
+A
+2
+
+=
+
+
+
+−
+
+
+
+
+sin
+
+θ
+2
+θ
+2
+
+cos
+
+cos
+
+sin
+
+θ
+2
+θ
+2
+
+0
+
+0
+
+0
+
+0
+
+A
+3
+
+=
+
+
+
+
+
+
+
+
+cos
+
+sin
+
+θ
+3
+θ
+3
+
+0
+
+0
+
+−
+
+sin
+
+θ
+3
+
+cos
+
+θ
+3
+
+0
+
+0
+
+0
+
+0
+
+1
+
+0
+
+0
+
+0
+
+1
+
+0
+
+θ
+2
+
+−
+
+sin
+
+a
+2
+cos
+
+a
+2
+
+θ
+2
+
+0
+
+1
+
+
+
+
+
+
+
+
+−
+
+a
+3
+−
+a
+3
+
+θ
+3
+θ
+3
+
+cos
+
+sin
+
+0
+
+1
+
+
+
+
+
+
+
+
+21 
+
+    (2.3) 
+
+    (2.4) 
+
+    (2.5) 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+A
+4
+
+=
+
+A
+5
+
+=
+
+A
+6
+
+=
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+sin
+−
+
+cos
+
+θ
+4
+θ
+4
+
+0
+
+0
+
+θ
+5
+θ
+5
+
+−
+
+sin
+cos
+0
+
+0
+
+0
+
+0
+
+1
+
+0
+
+0
+0
+−
+1
+
+0
+
+θ
+4
+θ
+4
+
+−
+
+cos
+
+−
+
+sin
+
+0
+
+0
+
+−
+−
+
+θ
+5
+θ
+5
+
+cos
+sin
+0
+
+0
+
+0
+
+0
+1
+
+0
+
+θ
+6
+θ
+6
+
+cos
+
+sin
+0
+
+−
+
+sin
+
+θ
+6
+
+θ
+6
+
+cos
+0
+
+0
+
+0
+
+0
+
+0
+
+d
+4
+1
+
+
+
+
+
+
+
+
+0
+0
+d
+
+5
+1
+
+
+
+
+
+
+
+
+0
+
+0
+d
+
+6
+1
+
+
+
+
+
+
+
+
+    (2.6) 
+
+    (2.7) 
+
+    (2.8) 
+
+Thus, the transformation  0T6 from the base of the robotic arm to the end effector can be 
+
+calculated by post-multiplying transformations: A1 to A6. The resultant transformation is shown in 
+
+Equation (2.9). 
+
+22 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+4
+
+5
+
+=
+
+0
+T
+A A A A A A
+6
+1
+3
+6
+2
+=
+A A A
+34
+12
+56
+θ
+cos
+1
+θ
+sin
+1
+0
+0
+
+sin
+−
+cos
+0
+0
+
+0
+0
+1
+0
+
+=
+
+θ
+1
+θ
+1
+
+0
+0
+d
+1
+1
+
+ 
+ 
+ 
+ 
+ 
+ 
+
+θ
+2
+θ
+2
+
+sin
+−
+cos
+0
+0
+
+θ
+2
+θ
+2
+
+cos
+sin
+0
+0
+
+0
+0
+1
+0
+
+θ
+2
+θ
+2
+
+−
+
+a
+sin
+2
+a
+cos
+2
+0
+1
+
+
+
+
+
+
+
+
+θ
+3
+θ
+3
+
+−
+
+sin
+cos
+0
+0
+
+0
+0
+1
+0
+
+−
+a
+3
+−
+a
+3
+
+θ
+3
+θ
+3
+
+cos
+sin
+0
+1
+
+
+
+
+
+
+
+
+sin
+−
+
+θ
+4
+θ
+4
+
+cos
+0
+0
+
+0
+
+0
+1
+0
+
+−
+
+−
+
+co
+
+θ
+s
+4
+θ
+sin
+4
+0
+0
+
+0
+0
+d
+
+4
+1
+
+
+
+
+
+
+
+
+θ
+3
+θ
+3
+
+cos
+sin
+0
+0
+
+−
+
+sin
+cos
+
+θ
+5
+θ
+5
+
+0
+
+0
+
+C S
+1 2
+S S
+1 2
+−
+C
+
+2
+
+0
+
+C S
+1 2
+S S
+1 2
+−
+C
+0
+
+2
+
+0
+0
+−
+1
+
+0
+
+2
+
+2
+
+C C
+1
+S C
+1
+S
+
+2
+0
+
+2
+
+2
+
+C C
+1
+S C
+1
+S
+2
+0
+
+
+
+
+
+
+
+θ
+6
+θ
+6
+
+
+
+
+
+
+
+−
+
+0
+
+0
+
+×
+
+
+
+
+
+
+
+
+−
+−
+
+cos
+sin
+
+θ
+5
+θ
+5
+
+cos
+sin
+
+0
+0
+d
+
+5
+1
+
+ 
+ 
+ 
+ 
+ 
+ 
+
+0
+
+0
+
+S
+1
+−
+C
+1
+
+0
+
+0
+
+S
+1
+−
+C
+1
+0
+
+0
+
+−
+
+−
+
+a C S
+2
+1 2
+a S S
+2 1 2
++
+a C d
+2
+2
+1
+1
+
+−
+
+−
+
+a C S
+2
+1 2
+a S S
+2 1 2
++
+a C d
+2
+1
+1
+
+2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+−
+
+sin
+cos
+
+θ
+6
+θ
+6
+
+0
+
+0
+
+0
+
+0
+
+1
+
+0
+
+S
+−
+
+34
+C
+0
+
+34
+
+0
+
+0
+0
+
+1
+
+0
+
+−
+
+C
+−
+
+34
+
+S
+34
+0
+
+0
+
+0
+0
+d
+
+6
+1
+
+
+
+
+
+
+
+−
+
+−
+
+a C
+3
+3
+a S
+3 3
+d
+4
+1
+
+
+
+
+
+
+
+
+6
+
+5
+
+34
+
+34
+
++
+S S C C S
+6
+34
++
+C S C S S
+5
+6
+C C
+5
+6
+0
+
+34
+
+6
+
+S S S C C
+6
+34
+34
+5
+6
+−
+S C
+C S S
+34
+6
+34
+
+5
+−
+
+6
+C S
+5
+0
+
+6
+
+n
+
+x
+
+n
+
+y
+
+n
+z
+0
+
+o
+
+x
+
+o
+
+y
+
+o
+z
+0
+
+a
+
+x
+
+a
+
+y
+
+a
+z
+0
+
+−
+
+−
+
+1
+
+5
+
+234
+
+1 234
+
+d C C C d C S
+6
+5
+d S C C d S S
+5 1 234
+5
++
+d S C d C
+5
+
+a C S
+3
+a S S
+3 1 23
++
+
+6 1
+
+−
+
+−
+
+234
+
+234
+
+234
+
+5
+
+6
+
+1 23
+
+−
+
++
+
+d
+
+−
+
++
+
+d S
+4 1
+
+d S S
+6 1 5
+C S
+6
+1 5
+4
++
+a C d
+2
+2
+1
+
+a C S
+1 2
+2
+−
+d C a S S
+2 1 2
++
+
+−
+
+1
+
+23
+
+a C
+3
+
+1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+×
+
+×
+
+=
+
+=
+
+=
+
+−
+
+S C
+5
+6
+C C
+5
+6
+−
+S
+0
+
+6
+
+×
+
+
+
+
+
+
+
++
++
+
+6
+
+S S
+5
+6
+−
+C S
+5
+−
+C
+6
+0
+
+−
+
+C
+5
+
+5
+
+−
+
+S
+0
+
+0
+
+−
+
+−
+
+5
+
+d C
+6
+5
+d S
+6
+d
+5
+1
+
+
+
+
+
+
+
+
+−
+
+34
+
+a C
+3
+3
+a S
+3 3
+
+−
+
+−
+
+6
+
+6
+
+34
+
+34
+
+−
+
+d S C d C
+5
+5
+d C C d S
+5 34
+5
++
+−
+d
+d S
+6
+5
+1
+
+−
+
+4
+
+
+
+
+
+
+
+
+−
+
+S C
+34
+5
+C C
+34
+5
+−
+S
+0
+
+5
+
+
+
+
+
+
+
+
+The orientation elements in (2.9) can be expressed in Equations (2.10) to (2.18). 
+
+C C S C C S S
+6
+
+234 5
+
+1 234
+
+1
+
++
+
++
+
+S C C
+1
+5
+6
+
+6
+
+S C S C S S S C C C
+1
+6
+
+1 234
+
+234
+
+6
+
+6
+
+1
+
+5
+
+5
+
++
+
+−
+
+S S C C S
+6
+
+234
+
+234
+
+5
+
+−
+
+6
+
+xn
+
+=
+
+yn
+
+=
+
+zn
+
+=
+
+xo
+
+= −
+
+C C S S C S C S C S
+
+234
+
+5
+
+6
+
+1 234
+
+5
+
+1
+
+6
+
+1
+
+−
+
++
+
+6
+
+23 
+
+(2.9) 
+
+  (2.10) 
+
+  (2.11) 
+
+  (2.12) 
+
+  (2.13) 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+   
+ 
+ 
+ 
+ 
+ 
+ 
+yo
+
+= −
+
+S C S S
+1
+234
+
+5
+
+6
+
++
+
++
+S S C C C S
+1 234
+6
+
+1
+
+5
+
+zo
+
+= −
+
+S S S C C
+6
+6
+
+234
+
+234
+
+5
+
+−
+
+xa
+
+=
+
+ya
+
+=
+
+C C C S S
+5
+1 5
+
+234
+
+1
+
+−
+
+S C C C S
+1
+5
+1 5
+
+234
+
++
+
+za
+
+=
+
+S C
+234
+5
+
+6
+
+  (2.14) 
+
+   (2.15) 
+
+  (2.16) 
+
+  (2.17) 
+
+  (2.18) 
+
+By  replacing the components  of the position vector  in  the  homogeneous transformation 
+
+matrix with px, py, and pz respectively, we can rewrite Equation (2.1) as follows: 
+
+A
+123456
+
+=
+
+
+
+
+
+
+
+
+n
+
+x
+
+o
+
+x
+
+a
+
+x
+
+y
+
+n
+n
+
+z
+0
+
+y
+
+o
+o
+
+z
+0
+
+y
+
+a
+a
+
+z
+0
+
+d a
+x
+6
+d a
+6
+
+−
+−
+
+1 234
+
+d C S
+5
+d S S
+5 1 234
++
+d C
+5
+
+z
+
+y
+d a
+6
+
+−
+−
+
+234
+
+1 23
+
+a C S
+3
+a S S
+3 1 23
++
+a C
+3
+1
+
+23
+
+d a
+6
+
+x
+
+−
+
+d C S
+5
+
+1 234
+
+−
+
+a C S
+3
+
+1 23
+
++
+
+d S
+4 1
+
+−
+
+a C S
+2
+1 2
+
+=
+
+p
+
+x
+
+d a
+6
+
+y
+
+−
+
+d S S
+
+5 1 234
+
+−
+
+a S S
+3 1 23
+
+−
+
+−
+d C a S S
+2 1 2
+
+1
+
+4
+
+=
+
+p
+
+y
+
+d a
+6
+
+z
+
++
+
+d C
+5
+
+234
+
++
+
+a C
+3
+
+23
+
++
+
+a C d
+2
+1
+
++
+
+2
+
+=
+
+p
+
+z
+
++
+−
++
+
+d S
+4 1
+
+−
+a C S
+1 2
+2
+−
+d C a S S
+4
+1
+2 1 2
++
+a C d
+2
+2
+1
+
+
+
+
+
+
+
+
+  (2.19) 
+
+  (2.20) 
+
+  (2.21) 
+
+  (2.22) 
+
+Based  on Equations  (2.19) to (2.22), a  function  with  six  joint angles  as the input and a 
+
+matrix defined in Equation (2.1) as an output is implemented in MATLAB. By inputting the DH 
+
+parameter values of the  specific robotic  arm from Table 2.2 into the model, one can verify the 
+
+inverse kinematics solution obtained from the inverse kinematics algorithm. 
+
+Table 2.2. Specific DH parameters of the robotic arms. 
+
+Model 
+myCobot 280 Pi 
+UR3 
+
+d1 (mm) 
+131.56 
+151.9 
+
+d4 (mm) 
+66.39 
+112.35 
+
+d5 (mm) 
+73.18 
+85.35 
+
+d6 (mm) 
+43.6 
+81.9 
+
+a2 (mm) 
+110.4 
+243.65 
+
+a3 (mm) 
+96 
+213.25 
+
+24 
+
+ 
+   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+  
+ 
+ 
+ 
+ 
+ 
+  
+ 
+ 
+ 
+ 
+ 
+ 
+2.3 
+
+Inverse kinematics 
+
+2.3.1  Existence of inverse kinematics solutions 
+
+The inverse kinematics of a robotic arm is to solve the joint rotational angles that enable 
+
+the end effector to achieve  a given target position and  orientation.  The existence of  an  inverse 
+
+kinematics solution depends on the workspace of a robotic arm, that is, the range of motion in 
+
+space that the end effector can move to with the robot base fixed. For inverse kinematics, it is not 
+
+only required that the position vector is in the workspace, but the orientation also has to meet the 
+
+requirement to be considered as an inverse kinematics solution.  
+
+For  the  kinematic  model  established  in  the  Cartesian  coordinate  system,  positions  are 
+
+commonly represented by spatial coordinates (x, y, z). As for the representation of orientation, 
+
+there are various methods, besides the orientation matrix defined in Section 2.1.2, which is the 
+
+rotation matrix of the end effector, there are also rotation vectors, Euler angles, and quaternions, 
+
+which  can  be  converted  to  each  other.  These  representations  have  their  own  advantages  and 
+
+disadvantages and are suitable for different application scenarios [30]. 
+
+The orientation matrix is a 3 by 3 matrix used to describe the orientation of an object in 
+
+three-dimensional  space.  Although  the  orientation  matrix  is  convenient  for  calculation,  it  has 
+
+issues  with  overparameterization  and  difficulty  in  differentiation.  The  rotation  vector  (or  axis-
+
+angle representation) describes rotation  using  a  rotation axis and  a  rotation  angle. The rotation 
+
+vector has a compact form but exhibits periodicity, thus showing singularities in some cases. Euler 
+
+angles represent rotation by specifying the rotation angles  around three mutually perpendicular 
+
+axes. This method is intuitive and easy to understand, but it requires specifying the rotation order 
+
+and  can  encounter  gimbal  lock  in  certain  situations.  Quaternions  are  a  compact  representation 
+
+method that can describe rotation without singularities. Although using the quaternions is not very 
+
+intuitive to users, they avoid overparameterization and singularities issues, making them suitable 
+
+for scenarios requiring smooth interpolation. 
+
+In  this  study,  since  the  output  of  the  forward  kinematics  model  directly  contains  the 
+
+orientation matrix, it is preferred for its computational convenience and the reduced risk of errors 
+
+from conversions. Therefore, the orientation matrix is adopted in this thesis. 
+
+25 
+
+ 
+2.3.2  Multiple solutions problem 
+
+Since solving the inverse kinematics only requires position or orientation, it is easy to lead 
+
+multiple solutions. In the analytic method, we have to achieve all the solutions and then select one 
+
+of them according to certain criteria. Common selection criteria include minimum energy, shortest 
+
+distance, and shortest time. For the minimum energy criterion, a set of joint angles is selected with 
+
+the lowest energy consumption. The shortest distance is to select a set of solutions where the end 
+
+effector moves the shortest distance from the initial position to the target position. The shortest 
+
+time refers to the solution that allows the robotic arm to reach the target position and orientation 
+
+in  the  shortest  time,  which  considers  the  speed  and  acceleration  constraints  of  the  robotic  arm 
+
+joints to achieve the fastest motion [31]. 
+
+2.3.3  Energy-aware inverse kinematics 
+
+Energy-aware  inverse  kinematics  refers  to  inverse  kinematics  solutions  that  minimize 
+
+energy consumption. Traditional analytical inverse kinematics solutions, when multiple solutions 
+
+exist, need obtaining all these solutions and then selecting the energy-optimal solution. 
+
+In this thesis, the energy-aware inverse kinematics is considered as the energy consumption 
+
+of the robotic arm while the process of solving the inverse kinematics, allows the robotic arm to 
+
+reach the target position and orientation in a way that minimizes the amount of joint rotations. For 
+
+a  robotic  arm  with 
+
+  revolute  joints,  its  amount  of  joint  rotations, 
+
+Equation (2.23). 
+
+n
+
+E θ θ ,  is  defined  as 
+
+,...,
+
+1(
+
+)n
+
+E θ θ
+,...,
+1
+n
+
+(
+
+)
+
+= ∑  
+θ
+n
+
+n
+
+i
+
+=
+1
+
+(2.23) 
+
+In multi-objective optimization, the first and second objective functions can be set as the 
+
+error functions of target position and orientation, respectively, and the third objective function can 
+
+be set as  a function  related to the amount  of  joint rotations to obtain the  energy-aware inverse 
+
+kinematics  solution.  Energy-aware  inverse  kinematics  is  particularly  important  in  applications 
+
+where energy efficiency is crucial, such as battery-operated robots, long-duration robotic tasks, 
+
+and sustainable automation systems. 
+
+26 
+
+ 
+ 
+ 
+ 
+ 
+2.4  Workspace analysis 
+
+Since the experimental section in the thesis is to manually set single points and trajectories 
+
+used  to  verify  the  developed  algorithms,  it is  necessary  to  ensure  that  all  points  are  within the 
+
+workspace of the robotic arms before creating the trajectories. 
+
+In the process of studying the workspace of the robotic arm, the Robotics Toolbox [32, 33] 
+
+was used to create the joint and link information of the robotic arm based on the DH parameters 
+
+in Table 2.1 and the specific model of the robotic arm, as well as to apply joint angle constraints. 
+
+The joint angle limits for the two robotic arms are listed in Table 2.3. 
+
+Table 2.3. Joint angle ranges of the robotic arms. 
+
+Model 
+Joint 1 
+Joint 2 
+Joint 3 
+Joint 4 
+Joint 5 
+Joint 6 
+
+myCobot 280 Pi (degrees) 
+-168~+168 
+-135~+135 
+-150~+150 
+-145~+145 
+-165~+165 
+-180~+180 
+
+UR3 (degrees) 
+-360~+360 
+-360~+360 
+-360~+360 
+-360~+360 
+-360~+360 
+-inf~+inf 
+
+Then, the Monte Carlo method was used to create the workspace of the robotic arm. The 
+
+Monte Carlo method [34] is a stochastic simulation technique based on probability and statistical 
+
+theory,  which  utilizes  random  numbers  to  solve  many  computational  problems.  Specifically,  a 
+
+uniform distribution was used to randomly sample the joint angles of the robotic arm and calculate 
+
+the end effector positions for each set of joint angles. 
+
+The workspaces for myCobot 280 and UR3 robotic arms are shown in Figures 2.2 and 2.3, 
+
+respectively. 
+
+27 
+
+ 
+ 
+(a) 
+
+(b) 
+
+NOTE: All units in the figure are in millimeters. 
+
+Figure 2.3. Robotic arm workspace. (a) Workspace of myCobot 280 Pi; (b) Workspace of myCobot 
+280 Pi on the XOY plane. 
+
+(a) 
+
+(b) 
+
+NOTE: All units in the figure are in millimeters. 
+
+Figure 2.4. Robotic arm workspace. (a) Workspace of UR3; (b) Workspace of UR3 on the XOY 
+plane. 
+
+It can be observed that the central area on the XOY plane for both collaborative robotic 
+
+arms is empty, indicating positions that the robotic arms cannot reach. Therefore, when setting 
+
+target points and creating trajectories, this area should be avoided. 
+
+28 
+
+ 
+   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+3. MULTI-OBJECTIVE OPTIMIZATION ALGORITHMS 
+
+3.1 
+
+Introduction 
+
+In this chapter, the algorithms developed based on genetic algorithm and particle swarm 
+
+optimization are introduced, and their development steps for the inverse kinematics problem are 
+
+discussed.  For  energy-aware  inverse  kinematics,  this  thesis  introduces  a  multi-objective 
+
+optimization approach, defining multi-objective functions related to position, orientation, and total 
+
+amount of joint rotations. Due to the different units and magnitudes of these objectives, a weighted 
+
+sum method is used to weight the three objective functions, thus developing a weighted multi-
+
+objective  genetic  algorithm  and  a  weighted  multi-objective  particle  swarm  optimization. 
+
+Additionally, the application of  the Pareto  front  in inverse kinematics  problems,  as  well as the 
+
+differences  between  two-objective  and  three-objective  optimization,  are  discussed,  providing  a 
+
+reference for selecting the optimal solution. 
+
+3.2  Optimization algorithms 
+
+3.2.1  Genetic algorithm 
+
+The  genetic  algorithm  was  proposed  by  John  Holland  in  the  1970s.  This  algorithm  is 
+
+designed based on the evolutionary principles observed in nature. It is a computational model that 
+
+simulates the process of biological evolution according to Darwin's theory of natural selection and 
+
+the mechanisms of genetics. It is a method of searching for optimal solutions by mimicking the 
+
+natural evolutionary process, and it belongs to the category of evolutionary algorithms [35].  
+
+This research proposed a genetic algorithm for inverse kinematics based on these five steps. 
+
+Since the collaborative robotic arm used in the research has six joint angles and constraints, that 
+
+is,  θ1,  θ2,  θ3,  θ4,  θ5,  and  θ6  that  satisfy  the  ranges  of  motion  for  the  robotic  arm  joints.  The 
+
+established forward kinematics model is transformed into the objective function as in Equation 
+
+(3.1) to obtain the homogeneous transformation matrix of the end effector. Note that the position 
+
+vector is denoted as P given by Equation (3.2), and the orientation matrix is designated as O in 
+
+Equation (3.3). 
+
+29 
+
+ 
+θ θ θ θ θ θ
+(
+,
+3
+6
+
+,
+
+,
+
+,
+
+,
+
+2
+
+4
+
+5
+
+1
+a
+
+a
+
+x
+
+y
+
+a
+z
+0
+
+f
+
+θ
+( )
+
+=
+
+FK
+
+=
+
+
+
+
+
+
+
+
+n
+
+x
+
+n
+
+y
+
+n
+z
+0
+
+o
+
+x
+
+o
+
+y
+
+o
+z
+0
+
+P
+
+
+
+= 
+
+
+
+p
+p
+p
+
+x
+
+y
+
+z
+
+
+
+
+
+
+
+O
+
+
+
+= 
+
+
+
+n
+n
+n
+
+x
+
+y
+
+z
+
+o
+o
+o
+
+x
+
+y
+
+z
+
+p
+
+x
+
+p
+
+y
+
+p
+z
+1
+
+
+
+
+
+
+
+
+a
+a
+a
+
+x
+
+y
+
+z
+
+
+
+
+
+
+
+)
+
+(3.1) 
+
+(3.2) 
+
+(3.3) 
+
+Since there are six variables in the objective function, the chromosome consists of six genes, 
+
+as shown in Figure 3.1. 
+
+1
+θ
+Gene 1
+
+2
+θ
+Gene 2
+
+3
+θ
+Gene 3
+
+4
+θ
+Gene 4
+
+5
+θ
+Gene 5
+
+6
+θ
+Gene 6
+
+Figure 3.1. Chromosome representation in the genetic algorithm for 6-DOF robotic arms. 
+
+The genetic algorithm mathematically converts the problem-solving process into a process 
+
+similar to chromosome genes in biological evolution. The genetic process includes the following 
+
+three operations: crossover, mutation, and selection [36]. 
+
+Initialization and definition of the fitness function are required before the genetic process 
+
+begins. In initialization, the number of chromosomes in each generation needs to be determined. 
+
+The chromosomes are randomly generated within joint angle constraints. 
+
+The  fitness  function  evaluates  the  chromosomes  in  the  previous  initialization.  By 
+
+substituting θ1, θ2, θ3, θ4, θ5, and θ6 into the objective function, the actual position P and orientation 
+
+O of the end effector are obtained. The fitness function is the weighted sum of the position error 
+
+and orientation error, given in Equation (3.4), where the position error is the Euclidian distance 
+
+between the actual position and the target position, defined as Equation (3.5). The orientation error 
+
+30 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+is the root of the sum of the squared differences between the elements of the actual orientation 
+
+matrix and the elements of the target orientation matrix, as given by Equation (3.6). 
+
+fitness c
+( )
+
+=
+
+w positionError w orientationError
+
+*
+
+*
+
++
+
+1
+
+2
+
+positionError
+
+=
+
+(
+
+p
+
+x
+
+−
+
+2
+
+x
+t
+
+)
+
++
+
+(
+
+p
+
+y
+
+−
+
+2
+
+y
+t
+
+)
+
++
+
+(
+
+p
+
+z
+
+−
+
+2
+
+z
+t
+
+)
+
+(
+
+n
+
+x
+
+−
+
+n
+
+xt
+
+2
+
+)
+
++
+
+(
+
+n
+
+y
+
+−
+
+n
+
+yt
+
+2
+
+)
+
++
+
+(
+
+n
+
+z
+
+−
+
+n
+
+zt
+
+2
+
+)
+
+orientationError
+
+= +
+
+(
+
+o
+
+x
+
+−
+
+o
+
+xt
+
+2
+
+)
+
++
+
+(
+
+o
+
+y
+
+−
+
+o
+
+yt
+
+2
+
+)
+
++
+
+(
+
+o
+
+z
+
+−
+
+o
+
+zt
+
+2
+
+)
+
++
+
+(
+
+a
+
+x
+
+−
+
+a
+
+xt
+
+2
+
+)
+
++
+
+(
+
+a
+
+−
+
+a
+
+yt
+
+2
+
+)
+
++
+
+(
+
+a
+
+z
+
+−
+
+a
+
+zt
+
+2
+
+)
+
+y
+
+(3.4) 
+
+(3.5) 
+
+(3.6) 
+
+With  initialization  and  determination  of  the  fitness  function,  Figure  3.3  illustrates  the 
+
+flowchart of the genetic algorithm used in this thesis.
+
+31 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Start
+
+Initialize the population size
+
+ N
+
+Crossover to generate  N/2 
+offspring
+
+Mutation to generate 1% of N 
+offspring
+
+No
+
+Evaluate the fitness of 
+N+N/2+1%N chromosomes
+
+Select the best N chromosomes to 
+form a new population
+
+Reach acceptable error or 
+maximum iterations
+
+Yes
+
+End
+
+Figure 3.2. Genetic algorithm flowchart.
+
+32 
+
+ 
+ 
+1. Crossover 
+
+Crossover  is  the  main  genetic  operator  for  generating  new  individuals.  It  combines  the 
+
+genetic  material  of  two  parent  individuals  to  produce  offspring.  The  direction-based  crossover 
+
+operator can be used here [37], which generates a new individual Boffspring from two parents B1 and 
+
+B2 as shown in Figure 3.3 using Equation (3.7), 
+
+B
+
+offspring
+
+= ⋅
+
+r B
+(
+2
+
+−
+
+B
+1
+
+)
+
++
+
+B
+2
+
+(3.7) 
+
+where  r  is  a  random  number  between  0  and  1.  Note  that  fitness(B2)  ≥  fitness(B1)  for 
+
+maximization problems and fitness(B2) ≤ fitness(B1) for minimization problems. For the inverse 
+
+kinematics problem, it is to minimize the position error and orientation error. 
+
+The process in Figure 3.3 demonstrates the crossover of two chromosomes to generate the 
+
+offspring in general. 
+
+Parent 1
+
+11
+
+θ
+
+12
+
+θ
+
+13
+
+θ
+
+14
+
+θ
+
+15
+
+θ
+
+16
+
+θ
+
+21
+
+θ
+Parent 2
+
+22
+
+θ
+
+23
+
+θ
+
+24
+
+θ
+
+25
+
+θ
+
+26
+
+θ
+
+11
+
+θ
+Offspring
+
+12
+
+θ
+
+23
+
+θ
+
+24
+
+θ
+
+25
+
+θ
+
+26
+
+θ
+
+Figure 3.3. The crossover process of chromosomes. 
+
+2. Mutation 
+
+Mutation introduces random changes to the individuals to maintain genetic diversity. This 
+
+can involve small adjustments to the joint angles. A certain number of mutated individuals are 
+
+generated  and  placed  into  the  population.  These  mutated  individuals  are  generated  by 
+
+randomization. The mutation rate is typically set to a low percentage, in this thesis, 1%, to reflect 
+
+the natural occurrence of mutations. This step helps in exploring new areas of the solution space 
+
+and prevents the algorithm from getting stuck in local optima. 
+
+3. Selection 
+
+Selection is based on the fitness values of individuals, that is, sets of joint angles. The goal 
+
+is to select the best-performing N individuals for the new population.  
+
+33 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+After iteration, individuals are sorted based on their fitness values, and the best individuals 
+
+are retained in the population for the next iteration, repeating steps as shown in Figure 3.2. The 
+
+pseudocode by using the genetic algorithm with a process of crossover and full mutation (1% of 
+
+population) [36] to solve the inverse kinematics is shown as Algorithm 1. 
+
+Algorithm 1 GA for IK 
+
+Set target position Pt and target Orientation Ot 
+Initialize population size N, crossover rate r and mutation rate 1% 
+Define fitness function fitness(θ1, …,θ6) using forward knimatics model 
+Set joint angle limits 
+for iteration = 1 to M do 
+    for i = 1 to N/2 do 
+        parent1, parent2 = select from selectedParents 
+        offspring1, offspring2 = crossover(parent1, parent2) 
+        add offspring1 and offspring2 to newPopulation 
+    end for 
+    for each i in newPopulation do 
+        mutate(i) 
+    end for 
+    for i in population do 
+
+P O FK population i
+(
+
+( ))
+
+,
+
+=
+
+( )
+fitness i
+
+=
+
+w
+1
+
+* (
+
+−
+P P
+t
+
+)
+
+2
+
++
+
+w
+2
+
+* (
+
+−
+O O
+t
+
+2
+
+)
+
+    end for 
+    Select best individuals for next generation 
+end for 
+
+3.2.2  Particle swarm optimization 
+
+Particle Swarm Optimization (PSO) is an evolutionary computation technique developed 
+
+by  James  Kennedy  and  Russell  Eberhart  in  1995  [38].  The  PSO  algorithm  was  originally 
+
+developed  to  graphically  simulate  the  graceful  and  unpredictable  movements  of  bird  flocks. 
+
+Through the observation of animal social behavior, it was discovered that the social sharing of 
+
+information within a group provides  an  evolutionary advantage, and  this  concept served as the 
+
+foundation  for  developing  the  algorithm.  By  incorporating  velocity  matching  of  neighbors, 
+
+considering multi-dimensional search,  and acceleration based on distance, the initial version of 
+
+PSO  was  formed.  Later,  the  introduction  of  inertia  weight  w  improved  the  balance  between 
+
+exploitation and exploration, leading to a modified version of the algorithm [39]. For the inverse 
+
+kinematics problem, the particle contains the joint angles of the robotic arm. Specifically, for the 
+
+34 
+
+ 
+        
+ 
+        
+ 
+six DOF collaborative robotic arm under study, there are six variables. The ith particle 
+
+iX  can be 
+
+defined in Equation (3.8). The variables  in the particle 
+
+ix  are  also  called the position of  the ith 
+
+particle. 
+
+X
+
+i
+
+=
+
+[
+
+x
+i
+1
+
+x
+i
+
+2
+
+x
+i
+
+3
+
+x
+i
+
+4
+
+x
+i
+
+5
+
+x
+i
+
+6
+
+]
+
+(3.8) 
+
+Each particle has a corresponding velocity, which is used to correct the particle position. 
+
+The dimension of velocity is consistent with the particle, which can be written as Equation (3.9). 
+
+V
+i
+
+=
+
+[
+
+v
+i
+1
+
+v
+i
+
+2
+
+v
+i
+
+3
+
+v
+i
+
+4
+
+v
+i
+
+5
+
+v
+i
+
+6
+
+]
+
+(3.9) 
+
+The allowable upper and lower limits of each component in particle position and velocity 
+
+are denoted by Equations (3.10) and (3.11), respectively. 
+
+x
+min
+
+<
+
+x
+ij
+
+<
+
+x
+max
+
+ for 
+
+j =   
+1, 2,
+, 6
+
+(3.10) 
+
+v
+ij
+
+=
+
+
+
+
+
+
+
+v
+min
+v
+ij
+
+v
+max
+
+if
+if
+
+if
+
+v
+ij
+≤
+
+v
+min
+v
+ij
+
+<
+
+v
+min
+≤
+v
+max
+
+v
+ij
+>
+v
+max
+
+ for 
+
+j =   
+, 6
+1, 2,
+
+(3.11) 
+
+The  velocity  component  can  also  be  set  according  to  the  ratio  k,  as  shown  in  Equation 
+
+(3.12). 
+
+v
+max
+
+=
+
+kx
+
+max
+
+v
+ and 
+min
+
+= −
+
+v
+max
+
+(3.12) 
+
+There  are  multiple  particles  in  a  particle  swarm,  called  the  population.  A  population 
+
+consists of  H  particles, that is, 
+
+[
+
+X X
+1
+
+2
+
+X
+
+H
+
+]T
+
+. 
+
+With  the  above  parameters,  there  are  two  iterative  equations  in  the  particle  swarm 
+
+optimization. First, the velocity iteration can be written as Equation (3.12), where c1 and c2 are the 
+
+positive  acceleration  coefficients  that  drive  each  particle  to  the  individual  best  and  global  best 
+
+position,  respectively.  r1  and  r2  are  the  uniformly  distributed  random  numbers  from  0  to  1.  In 
+
+Equation (3.12), pbest(i) is the individual best position, that is, the local optimal position; and gbest 
+
+is the global best position, that is, the global optimal position. ω is the positional weight. 
+
+35 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+   
+ 
+ 
+ 
+V
+i
+
+ω=
+
+V c r pbest
+(
+1 1
+
+i
+
++
+
+−
+
+X
+
+i
+
++
+
+)
+
+i
+
+c r gbest X
+2 2
+
+(
+
+−
+
+)
+
+i
+
+(3.13) 
+
+The particle position iteration can be written as Equation (3.14). 
+
+X
+
+i
+
+=
+
++  
+X V
+i
+i
+
+(3.14) 
+
+Note that at each iteration, the individual best position (pbest) is obtained as follows. Each 
+
+particle compares its current objective function with the best one generated by the individual best 
+
+set: 
+
+pbest
+
+=
+
+[
+
+P P
+1 2
+
+
+
+P
+H
+
+]T
+
+. 
+
+iP  of the ith particle is selected based on evaluating the fitness functions 
+
+generated  by  the  individual  best 
+
+iP  and  the  particle 
+
+iX ,  respectively. 
+
+iP  is  set  to 
+
+iX  when  the 
+
+fitness score from 
+
+iX  is better than the one from 
+
+iP . 
+
+The  global  best  (gbest)  is  the  best  one  among  the  individual  best  particles: 
+
+gbest
+
+∈
+
+[
+
+P P
+1 2
+
+
+
+P
+H
+
+]T
+
+. 
+
+The steps of the PSO algorithm based on [40] are as follows: 
+
+1.  Initialization:  Initialize  a  swarm  of  particles  (population  size  H),  including  random 
+
+positions and velocities. 
+
+2. Fitness evaluation: Evaluate the fitness of each particle. 
+
+3. Update individual best (
+
+): For each particle, compare its fitness value with the best 
+
+position  it  has  encountered  (
+
+).  If  the  current  value  is  better,  update 
+
+pbest
+
+  to  the  current 
+
+position. 
+
+pbest
+
+pbest
+
+4. Update global best (
+
+): For each particle, compare its fitness value with the global 
+
+best position encountered by the entire swarm 
+
+gbest
+
+). If the current value is better, update 
+
+to the current position. 
+
+gbest
+5. Update velocity and position: Update the velocity and position of each particle according 
+
+(gbest
+
+to the function. 
+
+6. Termination Check: If the termination condition is not met (usually a sufficiently good 
+
+fitness value or reaching a preset maximum number of generations 
+
+, return to step 2. 
+
+The pseudocode for the inverse kinematics based on PSO is shown in Algorithm 2. 
+
+Gmax)
+
+36 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Algorithm 2 PSO for IK 
+
+Set target position Pt and target Orientation Ot 
+Initialize particles P, velocity w, coefficients c1 and c2 
+Initialize local best positions and global best position 
+Initialize objective function values, and solution stores 
+Define fitness function (forward kinematics model) f(θ1~θ6) 
+Set joint angle limits 
+for iteration = 1 to M, do 
+    for each particle p do 
+        p(i) = f(θi) 
+        Update local best by minimizing f(local best position) 
+        Update global best by minimizing f(global best position) 
+        Update particle velocity and position 
+
+−
+
+X
+
+i
+
++
+
+)
+
+i
+
+c r gbest X
+2 2
+
+(
+
+−
+
+)
+
+i
+
++
+V c r pbest
+(
+1 1
+i
++  
+X V
+i
+i
+
+ω=
+V
+i
+=
+X
+    end for 
+end for 
+
+i
+
+3.3  Multi-objective optimization 
+
+3.3.1  Objective functions and weighted sum method 
+
+The  weighted  multi-objective  genetic  and  particle  swarm  optimization  algorithms 
+
+developed in this thesis are based on the genetic algorithm and particle swarm optimization [36, 
+
+40, 41], respectively. 
+
+Regarding the design of the objective function for inverse kinematics, the first objective 
+
+function, f1, is set as the Euclidean distance between the actual position of the end effector and the 
+
+target position, written as Equation (3.15). 
+
+f
+1
+
+θ θ =
+(
+
+,...,
+
+)
+
+6
+
+1
+
+(
+
+x
+
+−
+
+2
+
+x
+t
+
+)
+
++
+
+(
+
+y
+
+−
+
+2
+
+y
+t
+
+)
+
++
+
+(
+
+z
+
+−
+
+2
+
+z
+t
+
+)
+
+(3.15) 
+
+The second objective function, f2, is set as the orientation error of the end effector. Since 
+
+the orientation representation used in this study is the orientation matrix, the error is defined as the 
+
+root of the sum of the squares of the differences of the elements between the actual orientation 
+
+matrix and the target orientation matrix, as in Equation (3.16). 
+
+37 
+
+ 
+        
+ 
+        
+ 
+ 
+ 
+(
+
+n
+
+x
+
+−
+
+n
+
+xt
+
+2
+
+)
+
++
+
+(
+
+n
+
+y
+
+−
+
+n
+
+yt
+
+2
+
+)
+
++
+
+(
+
+n
+
+z
+
+−
+
+n
+
+zt
+
+2
+
+)
+
+f
+
+2
+
+θ θ
+(
+,...,
+6
+
+1
+
+)
+
+= +
+
+(
+
+o
+
+x
+
+−
+
+o
+
+xt
+
+2
+
+)
+
++
+
+(
+
+o
+
+y
+
+−
+
+o
+
+yt
+
+2
+
+)
+
++
+
+(
+
+o
+
+z
+
+−
+
+o
+
+zt
+
+2
+
+)
+
+(3.16) 
+
++
+
+(
+
+a
+
+x
+
+−
+
+a
+
+xt
+
+2
+
+)
+
++
+
+(
+
+a
+
+−
+
+a
+
+yt
+
+2
+
+)
+
++
+
+(
+
+a
+
+z
+
+−
+
+a
+
+zt
+
+2
+
+)
+
+y
+
+The third objective function, that is, the energy-aware objective function, f3, is defined as 
+
+the sum of the six joint rotations as in Equation (3.17). 
+
+f θ θ
+,...,
+3
+1
+6
+
+(
+
+)
+
+= ∑  
+θ
+i
+
+6
+
+i
+
+=
+1
+
+(3.17) 
+
+The weighted sum method is used in the multi-objective optimization [42]. The weighted 
+
+multi-objective equations can be represented as Equation (3.18) with the condition in Equation 
+
+(3.19). 
+
+f
+
+θ θ
+(
+,...,
+6
+
+1
+
+)
+
+=
+
+w f
+1 1
+
+θ θ
+(
+,...,
+6
+
+1
+
+)
+
++
+
+w f
+2 2
+
+θ θ
+(
+,...,
+6
+
+1
+
+)
+
++
+
+w f
+3 3
+
+θ θ
+(
+,...,
+6
+
+1
+
+)
+
+(3.18) 
+
+w w w
+2
+
+1
+
++
+
++
+
+=  
+3 1
+
+(3.19) 
+
+3.3.2  Weighted multi-objective genetic algorithm 
+
+With  the  multi-objective  optimization  method,  the  pseudocode  for  the  weighted  multi-
+
+objective genetic algorithm (WMOGA) is shown in Algorithm 3. 
+
+38 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Algorithm 3 WMOGA for Energy-Aware IK 
+
+Set target position Pt and target orientation Ot 
+Initialize objective function values, weights and solution stores 
+Initialize GA parameters 
+Check joint range limitations 
+Iterate over weight combinations 
+for w1=initial value1 
+    for w3=initial value2 
+        w2=1-w1-w3 
+        if w2>0 
+            Execute GA to obtain 
+            Calculate position matrix P and orientation matrix O 
+            Calculate f1, f2, f3 
+            if f1 and f2<= allowable limits 
+                store objective function values, weights and solutions 
+            end if 
+        end if 
+    end for 
+end for 
+
+i iθ =
+(
+
+1,..., 6)
+
+3.3.3  Weighted multi-objective particle swarm optimization 
+
+Similarly,  the  pseudocode  for  the  weighted  multi-objective  particle  swarm  optimization 
+
+(WMOPSO) is shown in Algorithm 4. 
+
+Algorithm 4 WMOPSO for Energy-Aware IK 
+
+Set target position Pt and target Orientation Ot 
+Initialize objective function values, weighs and solution stores 
+Initialize PSO parameters 
+Check joint range limitations 
+Iterate over weight combinations 
+for w1=initial value1 
+    for w3=initial value2 
+        w2=1-w1-w3 
+        if w2>0 
+            Execute PSO to obtain 
+            Calculate position matrix P and orientation matrix O 
+            Calculate f1, f2, f3 
+            if f1 and f2<= allowable limits 
+                store objective function values, weights and solutions 
+            end if 
+        end if 
+    end for 
+end for 
+
+i iθ =
+(
+
+1,..., 6)
+
+39 
+
+ 
+ 
+ 
+3.4  Pareto front in energy-aware inverse kinematics 
+
+In  a  multi-objective  optimization  problem,  achieving  the  optimal  balance  between 
+
+conflicting  objectives  is  important  for  effective  decision-making.  The  Pareto  front  is  a  critical 
+
+concept,  representing  the  set  of  non-dominated  solutions  where  no  objective  can  be  improved 
+
+without degrading another [43-44]. 
+
+For an inverse kinematics problem, determining the joint angles to achieve a desired end 
+
+effector position and orientation, involves minimizing position and orientation errors. The two-
+
+dimensional Pareto front, as visualized in Figure 3.4(a), illustrates these balances between the first 
+
+two  objectives,  f1  (position  error)  and  f2  (orientation  error).  When  energy  consumption  (f3)  is 
+
+added as the third objective function, resulting in energy-aware inverse kinematics, the Pareto front 
+
+becomes three dimensions and can also be called the Pareto surface, as shown in Figure 3.4(b). 
+
+1
+
+0.9
+
+0.8
+
+0.7
+
+0.6
+
+2
+f
+
+0.5
+
+0.4
+
+0.3
+
+0.2
+
+0.1
+
+0
+
+0
+
+Non-dominated solution
+
+Dominated solution
+
+Knee Point
+
+Utopia Point
+
+Pareto front
+
+0.1
+
+0.2
+
+0.3
+
+0.4
+
+0.5
+
+f1
+
+0.6
+
+0.7
+
+0.8
+
+0.9
+
+1
+
+Figure 3.4. Pareto front. (a) Pareto front in two-objective optimization; (b) Pareto front in three-
+objective optimization (Pareto surface). 
+
+As shown in Figure 3.4, the non-dominated solutions formulate the Pareto front and reflect 
+
+optimal  balances  among  the  objective  function  values.  Dominated  solutions  represent  inferior 
+
+solutions where better alternatives exist. The knee point indicates an optimal compromise where 
+
+further improvement in one objective significantly worsens the others. Utopia point represents the 
+
+ideal scenario where all objectives achieve their best possible values. Therefore, the Pareto front 
+
+is  a  method  for  analyzing  solutions,  assisting  in  identifying  efficient  balances  among  position 
+
+errors, orientation errors, and energy consumption. 
+
+40 
+
+ 
+   
+ 
+ 
+4. EXPERIMENTS AND RESULTS 
+
+4.1 
+
+Inverse kinematics solutions for single points 
+
+The experiments in this thesis are divided into two parts. The first part is that given a target 
+
+point, the WMOGA and WMOPSO algorithms are applied to find the inverse kinematics solution. 
+
+The second part of the experiments includes creating typical target trajectories such as circles and 
+
+sine waves and then testing these trajectories on two collaborative robotic arm structures using the 
+
+two proposed algorithms. Next, the trajectories are first applied in a simulation environment using 
+
+MATLAB. Once the trajectories are confirmed to be accurate, the results are then validated via a 
+
+real robotic arm in a real-world environment. 
+
+The experiment was first started from a given target point. For each proposed algorithm, 
+
+each robotic arm was run 10 times to obtain the inverse kinematic solutions and the average errors 
+
+for each objective and the sum of the joint rotations. 
+
+The spatial coordinates of the target point in the experiment are set to (150, 150, 200) in 
+
+millimeters, chosen in the first quadrant that can be reached by both robotic arms, with the end 
+
+effector facing downward, i.e., when the rotation matrix is 
+
+1
+0
+0
+
+
+
+
+
+
+
+0
+−
+1
+0
+
+
+0
+
+0
+
+−
+1
+
+
+. The experimental results 
+
+are  shown  in  Table  4.1.  For  comparison  purposes,  the  energy-optimal  joint  rotations  from  the 
+
+analytical solution for the myCobot 280 Pi and UR3 are 5.5489 rad, and 8.0103 rad, respectively. 
+
+The steps for the analytical inverse kinematics solutions are provided in Appendix A. 
+
+Based on the results in Table 4.1, it can be seen that the total joint rotation finally optimized 
+
+by the GA and PSO based algorithms is the same for the same robotic arm at the same point. And 
+
+the  WMOPSO  algorithm  obtains  smaller  position  and  orientation  errors  than  WMOGA.  It  is 
+
+observed in the experiments that the position and orientation errors obtained by the WMOPSO 
+
+algorithm are basically at the same order of magnitude. 
+
+41 
+
+ 
+ 
+ 
+Table  4.1.  Performance  comparison  of  GA,  PSO,  WMOGA,  and  WMOPSO  in  single  point 
+experiments (average of 10 runs). 
+
+Algorithm-model 
+
+Position  error 
+
+Orientation 
+
+Joint 
+
+Minimum 
+
+joint 
+
+Maximum 
+
+joint 
+
+(m) 
+
+error 
+
+rotations 
+
+rotations (rad) 
+
+rotations (rad) 
+
+GA-myCobot  280 
+
+Pi 
+
+2.0877 10−
+
+×
+
+7
+
+7.7289 10−
+
+×
+
+10
+
+PSO-myCobot 
+
+3.5126  
+
+5.4187 10−
+
+×
+
+7
+
+280 Pi 
+
+WMOGA-
+
+3.7490 10−
+
+×
+
+12
+
+4.5517 10−
+
+×
+
+11
+
+myCobot 280 Pi 
+
+WMOPSO-
+
+0  
+
+myCobot 280 Pi 
+
+1.5564 10−
+
+×
+
+16
+
+GA-UR3 
+
+PSO-UR3 
+
+WMOGA-UR3 
+
+WMOPSO-UR3 
+
+3.3769 10−
+
+×
+
+8
+
+1.5672 10−
+
+×
+
+10
+
+-14
+
+12
+
+2.0097 10×
+1.3438 10−
+0  
+
+×
+
+2.6162 10×
+
+-16
+
+2.0267 10×
+3.1265 10−
+
+×
+
+-11
+
+16
+
+(rad) 
+
+4.5860  
+
+3.1416  
+
+5.5489  
+
+4.1086  
+
+3.1416  
+
+5.5489  
+
+3.1416  
+
+3.1416  
+
+3.1416  
+
+3.1416  
+
+3.1416  
+
+3.1416  
+
+8.1626  
+
+5.8112  
+
+4.8687  
+
+4.8687  
+
+4.8687  
+
+4.8687  
+
+4.8687  
+
+4.8687  
+
+15.8228  
+
+8.0103  
+
+4.8687  
+
+4.8687  
+
+Most importantly, it is evidenced from Table 4.1 that WMOGA and WMOPSO algorithms 
+
+produce the minimum average rotation values over the 10 runs, which are also smaller than the 
+
+values of the total amount of rotations by the analytical solutions: 5.5489 rad for myCobot and 
+
+8.0103 rad for UR3 This validates the feasibility by adding the third objective function as proposed 
+
+in Equation (3.17). 
+
+The iterations of the genetic algorithm for the two robotic arms are shown in Figure 4.1. 
+
+10 4
+
+10 2
+
+10 0
+
+-2
+
+10
+
+-4
+
+10
+
+-6
+
+10
+
+-8
+
+10
+
+n
+o
+i
+t
+c
+n
+u
+f
+
+e
+v
+i
+t
+c
+e
+b
+O
+
+j
+
+10 4
+
+10 2
+
+10 0
+
+-2
+
+10
+
+-4
+
+10
+
+-6
+
+10
+
+-8
+
+10
+
+10 -10
+
+n
+o
+i
+t
+c
+n
+u
+f
+
+e
+v
+i
+t
+c
+e
+b
+O
+
+j
+
+0
+
+100
+
+200
+
+300
+
+400
+
+500
+
+600
+
+700
+
+800
+
+900
+
+1000
+
+0
+
+100
+
+200
+
+300
+
+400
+
+500
+
+600
+
+700
+
+800
+
+900
+
+1000
+
+Iteration
+
+(a) 
+
+Iteration
+
+(b) 
+
+Figure 4.1. GA iteration with position and orientation objective functions. (a) myCobot 280 Pi; (b) 
+UR3. 
+
+42 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+The iterations of the PSO algorithm for the two robotic arms are shown in Figure 4.2. 
+
+10 5
+
+10 0
+
+-5
+
+10
+
+10 -10
+
+10 -15
+
+n
+o
+
+i
+t
+c
+n
+u
+
+f
+
+e
+v
+i
+t
+c
+e
+b
+O
+
+j
+
+10 5
+
+10 0
+
+-5
+
+10
+
+10 -10
+
+10 -15
+
+n
+o
+
+i
+t
+c
+n
+u
+
+f
+
+e
+v
+i
+t
+c
+e
+b
+O
+
+j
+
+0
+
+100
+
+200
+
+300
+
+400
+
+500
+
+600
+
+700
+
+800
+
+900
+
+1000
+
+0
+
+100
+
+200
+
+300
+
+400
+
+500
+
+600
+
+700
+
+800
+
+900
+
+1000
+
+Iteration
+
+(a) 
+
+Iteration
+
+(b) 
+
+Figure 4.2. PSO iteration with position and orientation objective functions. (a) myCobot 280 Pi; 
+(b) UR3. 
+
+The Pareto fronts of WMOGA for myCobot 280 Pi and UR3robotic arms are shown in 
+
+Figure 4.3 (a) and (b), respectively. 
+
+(a) 
+
+(b) 
+
+Figure 4.3. WMOGA Pareto fronts. (a) myCobot 280 Pi; (b) UR3. 
+
+The  Pareto  front  from  the  WMOPSO  algorithm  for  the  two  robotic  arms  are  shown  in 
+
+Figure 4.4 (a) and (b), respectively. 
+
+43 
+
+ 
+   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+(a) 
+
+(b) 
+
+Figure 4.4. WMOPSO Pareto fronts. (a) myCobot 280 Pi; (b) UR3. 
+
+4.2 
+
+Inverse kinematics solutions for trajectories 
+
+In this group of experiments, three trajectories were adopted for simulation and validation. 
+
+The first one is a circular trajectory with the end effector of the robotic arm vertically pointing 
+
+downward. As in most application scenarios, the gripper on the robotic arm is orientated downward 
+
+to complete the pick and place. 
+
+In  order  to  test  the  performance  of  the  algorithm  at  a  different  gripper  orientation,  the 
+
+second trajectory is selected as the same circle with the end effector 45 degrees diagonally pointing 
+
+downward. 
+
+The third trajectory is a sine wave varying in x, y, and z coordinates, representing a spatial 
+
+trajectory. 
+
+The positions, sizes, and other information for these three trajectories are listed in Table 
+
+4.2. 
+
+44 
+
+ 
+   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Table 4.2. Trajectory information. 
+
+Trajectory  Center/Start point (x, y, z) for 
+
+Circle 
+
+myCobot 280 Pi (mm) 
+(100, 100, 200)  
+
+Center/Start  point  for 
+UR3 (mm) 
+(200, 200, 200)  
+
+Size (mm) 
+
+r=50  
+
+Number 
+of Points 
+50  
+
+Circle/ 
+
+(150, 150, 200)  
+
+(200, 200, 200)  
+
+r=50  
+
+50  
+
+Sine 
+
+(100, 100, 200)  
+
+(200, 200, 200)  
+
+50  
+
+range=100, 
+A=100, 
+f=1/100, 
+φ=2 
+
+NOTE: The “/” indicates the end effector with 45 degrees downward. 
+
+Fixed Orientation 
+
+1
+
+0
+
+0
+
+1
+
+0
+
+0
+
+1
+0
+
+0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+0
+−
+1
+
+0
+
+0
+
+
+
+0
+
+−
+1
+
+
+
+
+
+
+
+
+
+
+
+
+0
+1
+2
+1
+2
+
+−
+
+0
+1
+2
+1
+2
+
+−
+
+−
+
+0
+−
+1
+
+0
+
+
+0
+
+0
+
+−
+1
+
+
+The  results  of  the  trajectory  experiments  are  shown  in  Table  4.3.  The  trajectory 
+
+experiments apply the two algorithms that performed better in the single point experiments to both 
+
+robotic arms, obtaining the root mean square error of position and orientation as well as the total 
+
+joint rotations. The goal of the performance metrics is to minimization. 
+
+Table 4.3. Performance comparison of WMOGA and WMOPSO in trajectory experiments. 
+
+Algorithm 
+Model 
+
+myCobot 
+280 Pi 
+
+UR3 
+
+WMOGA 
+
+Trajectory  RMSE 
+
+of 
+
+position (m) 
+
+RMSE 
+orientation 
+
+of 
+
+Circle 
+
+Circle/ 
+
+Sine 
+
+Circle 
+
+Circle/ 
+
+Sine 
+
+11
+
+10
+
+11
+
+11
+
+12
+
+×
+
+×
+
+×
+
+4.0583 10−
+1.7253 10−
+1.5665 10−
+2.7233 10−
+8.2873 10−
+2.7190 10−
+
+×
+
+×
+
+×
+
+12
+
+10
+
+10
+
+10
+
+×
+
+×
+
+×
+
+8.4286 10−
+6.1786 10−
+2.7856 10−
+6.0936 10−
+1.3754 10−
+3.4270 10−
+
+×
+
+×
+
+×
+
+11
+
+10
+
+11
+
+Joint 
+rotations 
+(rad) 
+3.9725  
+
+5.0374  
+
+4.9485  
+
+4.3980  
+
+6.1968  
+
+5.1709  
+
+WMOPSO 
+RMSE 
+position (m) 
+
+of 
+
+RMSE 
+orientation 
+
+of 
+
+8
+
+6
+
+×
+
+×
+
+1.9221 10−
+1.7154 10−
+×
+5.4239 10−
+5.1787 10−
+4.7218 10−
+4.7388 10−
+
+×
+
+×
+
+×
+
+17
+
+18
+
+18
+
+18
+
+8
+
+×
+
+×
+
+1.3275 10−
+×
+3.7737 10−
+2.4573 10−
+2.0718 10−
+2.3859 10−
+2.0603 10−
+
+×
+
+×
+
+×
+
+8
+
+16
+
+16
+
+16
+
+16
+
+Joint 
+rotations 
+(rad) 
+3.9725  
+
+5.0374  
+
+4.9485  
+
+4.3980  
+
+6.1968  
+
+5.1709  
+
+The performances of WMOGA for the myCobot 280 Pi on three trajectories are shown in 
+
+Figures 4.5 to 4.7, respectively while the performances of WMOPSO for the myCobot 280 Pi on 
+
+three trajectories are shown in Figures 4.8 to 4.10. Again, the performances of WMOGA for the 
+
+45 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+UR3 on three trajectories are displayed in Figures 4.11 to 4.13, respectively, and the performances 
+
+of WMOPSO for the UR3 on three trajectories are depicted in Figures 4.14 to 4.16.  
+
+Joint1
+
+Joint2
+
+Joint3
+
+Joint4
+
+Joint5
+
+Joint6
+
+3
+
+2
+
+1
+
+0
+
+-1
+
+-2
+
+-3
+
+)
+d
+a
+r
+(
+
+n
+o
+
+i
+t
+
+a
+
+t
+
+o
+R
+
+t
+
+i
+
+n
+o
+J
+
+(a) 
+
+0
+
+5
+
+10
+
+15
+
+20
+
+25
+
+30
+
+35
+
+40
+
+45
+
+50
+
+Point
+
+(b) 
+
+Figure 4.5. The performances of the WMOGA for the myCobot 280 Pi on a circular trajectory. (a) 
+Comparison  between  the  target  trajectory  and  the  actual  trajectory;  (b)  Joint  angles  versus 
+trajectory points. 
+
+Joint1
+
+Joint2
+
+Joint3
+
+Joint4
+
+Joint5
+
+Joint6
+
+3
+
+2
+
+1
+
+0
+
+-1
+
+-2
+
+-3
+
+)
+d
+a
+r
+(
+
+n
+o
+i
+t
+a
+t
+o
+R
+
+i
+
+t
+n
+o
+J
+
+(a) 
+
+0
+
+5
+
+10
+
+15
+
+20
+
+25
+
+30
+
+35
+
+40
+
+45
+
+50
+
+Point
+
+(b) 
+
+Figure 4.6. The performance of the WMOGA for the myCobot 280 Pi on a circular trajectory with 
+angles.  (a)  Comparison  between  the  target  trajectory  and  the  actual  trajectory;  (b)  Joint  angles 
+versus trajectory points.
+
+46 
+
+ 
+   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Joint1
+
+Joint2
+
+Joint3
+
+Joint4
+
+Joint5
+
+Joint6
+
+3
+
+2
+
+1
+
+0
+
+-1
+
+-2
+
+-3
+
+)
+d
+a
+r
+(
+
+n
+o
+
+i
+t
+
+a
+
+t
+
+o
+R
+
+t
+
+i
+
+n
+o
+J
+
+(a) 
+
+0
+
+5
+
+10
+
+15
+
+20
+
+25
+
+30
+
+35
+
+40
+
+45
+
+50
+
+Point
+
+(b) 
+
+Figure 4.7.  The  performance  of the WMOGA  for  the myCobot 280  Pi on a  sine  trajectory. (a) 
+Comparison  between  the  target  trajectory  and  the  actual  trajectory.  (b)  Joint  angles  versus 
+trajectory points. 
+
+Joint1
+
+Joint2
+
+Joint3
+
+Joint4
+
+Joint5
+
+Joint6
+
+3
+
+2
+
+1
+
+0
+
+-1
+
+-2
+
+-3
+
+)
+d
+a
+r
+(
+
+n
+o
+i
+t
+a
+t
+o
+R
+
+i
+
+t
+n
+o
+J
+
+(a) 
+
+0
+
+5
+
+10
+
+15
+
+20
+
+25
+
+30
+
+35
+
+40
+
+45
+
+50
+
+Point
+
+(b) 
+
+Figure 4.8. The performance of the WMOPSO for the myCobot 280 Pi on a circular trajectory. (a) 
+Comparison  between  the  target  trajectory  and  the  actual  trajectory;  (b)  Joint  angles  versus 
+trajectory points.
+
+47 
+
+ 
+   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Joint1
+
+Joint2
+
+Joint3
+
+Joint4
+
+Joint5
+
+Joint6
+
+3
+
+2
+
+1
+
+0
+
+-1
+
+-2
+
+-3
+
+)
+d
+a
+r
+(
+
+n
+o
+
+i
+t
+
+a
+
+t
+
+o
+R
+
+t
+
+i
+
+n
+o
+J
+
+(a) 
+
+0
+
+5
+
+10
+
+15
+
+20
+
+25
+
+30
+
+35
+
+40
+
+45
+
+50
+
+Point
+
+(b) 
+
+Figure 4.9. The performance of the WMOPSO for the myCobot 280 Pi on a circular trajectory 
+with angles. (a) Comparison between the target trajectory and the actual trajectory; (b) Joint angles 
+versus trajectory points. 
+
+Note that practically, the position errors in Figure 4.9 (a) are still acceptable. 
+
+Joint1
+
+Joint2
+
+Joint3
+
+Joint4
+
+Joint5
+
+Joint6
+
+3
+
+2
+
+1
+
+0
+
+-1
+
+-2
+
+-3
+
+)
+d
+a
+r
+(
+
+n
+o
+i
+t
+a
+t
+o
+R
+
+i
+
+t
+n
+o
+J
+
+(a) 
+
+0
+
+5
+
+10
+
+15
+
+20
+
+25
+
+30
+
+35
+
+40
+
+45
+
+50
+
+Point
+
+(b) 
+
+Figure 4.10. The performance of the WMOPSO for the myCobot 280 Pi on a sine trajectory. (a) 
+Comparison between the target trajectory and the actual trajectory; (b) Joint angles versus tractor 
+points.
+
+48 
+
+ 
+   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Joint1
+
+Joint2
+
+Joint3
+
+Joint4
+
+Joint5
+
+Joint6
+
+3
+
+2
+
+1
+
+0
+
+-1
+
+-2
+
+-3
+
+)
+d
+a
+r
+(
+
+n
+o
+
+i
+t
+
+a
+
+t
+
+o
+R
+
+t
+
+i
+
+n
+o
+J
+
+(a) 
+
+0
+
+5
+
+10
+
+15
+
+20
+
+25
+
+30
+
+35
+
+40
+
+45
+
+50
+
+Point
+
+(b) 
+
+Figure 4.11. The performance of the WMOGA for the UR3 on a circular trajectory. (a) Comparison 
+between the target trajectory and the actual trajectory; (b) Joint angles versus trajectory points. 
+
+Joint1
+
+Joint2
+
+Joint3
+
+Joint4
+
+Joint5
+
+Joint6
+
+3
+
+2
+
+1
+
+0
+
+-1
+
+-2
+
+-3
+
+)
+d
+a
+r
+(
+
+n
+o
+i
+t
+a
+t
+o
+R
+
+i
+
+t
+n
+o
+J
+
+(a) 
+
+0
+
+5
+
+10
+
+15
+
+20
+
+25
+
+30
+
+35
+
+40
+
+45
+
+50
+
+Point
+
+(b) 
+
+Figure 4.12. The performance of the WMOGA for the UR3 on a circular trajectory with angles. 
+(a)  Comparison  between  the  target  trajectory  and  the  actual  trajectory;  (b)  Joint  angles  versus 
+trajectory points.
+
+49 
+
+ 
+   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Joint1
+
+Joint2
+
+Joint3
+
+Joint4
+
+Joint5
+
+Joint6
+
+3
+
+2
+
+1
+
+0
+
+-1
+
+-2
+
+-3
+
+)
+d
+a
+r
+(
+
+n
+o
+
+i
+t
+
+a
+
+t
+
+o
+R
+
+t
+
+i
+
+n
+o
+J
+
+(a) 
+
+0
+
+5
+
+10
+
+15
+
+20
+
+25
+
+30
+
+35
+
+40
+
+45
+
+50
+
+Point
+
+(b) 
+
+Figure 4.13. The performance of the WMOGA for the UR3 on a circular trajectory. (a) Comparison 
+between the target trajectory and the actual trajectory; (b) Joint angles versus trajectory points. 
+
+Joint1
+
+Joint2
+
+Joint3
+
+Joint4
+
+Joint5
+
+Joint6
+
+3
+
+2
+
+1
+
+0
+
+-1
+
+-2
+
+-3
+
+)
+d
+a
+r
+(
+
+n
+o
+i
+t
+a
+t
+o
+R
+
+i
+
+t
+n
+o
+J
+
+(a) 
+
+0
+
+5
+
+10
+
+15
+
+20
+
+25
+
+30
+
+35
+
+40
+
+45
+
+50
+
+Point
+
+(b) 
+
+Figure  4.14.  The  performance  of  the  WMOPSO  for  the  UR3  on  a  circular  trajectory.  (a) 
+Comparison  between  the  target  trajectory  and  the  actual  trajectory;  (b)  Joint  angles  versus 
+trajectory points.
+
+50 
+
+ 
+   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Joint1
+
+Joint2
+
+Joint3
+
+Joint4
+
+Joint5
+
+Joint6
+
+3
+
+2
+
+1
+
+0
+
+-1
+
+-2
+
+-3
+
+)
+d
+a
+r
+(
+n
+o
+
+i
+t
+
+a
+
+t
+
+o
+R
+
+t
+
+i
+
+n
+o
+J
+
+(a) 
+
+0
+
+5
+
+10
+
+15
+
+20
+
+25
+
+30
+
+35
+
+40
+
+45
+
+50
+
+Point
+
+(b) 
+
+Figure 4.15. The performance of the WMOPSO for the UR3 on a circular trajectory with angles. 
+(a)  Comparison  between  the  target  trajectory  and  the  actual  trajectory;  (b)  Joint  angles  versus 
+trajectory points. 
+
+Joint1
+
+Joint2
+
+Joint3
+
+Joint4
+
+Joint5
+
+Joint6
+
+3
+
+2
+
+1
+
+0
+
+-1
+
+-2
+
+-3
+
+)
+d
+a
+r
+(
+
+n
+o
+i
+t
+a
+t
+o
+R
+
+i
+
+t
+n
+o
+J
+
+(a) 
+
+0
+
+5
+
+10
+
+15
+
+20
+
+25
+
+30
+
+35
+
+40
+
+45
+
+50
+
+Point
+
+(b) 
+
+Figure 4.16. The performance of the WMOPSO for the UR3 on a sine trajectory. (a) Comparison 
+between the target trajectory and the actual trajectory; (b) Joint angles versus trajectory points. 
+
+The evaluation of WMOGA and WMOPSO algorithms on the myCobot 280 Pi and UR3 
+
+robotic  arms  showed  that  WMOPSO  generally  achieved  lower  RMSE  in  both  position  and 
+
+orientation  across  all  tested  trajectories.  Additionally,  the  WMOPSO  algorithm  demonstrated 
+
+better  energy-aware  performance,  indicated  by  lower  total  joint  rotations,  making  it  a  superior 
+
+choice for applications requiring high precision and energy awareness in robotic systems. 
+
+51 
+
+ 
+   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Finally, a comparison of the developed WMOGA and WMOPSO algorithms on the circular 
+
+trajectory with a multi-objective modified PSO (MO-M-PSO) algorithm in [12] is listed in Table 
+
+4.4. The developed multi-objective based algorithms outperform the one in the reference [12]. 
+
+Table 4.4. Performance comparison between the developed algorithms and existing algorithm in 
+the reference. 
+
+Algorithm 
+
+Position error (m) 
+
+Orientation error 
+
+MO-M-PSO (Best) [12] 
+
+WMOGA (Mean) 
+
+WMOPSO (Mean) 
+
+2.31 10−×
+
+8
+
+3.3908 10−×
+
+11
+
+9.6105 10−×
+
+9
+
+1.85 10−×
+
+8
+
+6.0936 10−×
+
+11
+
+6.6375 10−×
+
+9
+
+4.3  Simulation verification 
+
+After obtaining the inverse kinematics solutions for the different trajectories, the inverse 
+
+solutions were first simulated using the robotics toolbox. And the trails of the robotic arm operation 
+
+were visualized and the experimental results for each trajectory group are shown in Figures 4.16 
+
+to 4.20, respectively. 
+
+(a) 
+
+(b) 
+
+Figure 4.17. Simulation of circular trajectories on myCobot 280 Pi. (a) WMOGA; (b)WMOPSO.
+
+52 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+(a) 
+
+(b) 
+
+Figure  4.18.  Simulation  of  circular  trajectories  each  with  an  orientation  angle  of  45  degrees 
+downward on myCobot 280 Pi. (a) WMOGA; (b) WMOPSO. 
+
+(a) 
+
+(b) 
+
+Figure 4.19. Simulation of sine trajectories on myCobot 280 Pi. (a) WMOGA; (b) WMOPSO. 
+
+(a) 
+
+(b) 
+
+Figure 4.20. Simulation of circular trajectories on UR3. (a) WMOGA; (b) WMOPSO.
+
+53 
+
+ 
+   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+(a) 
+
+(b) 
+
+Figure  4.21.  Simulation  of  circular  trajectories  each  with  an  orientation  angle  of  45  degrees 
+downward on UR3. (a) WMOGA; (b) WMOPSO. 
+
+(a) 
+
+(b) 
+
+Figure 4.22. Simulation of sine trajectories on UR3. (a) WMOGA; (b) WMOPSO. 
+
+4.4  Real robotic arm implementation 
+
+Finally, the inverse kinematics solutions for the three sets of trajectories were validated on 
+
+the myCobot 280 Pi cobot in the laboratory.  
+
+Figures 4.23 to 4.25 show the real robotic arm validation of different trajectories obtained 
+
+using the proposed WMOGA and WMOPSO algorithms.
+
+54 
+
+ 
+   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+(a) 
+
+(b) 
+
+Figure  4.23.  Real-world  robotic  arm  validation  or  circular  trajectories.  (a)  WMOGA;  (b) 
+WMOPSO. 
+
+(a) 
+
+(b) 
+
+Figure 4.24. Real-world robotic arm validation of circular trajectories with angled end effector. (a) 
+WMOGA; (b) WMOPSO.
+
+55 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+(a) 
+
+(b) 
+
+Figure 4.25. Real-world robotic arm validation of sine trajectories. (a) WMOGA; (b) WMOPSO. 
+
+Our experiments demonstrated that the robotic arm follows the desired trajectories. 
+
+56 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+5. CONCLUSION AND FUTURE WORK 
+
+5.1  Conclusion 
+
+This  thesis  addressed  the  inverse  kinematics  problem  of  robotic  arms  using  an  energy-
+
+aware approach through multi-objective optimization by considering that the energy consumption 
+
+of the robot is proportional to the total amount of joint rotations to the target position. Specifically, 
+
+during the inverse kinematics optimization process, the total amount of joint rotations, position 
+
+error, and orientation error are considered as objective functions. The algorithms developed use a 
+
+weighted sum of the multiple objective functions to iterate over a certain range of weights to obtain 
+
+the inverse kinematics solution within the required error range. The experimental results show that 
+
+the  obtained  inverse  kinematics  solutions  have  a  minimal  error  with  the  target  points  and 
+
+orientations, and the joints maintain small rotations, resulting in very smooth motion curves for 
+
+the robotic arm.  
+
+The experiments also demonstrate that as long as the trajectories are within the workspace 
+
+of the robotic arm, the algorithm can quickly converge while meeting acceptable error conditions. 
+
+This adaptability is beneficial for manufacturing industries with varying requirements for precision 
+
+and speed in different tasks. 
+
+Furthermore, the proposed algorithm can be applied to a robotic model with any number 
+
+of  degrees  of  freedom.  The  trajectories  solved  by  the  proposed  WMOGA  and  WMOPSO 
+
+algorithms are verified by simulations and validated by the physical robotic arm, The achieved 
+
+inverse  kinematic  solutions  demonstrate  a  promising  performance  and  have  potential  for 
+
+applications of the inverse kinematics of robotics. 
+
+5.2  Future work 
+
+There  are  several  directions  for  future  research  on  this  topic.  Currently,  the  energy 
+
+awareness function is simply the sum of rotations of all joints of the robotic arm. The dynamics in 
+
+robotics can be further investigated. Secondly, only two 6-DOF collaborative robotic arms were 
+
+used in the study. More robotic arm structures can also be modeled and solved, such as centrally 
+
+symmetric centrosymmetric industrial robotic arms, low DOF robotic arms, higher DOF redundant 
+
+robotic  arms,  and  heterogeneous  robots.  Moreover,  during  the  implementation  process,  it  was 
+
+57 
+
+ 
+found that the time interval between two consecutive trajectory points from the inverse kinematics 
+
+solutions affects the smoothness of the robotic arm operation. This may require using motor control 
+
+strategies for the robotic arm, such as proportional-integration-differential (PID) control, or our 
+
+published method, the fractional-order PID (FOPID) control using reinforcement learning [45] to 
+
+assist optimization and achieve smoother robot control. 
+
+58 
+
+ 
+ 
+ 
+APPENDIX A. ANALYTICAL SOLUTIONS FOR 6-DOF INVERSE 
+KINEMATICS 
+
+n
+
+=
+
+p
+
+x
+
+−
+
+d a
+6
+
+x
+
+=
+m p
+
+−
+
+d a
+6
+
+y
+
+y
+
+u
+
+= ±
+
+2
++
+m n
+
+2
+
+−
+
+d
+
+2
+4
+
+θ
+1
+
+=
+
+tan
+
+−
+
+− 
+d
+(
+m n
+/
+)
+(
+1
+4
+
++
+m n d
+1 (
+)(
+/
+
+4
+
+u
+/
+)
+u
+/
+)
+
+
+
+
+
+, two possible solutions 
+
+θ
+6
+
+=
+
+tan
+
+1
+
+− 
+
+
+
+
+−
+
+C o
+1
+
+S o
+y
+1
+−
+S n C n
+1
+1
+
+x
+
+
+
+
+
+
+x
+
+y
+
+θ
+5
+
+=
+
+−
+1
+sin (
+
+C a
+1
+
+−
+
+S a
+1
+
+x
+
+)
+
+y
+
+θ θ θ
+3
+4
+
++
+
++
+
+2
+
+C S n
+1 6
+
+x
+
++
+
+−
+1
+
+=
+
+tan
+
+
+
+
+
+y
+
++
+S S n C C o
+1 6
+6
++
+−
+(
+S n C o
+
+x
+)
+
+1
+
+6
+
+z
+
+6
+
+z
+
++
+
+S C o
+1
+6
+
+y
+
+
+
+
+
+r
+14
+
+=
+
++
+nC mS
+1
+
+1
+
++
+
+d S
+5
+
+234
+
+r
+34
+
+=
+
+p
+
+z
+
+−
+
+d a
+6
+
+z
+
+−
+
+d
+1
+
+−
+
+d C
+5
+
+234
+
+θ
+3
+
+= ±
+
+−
+cos [(
+
+1
+
+2
+r
+14
+
++
+
+2
+r
+34
+
+−
+
+2
+a
+3
+
+−
+
+2
+a
+2
+
+) /(2
+
+a a
+3 2
+
+)]
+
+, two possible solutions 
+
+θ
+2
+
+=
+
+tan
+
+1
+
+− 
+
+
+
+−
+
+r a
+(
+(
+14
+2
++
+r a
+(
+34
+2
+
++
+
+)
+a C
+3
+3
+−
+a C
+)
+3
+3
+
++
+
+r a S
+)
+34 3 3
+r a S
+(
+)
+14
+3 3
+
+
+
+
+
+θ θ θ θ θ θ
++
+3
+
+=
+
+−
+
++
+
+−
+
+(
+
+3
+
+4
+
+4
+
+2
+
+2
+
+*
+)
+
+59 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+REFERENCES 
+
+1.  Tesla, Tesla AI Day 2022, https://www.youtube.com/watch?v=ODSJsviD_SU. 
+
+2.  G.  Agrim,  S.  Silvio,  G.  Surya,  and  F.-F.  Li,  “Embodied  Intelligence  via  learning  and 
+evolution,”  Nature  Communications,  vol.  12,  no.  1,  Oct.  2021.  doi:10.1038/s41467-021-
+25874-z. 
+
+3.  “NIHF inductee George Devol invented the Industrial Robot,” NIHF Inductee George Devol 
+
+Invented the Industrial Robot, https://www.invent.org/inductees/george-devol. 
+
+4.  “Mechanical  Advantage  Two  Northwestern  University  engineers  are  developing  cobots  -- 
+machines  that,  unlike  robots,  cooperate  with  workers  without  displacing  them,”  Chicago 
+Tribune, https://peshkin.mech.northwestern.edu/cobot/chitrib/jonvan.html. 
+
+5.  “US5952796A - Cobots,” Google Patents, https://patents.google.com/patent/US5952796A/en. 
+
+6.  S.  Hand,  “A  brief  history  of  collaborative  robots,”  Material  Handling  and  Logistics, 
+https://www.mhlnews.com/technology-automation/article/21124077/a-brief-history-of-
+collaborative-robots. 
+
+7.  K. P. Hawkins, “Analytic inverse kinematics for the universal robots UR-5/UR-10 arms,” GT 
+Digital  Repository,  https://repository.gatech.edu/entities/publication/5fe1645c-bf7d-49ac-
+8c0e-6516603091eb. 
+
+8.  “Inverse 
+
+Kinematics 
+
+Algorithms,” 
+
+MathWorks, 
+
+https://www.mathworks.com/help/robotics/ug/inverse-kinematics-algorithms.html. 
+
+9.  H. Badreddine, S. Vandewalle, and J. Meyers, “Sequential quadratic programming (SQP) for 
+optimal control in direct numerical simulation of turbulent flow,” Journal of Computational 
+Physics, vol. 256, pp. 1–16, Jan. 2014. doi:10.1016/j.jcp.2013.08.044. 
+
+10.  T.  Sugihara,  “Solvability-unconcerned  inverse  kinematics  by  the  levenberg–Marquardt 
+method,”  IEEE  Transactions  on  Robotics,  vol.  27,  no.  5,  pp.  984–991,  Oct.  2011. 
+doi:10.1109/tro.2011.2148230. 
+
+11.  F. Maric et al., “Riemannian optimization for distance-geometric inverse kinematics,” IEEE 
+2022. 
+
+1703–1722, 
+
+Jun. 
+
+vol. 
+
+pp. 
+
+38, 
+
+no. 
+
+3, 
+
+Transactions 
+on  Robotics, 
+doi:10.1109/tro.2021.3123841. 
+
+12.  N. Rokbani,  B. Neji, M. Slim, S. Mirjalili,  and R. Ghandour, “A  multi-objective modified 
+PSO for inverse kinematics of a 5-DOF robotic arm,” Applied Sciences, vol. 12, no. 14, p. 
+7091, Jul. 2022. doi:10.3390/app12147091. 
+
+60 
+
+ 
+13.  H.  Z.  Khaleel  and  A.  J.  Humaidi,  “Towards  accuracy  improvement  in  solution  of  inverse 
+kinematic  problem  in  redundant  robot:  A  comparative  analysis,”  International  Review  of 
+Applied  Sciences  and  Engineering,  vol.  15,  no.  2,  pp.  242–251,  Jun.  2024. 
+doi:10.1556/1848.2023.00722. 
+
+14.  S. Luo, D. Chu, Q. Li, and Y. He, “Inverse kinematics solution of 6-DOF manipulator based 
+on multi-objective full-parameter optimization PSO algorithm,” Frontiers in Neurorobotics, 
+vol. 16, Mar. 2022. doi:10.3389/fnbot.2022.791796. 
+
+15.  A.  Malik,  Y.  Lischuk,  T.  Henderson,  and  R.  Prazenica,  “A  deep  reinforcement-learning 
+approach for inverse kinematics solution of a high degree of Freedom Robotic manipulator,” 
+Robotics, vol. 11, no. 2, p. 44, Apr. 2022. doi:10.3390/robotics11020044. 
+
+16.  S. Zhang, Q. Xia, M. Chen, and S. Cheng, “Multi-objective optimal trajectory planning for 
+robotic  arms  using  Deep  Reinforcement  Learning,”  Sensors,  vol.  23,  no.  13,  p.  5974,  Jun. 
+2023. doi:10.3390/s23135974. 
+
+17.  S.  Wells,  “Generative  AI’s  Energy  Problem  Today  is  foundational,”  IEEE  Spectrum, 
+
+https://spectrum.ieee.org/ai-energy-consumption. 
+
+18.  K. Lottick, S. Susai, S. A. Friedler, and J. P. Wilson, “Energy usage reports: environmental 
+
+awareness as part of algorithmic accountability”, 2019, arXiv:1911.08354v2. 
+
+19.  V. Bolón-Canedo, L. Morán-Fernández, B. Cancela, and A. Alonso-Betanzos, “A review of 
+Green Artificial Intelligence: Towards a more sustainable future,” Neurocomputing, vol. 599, 
+p. 128096, Sep. 2024. doi:10.1016/j.neucom.2024.128096. 
+
+20.  Energy-aware 
+
+process 
+https://hotcarbon.org/assets/2024/pdf/hotcarbon24-final29.pdf. 
+
+scheduling 
+
+in 
+
+linux, 
+
+21.  J. Lansky et al., “An energy-aware routing method using Firefly algorithm for flying ad hoc 
+networks,” Scientific Reports, vol. 13, no. 1, Jan. 2023. doi:10.1038/s41598-023-27567-7. 
+
+22.  Y. Liang and Y. Feng, “An energy-aware routing algorithm for heterogeneous wireless sensor 
+networks,” 2009 Ninth International Conference on Hybrid Intelligent Systems, pp. 275–278, 
+2009. doi:10.1109/his.2009.167. 
+
+23.  J. Wittmann, D. Hornung, K. Griesbauer, and D. Rixen, “Energy-aware hierarchical control 
+of joint velocities,” Journal of Intelligent &amp; Robotic Systems, vol. 110, no. 4, Oct. 2024. 
+doi:10.1007/s10846-024-02182-4. 
+
+24.  A. Munir, A. Dutta, and R. Parasuraman, “Energy-aware coverage planning for heterogeneous 
+
+multi-robot system”,2024, arXiv:2411.02230. 
+
+25.  S. B. Niku, Introduction to Robotics: Analysis, Control, Applications. Hoboken, NJ: Wiley, 
+
+2020. 
+
+61 
+
+ 
+26.  J.  J.  Craig,  Introduction  to  Robotics:  Mechanics  and  Control.  Harlow,  United  Kingdom: 
+
+Pearson, 2017. 
+
+27.  “myCobot 
+
+pi 
+https://docs.elephantrobotics.com/docs/mycobot_280_pi_en/. 
+
+(2023),” 
+
+280 
+
+Introduction 
+
+· 
+
+GitBook, 
+
+28.  “Universal  robots  -  DH  parameters  for  calculations  of  kinematics  and  dynamics,” 
+Collaborative  robotic  automation,  https://www.universal-robots.com/articles/ur/application-
+installation/dh-parameters-for-calculations-of-kinematics-and-dynamics/. 
+
+29.  E. Guizzo, “Universal Robots UR3 arm is small and nimble, helps to build copies of itself,” 
+
+IEEE Spectrum, https://spectrum.ieee.org/universal-robots-ur3-robotic-arm. 
+
+30.  E.  Trucco  and  A.  Verri,  Introductory  Techniques  for  3-D  Computer  Vision.  Upper  Saddle 
+
+River, NJ: Prentice Hall, 1998. 
+
+31.  Y. Tang et al., “ETA-IK: Execution-Time-Aware Inverse Kinematics for Dual-Arm Systems,” 
+
+2024, arXiv:2411.14381. 
+
+32.  “Robotics toolbox,” Peter Corke, https://petercorke.com/toolboxes/robotics-toolbox/. 
+
+33.  P.  I.  Corke,  Robotics,  Vision  and  Control:  Fundamental  Algorithms  in  MATLAB®.  Cham, 
+
+Switzerland: Springer, 2017. 
+
+34.  M. H. Kalos and P. A. Whitlock, Monte Carlo Methods. Weinheim: Wiley-VCH, 2008. 
+
+35.  A. Petrowski and S. Ben-Hamida, Evolutionary Algorithms. Somerset: Wiley-ISTE, 2017. 
+
+36.  S.-T.  Tzeng  and  H.-C.  Lu,  “Genetic  algorithm  approach  for  designing  higher-order  digital 
+differentiators,”  Signal  Processing,  vol.  79,  no.  2,  pp.  175–186,  Dec.  1999. 
+doi:10.1016/s0165-1684(99)00091-2. 
+
+37.  Z.  Michalewicz,  L.  Thomas,  and  S.  Swarnalatha,  “Evolutionary  operators  for  continuous 
+convex  parameter  spaces,”  Proceedings  of  the  3rd  Annual  conference  on  Evolutionary 
+Programming, 1994, pp. 84–97. 
+
+38.  J.  Kennedy  and  R.  Eberhart,  “Particle  swarm  optimization,”  Proceedings  of  ICNN’95  - 
+1942–1948. 
+on  Neural  Networks, 
+
+vol. 
+
+pp. 
+
+4, 
+
+International  Conference 
+doi:10.1109/icnn.1995.488968. 
+
+39.  Y.  Shi  and  R.  Eberhart,  “A  modified  particle  swarm  optimizer,”  1998  IEEE  International 
+Conference  on  Evolutionary  Computation  Proceedings.  IEEE  World  Congress  on 
+Computational Intelligence (Cat. No.98TH8360). doi:10.1109/icec.1998.699146. 
+
+40.  W.-D.  Chang  and  D.-M.  Chang,  “Design  of  a  higher-order  digital  differentiator  using  a 
+particle swarm optimization approach,” Mechanical Systems and Signal Processing, vol. 22, 
+no. 1, pp. 233–247, Jan. 2008. doi:10.1016/j.ymssp.2007.08.010. 
+
+62 
+
+ 
+41.  C. A. C. Coello, G. T. Pulido, and M. S. Lechuga, “Handling multiple objectives with particle 
+swarm  optimization,”  IEEE  Transactions  on  Evolutionary  Computation,  vol.  8,  no.  3,  pp. 
+256–279, Jun. 2004. doi:10.1109/tevc.2004.826067. 
+
+42.  Lecture 
+
+Multi-objective 
+https://engineering.purdue.edu/~sudhoff/ee630/Lecture09.pdf. 
+
+9: 
+
+optimization, 
+
+43.  K.  Deb,  Multi-Objective  Optimization  Using  Evolutionary  Algorithms.  Chichester:  Wiley, 
+
+2009. 
+
+44.  I. Das and J. E. Dennis,  “Normal-boundary intersection: A  new  method  for  generating the 
+pareto  surface  in  nonlinear  multicriteria  optimization  problems,”  SIAM  Journal  on 
+Optimization, vol. 8, no. 3, pp. 631–657, Aug. 1998. doi:10.1137/s1052623496307510. 
+
+45.  X. Zhou, G. Zhu, and L. Tan, “Reinforcement learning assisted design for FOPID control,” 
+2024 IEEE International Conference on Electro Information Technology (eIT), pp. 663–667, 
+May 2024. doi:10.1109/eit60633.2024.10609906. 
+
+63 
+
+ 
+ 
+ 
+PUBLICATIONS 
+
+1.  X. Zhou, G. Zhu, and L. Tan, “Reinforcement learning assisted design for FOPID control,” 
+2024 IEEE International Conference on Electro Information Technology (eIT), pp. 663–667, 
+May 2024. doi:10.1109/eit60633.2024.10609906. 
+
+2.  S. Mallineni, J. Moreland, G. Page, M. Schwentor, K. Toth, C. Zhou, and X. Zhou, “Hazard 
+recognition  scenario  builder  for  on-site  customizable  virtual  training,”  AISTech  2024 
+Proceedings, pp. 30–38, 2024. doi:10.33313/388/003. 
+
+3.  N. Gregurich, K. Toth, L. Yakovleva, A. Zafar, R. Zaman, C. Zhou, and X. Zhou, “Digital 
+for  a  continuous  caster,”  AISTech  2023  Proceedings,  2023. 
+
+twin 
+software 
+doi:10.33313/387/246. 
+
+64 
+
+ 
+

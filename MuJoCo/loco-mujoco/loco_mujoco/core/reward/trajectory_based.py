@@ -185,6 +185,8 @@ class MimicReward(TrajectoryBasedReward):
         self._joint_acc_coeff = kwargs.get("joint_acc_coeff", 0.0)
         self._joint_torque_coeff = kwargs.get("joint_torque_coeff", 0.0)
         self._action_rate_coeff = kwargs.get("action_rate_coeff", 0.0)
+        self._energy_coeff = kwargs.get("energy_coeff", 0.0)
+        self._regen_efficiency = kwargs.get("regen_efficiency", 0.0)
 
         # get main body name of the environment
         self.main_body_name = self._info_props["upper_body_xml_name"]
@@ -373,11 +375,32 @@ class MimicReward(TrajectoryBasedReward):
         else:
             action_rate_reward = 0.0
 
+        # energy / power reward
+        if self._energy_coeff > 0.0:
+            torque = data.qfrc_actuator[~self._free_joint_qvel_mask]
+            velocity = data.qvel[~self._free_joint_qvel_mask]
+            power = torque * velocity
+            # positive power = battery draining
+            positive_power = backend.maximum(power, 0.0)
+            energy_penalty = -backend.sum(positive_power)
+            
+            # negative power = backdriving/regen
+            negative_power = backend.minimum(power, 0.0)
+            # note: negative_power is already < 0, so subtract regen_bonus for positive reward, 
+            # wait, if total_penalities is negative and we want a bonus, we add to the penalty (make it less negative)
+            # regen_bonus should be positive. negative_power is negative.
+            regen_bonus = -backend.sum(negative_power) * self._regen_efficiency
+            
+            energy_reward = self._energy_coeff * (energy_penalty + regen_bonus)
+        else:
+            energy_reward = 0.0
+
         # total penality rewards
         total_penalities = (self._action_out_of_bounds_coeff * out_of_bound_reward
                             + self._joint_acc_coeff * acceleration_reward
                             + self._joint_torque_coeff * torque_reward
-                            + self._action_rate_coeff * action_rate_reward)
+                            + self._action_rate_coeff * action_rate_reward
+                            + energy_reward)
         total_penalities = backend.maximum(total_penalities, -1.0)
 
         # calculate total reward

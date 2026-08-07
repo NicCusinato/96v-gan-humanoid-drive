@@ -1090,8 +1090,9 @@ class GoalTrajMimicv2(GoalTrajMimic):
             data.qpos[:2] -= qpos_init[:2]
             data.qvel = qvel
             mujoco.mj_kinematics(model, data)
-            geom_pos = data.geom_xpos[self._geom_ids]
-            geom_mat = data.geom_xmat[self._geom_ids]
+            geom_ids = np.array(self._geom_ids, dtype=np.int32)
+            geom_pos = np.array(data.geom_xpos)[geom_ids]
+            geom_mat = np.array(data.geom_xmat)[geom_ids]
 
             user_scene.geoms.pos[self.visual_geoms_idx] = geom_pos
             user_scene.geoms.mat[self.visual_geoms_idx] = geom_mat.reshape(-1, 9)

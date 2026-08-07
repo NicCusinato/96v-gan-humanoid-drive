@@ -10,10 +10,17 @@ try:
     from smplx import SMPLH as _SMPLH
 
     from smplx import MANO as _MANO
-    from smplx.utils import match_dim
     from smplx.lbs import blend_shapes, vertices2joints, batch_rodrigues, batch_rigid_transform, transform_mat
 
-except ImportError:
+    def match_dim(tensor, batch_size):
+        if tensor is None:
+            return None
+        if tensor.shape[0] != batch_size:
+            return tensor.expand(batch_size, *tensor.shape[1:])
+        return tensor
+
+except ImportError as e:
+    print(f"DEBUG SMPL IMPORT ERROR: {e}")
     # what can i do here?
     _SMPL = None
     _SMPLH = None
@@ -232,6 +239,8 @@ class SMPL_Parser(_SMPL):
 class SMPLH_Parser(_SMPLH):
 
     def __init__(self, *args, **kwargs):
+        if 'num_betas' not in kwargs:
+            kwargs['num_betas'] = 16
         super(SMPLH_Parser, self).__init__(*args, **kwargs)
         self.device = next(self.parameters()).device
         self.joint_names = SMPLH_BONE_ORDER_NAMES

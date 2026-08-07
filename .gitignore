@@ -317,3 +317,10 @@ codegen/
 slprj/
 *.slxc
 
+
+# Ignored large files and environments
+.venv/
+.venv_wsl/
+*.step
+*.zip
+phase1/simulation/OLD/OutputData/
