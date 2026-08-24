@@ -12,7 +12,7 @@ from flax import struct
 import flax
 import optax
 
-from loco_mujoco.algorithms import (JaxRLAlgorithmBase, AgentConfBase, AgentStateBase, ActorCritic,
+from loco_mujoco.algorithms import (JaxRLAlgorithmBase, AgentConfBase, AgentStateBase, ActorCritic, ActorCriticWithAlpha,
                                     Transition, TrainState, TrainStateBuffer, MetricHandlerTransition)
 from loco_mujoco.core.wrappers import LogWrapper, NStepWrapper, LogEnvState, VecEnv, NormalizeVecReward, SummaryMetrics
 from loco_mujoco.utils import MetricsHandler, ValidationSummary
@@ -94,15 +94,26 @@ class PPOJax(JaxRLAlgorithmBase):
                                              for i in range(config.experiment.len_obs_history)])
             critic_obs_ind = jnp.concatenate([critic_obs_ind + i*obs_len
                                               for i in range(config.experiment.len_obs_history)])
-        network = ActorCritic(
-            env.info.action_space.shape[0],
-            activation=config.experiment.activation,
-            init_std=config.experiment.init_std,
-            learnable_std=config.experiment.learnable_std,
-            hidden_layer_dims=hidden_layers,
-            actor_obs_ind=actor_obs_ind,
-            critic_obs_ind=critic_obs_ind
-        )
+        if getattr(config.experiment, "use_alpha_network", False):
+            network = ActorCriticWithAlpha(
+                env.info.action_space.shape[0] // 2,
+                activation=config.experiment.activation,
+                init_std=config.experiment.init_std,
+                learnable_std=config.experiment.learnable_std,
+                hidden_layer_dims=hidden_layers,
+                actor_obs_ind=actor_obs_ind,
+                critic_obs_ind=critic_obs_ind
+            )
+        else:
+            network = ActorCritic(
+                env.info.action_space.shape[0],
+                activation=config.experiment.activation,
+                init_std=config.experiment.init_std,
+                learnable_std=config.experiment.learnable_std,
+                hidden_layer_dims=hidden_layers,
+                actor_obs_ind=actor_obs_ind,
+                critic_obs_ind=critic_obs_ind
+            )
 
         # set up optimizers
         tx = cls._get_optimizer(config)

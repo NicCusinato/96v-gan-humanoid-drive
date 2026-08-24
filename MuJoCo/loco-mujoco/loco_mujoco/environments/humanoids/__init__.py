@@ -22,6 +22,7 @@ from .kbot_v2 import KBotV2
 from .kbot_v2_mjx import MjxKBotV2
 from .kbot_legs_v2 import KBotLegsV2
 from .kbot_legs_v2_mjx import MjxKBotLegsV2
+from .kbot_legs_v2_passive import PassiveKBotLegsV2, MjxPassiveKBotLegsV2
 from .skeletons import (SkeletonTorque, MjxSkeletonTorque, HumanoidTorque, SkeletonMuscle, MjxSkeletonMuscle,
                         HumanoidMuscle)
 
@@ -49,6 +50,8 @@ KBotV2.register()
 MjxKBotV2.register()
 KBotLegsV2.register()
 MjxKBotLegsV2.register()
+PassiveKBotLegsV2.register()
+MjxPassiveKBotLegsV2.register()
 SkeletonTorque.register()
 MjxSkeletonTorque.register()
 SkeletonMuscle.register()

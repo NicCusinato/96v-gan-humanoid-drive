@@ -228,7 +228,8 @@ codegen/
 !phase*/measurements/*.csv
 *.log
 *.fft
-phase1/simulation/OutputData/*.mat
+*.mat
+!phase1/simulation/Inverter_Thesis_Plots/thesis_sim_data.mat
 
 # CAD binary files (Fusion 360 is cloud-versioned; don't commit binaries)
 *.f3d

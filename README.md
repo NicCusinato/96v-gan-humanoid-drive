@@ -26,7 +26,7 @@ Control uses **downloaded gait trajectories** (not custom locomotion control). F
 | Phase 1 | May–Jul 2026 (Months 2–4) | Box-mounted 96V GaN inverter PCB, FOC firmware, efficiency benchmarking |
 | Phase 2 | Aug–Nov 2026 (Months 5–8) | Custom mechanical leg + miniaturized in-joint GaN drives |
 | Phase 3 | Dec 2026–Feb 2027 (Months 9–11) | System characterization, efficiency maps, thesis writing |
-| Phase 4 | Mar–Apr 2027 (Month 12) | Custom motor co-optimized with 96V GaN drive |
+| Phase 4 | Mar–Apr 2027 (Month 12) | Custom inverter design based on findings |
 
 ---
 
@@ -46,6 +46,7 @@ Control uses **downloaded gait trajectories** (not custom locomotion control). F
 │   ├── measurements/     # Efficiency test results (CSV, plots)
 │   └── matlab/           # MATLAB scripts for analysis
 ├── phase2/               # Custom leg + in-joint GaN drives
+│   ├── dyno_setup_alxion_ake90.md # Alxion 300STK & AKE90 dyno integration guide
 │   ├── mechanical/       # CAD exports (drawings, STEP files for reference)
 │   ├── hardware/         # Miniaturized in-joint PCB
 │   ├── simulation/       # Electro-thermal co-simulation
@@ -54,10 +55,10 @@ Control uses **downloaded gait trajectories** (not custom locomotion control). F
 │   ├── efficiency_maps/  # Full efficiency map data and plots
 │   ├── sensitivity/      # Switching freq / dead time sensitivity data
 │   └── writing/          # Thesis chapter drafts
-├── phase4/               # Custom motor design
-│   ├── motor_fea/        # Maxwell/FEMM simulation exports
-│   ├── winding/          # Winding design scripts
-│   └── measurements/     # Custom motor + GaN test results
+├── phase4/               # Custom inverter design based on findings
+│   ├── hardware/         # PCB schematics (KiCad .asc), BOM
+│   ├── simulation/       # PSIM/PLECS loss models, LTspice
+│   └── measurements/     # Test results
 ├── docs/                 # Shared documentation, reports
 ├── README.md
 ├── RESEARCH_LOG.md       # Running lab notebook — update with every key result
@@ -76,7 +77,7 @@ Control uses **downloaded gait trajectories** (not custom locomotion control). F
 | Python | Data processing, plotting, automation |
 | KiCad | PCB schematic and layout |
 | Fusion 360 | Mechanical CAD (cloud-versioned, not in Git) |
-| FEMM / Maxwell | Motor FEA (Phase 4) |
+| FEMM / Maxwell | Motor FEA |
 | ROS2 / Gazebo | Gait trajectory reference |
 | Git / GitHub | Version control |
 | Jira (KAN) | Task tracking |
@@ -150,10 +151,10 @@ This auto-links commits to Jira tickets via the GitHub for Jira integration.
 │   ├── efficiency_maps/           # Sweep results, MATLAB post-processing
 │   ├── sensitivity/               # Parameter sensitivity studies
 │   └── writing/                   # Thesis chapter drafts
-├── phase4/                        # Motor co-design
+├── phase4/                        # Custom inverter design based on findings
 │   ├── measurements/
-│   ├── motor_fea/                 # Ansys Maxwell motor FEA
-│   └── winding/                   # Winding design files
+│   ├── hardware/                  # ecad and mech
+│   └── simulation/                # updated inverter simulations
 ├── data_raw/                      # Raw experiment outputs (timestamped subfolders)
 ├── notebooks/
 │   ├── RESEARCH_LOG.md            # Cross-domain experiment log (fill every run)
