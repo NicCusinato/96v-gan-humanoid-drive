@@ -228,7 +228,8 @@ codegen/
 !phase*/measurements/*.csv
 *.log
 *.fft
-phase1/simulation/OutputData/*.mat
+*.mat
+!phase1/simulation/Inverter_Thesis_Plots/thesis_sim_data.mat
 
 # CAD binary files (Fusion 360 is cloud-versioned; don't commit binaries)
 *.f3d
@@ -311,14 +312,23 @@ __marimo__/
 *.psimsch.bak
 
 # ============================================================
-# Simulink code generation output (keep models, ignore codegen)
+# Simulink & Embedded Coder code generation output (keep models, ignore codegen & build targets)
 # ============================================================
 codegen/
 slprj/
+*_ert_rtw/
+*_grt_rtw/
+*_rtw/
 *.slxc
+*.original
+*.slx.original
+*.dwo
+*.out
+*.hex
 
-
-# Ignored large files and environments
+# ============================================================
+# Large files and local environments
+# ============================================================
 .venv/
 .venv_wsl/
 *.step

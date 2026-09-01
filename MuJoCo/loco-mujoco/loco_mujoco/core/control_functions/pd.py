@@ -148,6 +148,18 @@ class PDControl(ControlFunction):
         """
         assert_backend_is_supported(backend)
 
+        # ------------------------------------------------------------------
+        # Alpha gating (Stage 1 Passive Policy):
+        # If the action vector is 2x the number of joints, the second half
+        # contains per-joint activation multipliers alpha in [0, 1].
+        # Baseline policies always pass n_joints actions, so this is a no-op.
+        # ------------------------------------------------------------------
+        n_joints = len(self._qpos_ids)
+        alpha = None
+        if action.shape[-1] == 2 * n_joints:
+            alpha = action[..., n_joints:]          # shape: (n_joints,), already in [0,1]
+            action = action[..., :n_joints]         # strip alpha; continue with a_q only
+
         if self._scale_action_to_jnt_limits:
             unnormalized_action = self._unnormalize_action(action)
         else:
@@ -163,6 +175,11 @@ class PDControl(ControlFunction):
                                         self._jnt_ranges[:, 0], self._jnt_ranges[:, 1])
 
         ctrl = p_gain * (target_joint_pos - data.qpos[self._qpos_ids]) - d_gain * data.qvel[self._qvel_ids]
+
+        # Apply alpha gating if provided
+        if alpha is not None:
+            ctrl = alpha * ctrl
+
         ctrl = backend.clip(ctrl * pd_state.ctrl_mult, self._ctrl_ranges[:, 0], self._ctrl_ranges[:, 1])
 
         return ctrl, carry

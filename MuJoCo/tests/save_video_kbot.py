@@ -7,7 +7,7 @@ import jax
 import mujoco
 
 # Important: set AMASS_DIR so LocoMuJoCo knows where to find the raw datasets
-os.environ["AMASS_DIR"] = "/mnt/c/AMASS"
+os.environ["AMASS_DIR"] = "C:\\AMASS"
 
 from loco_mujoco import TaskFactory
 from loco_mujoco.algorithms import PPOJax
