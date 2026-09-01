@@ -326,3 +326,12 @@ slprj/
 *.out
 *.hex
 
+# ============================================================
+# Large files and local environments
+# ============================================================
+.venv/
+.venv_wsl/
+*.step
+*.zip
+phase1/simulation/OLD/OutputData/
+
