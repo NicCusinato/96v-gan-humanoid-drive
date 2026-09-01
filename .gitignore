@@ -312,9 +312,17 @@ __marimo__/
 *.psimsch.bak
 
 # ============================================================
-# Simulink code generation output (keep models, ignore codegen)
+# Simulink & Embedded Coder code generation output (keep models, ignore codegen & build targets)
 # ============================================================
 codegen/
 slprj/
+*_ert_rtw/
+*_grt_rtw/
+*_rtw/
 *.slxc
+*.original
+*.slx.original
+*.dwo
+*.out
+*.hex
 
