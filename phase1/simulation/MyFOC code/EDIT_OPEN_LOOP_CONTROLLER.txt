@@ -1,0 +1,87 @@
+===================================================================
+EXACT EDITS FOR Open_Loop_Controller MATLAB FUNCTION BLOCK
+===================================================================
+
+STEP 1: Open Hardware_Diagnostics_Test.slx
+STEP 2: Double-click the Open_Loop_Controller block (MATLAB function)
+
+===================================================================
+EDIT #1: Function Signature (Line 1)
+===================================================================
+
+FIND THIS:
+function [pwm_counts, en_gate, speed_rpm, state_echo] = Open_Loop_Controller(rx_cmd, spi_pos, vdc_cnt, adc_a, adc_b)
+
+REPLACE WITH:
+function [pwm_counts, en_gate, speed_rpm, state_echo, offset_foc_out] = Open_Loop_Controller(rx_cmd, spi_pos, vdc_cnt, adc_a, adc_b)
+
+
+===================================================================
+EDIT #2: Preallocate Output (Around Line 4)
+===================================================================
+
+FIND THIS:
+    % Preallocate outputs
+    pwm_counts = single([1125.0; 1125.0; 1125.0]);
+    en_gate = false;
+    speed_rpm = single(0.0);
+    state_echo = uint8(0);
+
+REPLACE WITH:
+    % Preallocate outputs
+    pwm_counts = single([1125.0; 1125.0; 1125.0]);
+    en_gate = false;
+    speed_rpm = single(0.0);
+    state_echo = uint8(0);
+    offset_foc_out = single(0.0);
+
+
+===================================================================
+EDIT #3: Output During Ramp Phase (Around Line 155)
+===================================================================
+
+FIND THIS:
+                           % Continuously calculate the exact offset between field and rotor!
+                           offset_foc = theta_ol - POLE_PAIRS * th_m;
+
+REPLACE WITH:
+                           % Continuously calculate the exact offset between field and rotor!
+                           offset_foc = theta_ol - POLE_PAIRS * th_m;
+                           offset_foc_out = offset_foc;
+
+
+===================================================================
+EDIT #4: Output During Steady-State (Around Line 210-215)
+===================================================================
+
+FIND THIS:
+                           pwm_counts = [da * single(2250.0); db * single(2250.0); dc * single(2250.0)];
+                           en_gate = true;
+                           state_echo = state;
+                       end
+                   end
+               end
+
+REPLACE WITH:
+                           pwm_counts = [da * single(2250.0); db * single(2250.0); dc * single(2250.0)];
+                           en_gate = true;
+                           state_echo = state;
+                           offset_foc_out = offset_foc;
+                       end
+                   end
+               end
+
+
+===================================================================
+AFTER EDITING:
+===================================================================
+
+1. Click OK to save the function
+2. You should see the Open_Loop_Controller block now has a 5th output port (may need to resize block to see it)
+3. Save the model (Ctrl+S)
+4. Re-deploy to hardware
+
+The Dashboard will still show the old "Offset (Avg)" value, which is just rotor position.
+Once you run CL FOC 100 RPM, the offset_foc is calculated during the 1.5s ramp phase and used for alignment.
+
+The TRUE encoder offset is the one inside offset_foc - it will be stable during closed-loop operation!

@@ -1,0 +1,215 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║         FOC DASHBOARD INTEGRATION - QUICK REFERENCE CARD                    ║
+║                    c:\MyFOC code\ (all files here)                          ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+┌─ STEP 1: PREPARATION ──────────────────────────────────────────────────────┐
+│                                                                              │
+│  □ Read: FOC_DASHBOARD_INTEGRATION_GUIDE.md (START HERE!)                  │
+│  □ Run:  FOC_Telemetry_Setup.m (see packet structure & code)               │
+│  □ Ref:  FOC_SIGNAL_EXTRACTION_REFERENCE.md (where signals are)            │
+│                                                                              │
+│  Time: ~10 minutes                                                           │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌─ STEP 2: SIGNAL EXTRACTION ────────────────────────────────────────────────┐
+│                                                                              │
+│  These 9 signals go into Format_Telemetry_FOC block:                        │
+│                                                                              │
+│    1. Id              ← From Park Transform (d-axis current)               │
+│    2. Iq              ← From Park Transform (q-axis current)               │
+│    3. theta_e         ← From Angle Calculation (electrical angle)          │
+│    4. Vd              ← From PI Speed Controller (d-voltage)               │
+│    5. Vq              ← From PI Speed Controller (q-voltage)               │
+│    6. speed_actual    ← From Speed Filter                                  │
+│    7. speed_cmd       ← From Command Interface                            │
+│    8. state_echo      ← From State Machine                                │
+│    9. gate_enable     ← From Gate Driver Control                          │
+│                                                                              │
+│  + Also connect existing signals:                                            │
+│    - adc_a, adc_b, adc_c (phase currents)                                 │
+│    - adc_vdc (DC link voltage)                                             │
+│    - qep_cnt (encoder position)                                            │
+│    - spi_raw (SPI encoder position)                                        │
+│                                                                              │
+│  Time: ~20-30 minutes                                                        │
+│  Tip: Use From/Goto blocks to access internal signals                       │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌─ STEP 3: CREATE TELEMETRY BLOCK ──────────────────────────────────────────┐
+│                                                                              │
+│  In FOC_Hardware_Deployment_Dashboard.slx:                                  │
+│                                                                              │
+│  1. Add MATLAB Function block                                               │
+│  2. Double-click and paste this signature:                                  │
+│                                                                              │
+│     function tx_packet = Format_Telemetry_FOC(...                           │
+│         qep_cnt, speed_rpm, adc_a, adc_b, adc_c, adc_vdc, spi_raw, ...   │
+│         Id, Iq, theta_e_rad, Vd, Vq, spd_cmd, state_echo, gate_enable)   │
+│                                                                              │
+│  3. Copy full function body from:                                           │
+│     FOC_DASHBOARD_INTEGRATION_GUIDE.md → Step 2.2                         │
+│                                                                              │
+│  4. Connect 15 inputs (see Step 2 above)                                    │
+│                                                                              │
+│  5. Connect output to SCI_Tx (serial transmit)                              │
+│                                                                              │
+│  Time: ~20 minutes                                                           │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌─ STEP 4: BUILD & DEPLOY ──────────────────────────────────────────────────┐
+│                                                                              │
+│  1. In Simulink: Ctrl+B to build FOC_Hardware_Deployment_Dashboard.slx    │
+│  2. Wait for build to complete (no errors!)                                │
+│  3. Program LAUNCHXL-F28069M with generated .out file                      │
+│  4. Verify telemetry red LED on (CAN/SCI activity indicator)               │
+│                                                                              │
+│  Time: ~5 minutes                                                            │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌─ STEP 5: RUN DASHBOARD ────────────────────────────────────────────────────┐
+│                                                                              │
+│  In MATLAB Command Window:                                                  │
+│                                                                              │
+│    >> cd 'c:\96v_gan_humanoid_drive\phase1\simulation\MyFOC code'         │
+│    >> Enhanced_Telemetry_Dashboard_FOC()                                    │
+│                                                                              │
+│  Expected output:                                                            │
+│    ✓ Connected to COM7 at 5625000 baud                                     │
+│    ✓ Waiting for telemetry...                                              │
+│    ✓ Figure window opens with 9 plots                                      │
+│    ✓ Plots update in real-time as motor runs                               │
+│                                                                              │
+│  Time: ~2 minutes                                                            │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌─ WHAT YOU'LL SEE ON DASHBOARD ─────────────────────────────────────────────┐
+│                                                                              │
+│  If Motor Running Normally:                                                  │
+│    ✓ Phase currents (Ia/Ib/Ic): Smooth 3-phase sinusoids                   │
+│    ✓ d/q currents: Id ≈ constant, Iq varies with torque                   │
+│    ✓ Theta electrical: Increases linearly (constant speed)                 │
+│    ✓ Voltage commands: Track PI controller output                          │
+│    ✓ Speed: Matches command (after ramp-up)                                │
+│    ✓ State: Shows control mode (STARTUP RAMP, CL FOC, etc.)               │
+│    ✓ Gate: ON (when running)                                               │
+│                                                                              │
+│  If Motor Stalls:                                                             │
+│    ✗ Speed doesn't increase despite voltage commands                       │
+│    ✗ Speed error remains large (Cmd - Actual ≈ 100+ RPM)                  │
+│    ✗ Current magnitude stays high (1-5 A) without speed change            │
+│    → Check encoder offset or Vd/Vq scaling                                 │
+│                                                                              │
+│  If No Packets Arrive:                                                       │
+│    ✗ Dashboard shows "Connected to COM7" but no data                      │
+│    → Check: Model deployed? Gate enabled? SPI/eQEP working?               │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌─ CRITICAL SIGNAL VALUES & RANGES ──────────────────────────────────────────┐
+│                                                                              │
+│  Phase Currents (Ia/Ib/Ic):                                                 │
+│    Raw ADC: 0-4095 counts → Actual: ±20 A                                  │
+│    Offset (powered 48V): ~2041-2059 counts                                  │
+│    Example: adc_a=3000 → Ia = (3000-2041)*(3.3/4095)/(0.002*20) ≈ 12.3 A │
+│                                                                              │
+│  d/q Currents (Id/Iq) - Already Scaled:                                    │
+│    Range: ±10 A                                                             │
+│    Scaling factor: 3276.7                                                   │
+│    To extract: Id_amps = packet_value / 3276.7                             │
+│                                                                              │
+│  Voltage Commands (Vd/Vq) - Already Scaled:                                │
+│    Range: ±5 V                                                              │
+│    Scaling factor: 6553.4                                                   │
+│    To extract: Vd_volts = packet_value / 6553.4                            │
+│                                                                              │
+│  Rotor Electrical Angle:                                                     │
+│    Range: 0 to 2π radians                                                   │
+│    Packet scaling: 0-65535 = 0-2π                                          │
+│    To extract: theta_rad = packet_value / 65535 * 2π                      │
+│                                                                              │
+│  Speed:                                                                       │
+│    Raw: ±2000 RPM (int16)                                                   │
+│    Example: speed_rpm = typecast([pkt(6), pkt(7)], 'int16')               │
+│                                                                              │
+│  DC Link Voltage:                                                            │
+│    Raw ADC: 0-4095 → Actual: 0-96 V                                        │
+│    Scaling: Vdc_V = adc_count * 3.3 * 46.4545 / 4095                       │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌─ TROUBLESHOOTING CHECKLIST ────────────────────────────────────────────────┐
+│                                                                              │
+│  Problem: "No packets on dashboard"                                          │
+│    □ Check COM7 is correct (serialportlist('available'))                    │
+│    □ Check LAUNCHXL is powered and programmed                               │
+│    □ Check gate enable signal is active in model                            │
+│    □ Try restarting dashboard and motor                                     │
+│                                                                              │
+│  Problem: "Phase currents look wrong (not sinusoidal)"                      │
+│    □ Check offset_a/offset_b values match your sensor bias (2041/2059)    │
+│    □ Verify ACS37003 current sensor is getting 3.3V power                  │
+│    □ Check ADC channels are correct (Ia on ADCA?, etc.)                    │
+│                                                                              │
+│  Problem: "Id/Iq values are zero"                                            │
+│    □ Check encoder feedback is connected to Park transform                  │
+│    □ Verify encoder is actually moving (check theta_e)                     │
+│    □ Check Clarke+Park transform blocks are correct                         │
+│                                                                              │
+│  Problem: "Motor stalls (high current, no speed)"                            │
+│    □ Check encoder offset value (should be ~0.26 rad from earlier measure)  │
+│    □ Try offset±0.02 rad to see if it helps                                │
+│    □ Check Vd/Vq commands are non-zero                                     │
+│    □ Try re-measuring offset with open-loop 60 RPM spin                    │
+│                                                                              │
+│  Problem: "Voltage commands (Vd/Vq) always zero"                            │
+│    □ Check PI speed controller is enabled                                   │
+│    □ Check speed command (spd_cmd) is non-zero                              │
+│    □ Verify speed feedback is being calculated correctly                    │
+│    □ Check PI gains (Kp, Ki) are reasonable (not too small)                │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌─ IMPORTANT FORMULAS ──────────────────────────────────────────────────────┐
+│                                                                              │
+│  Phase Current Conversion (raw ADC → Amps):                                │
+│    offset = 2041 (powered) or 182 (unpowered)                              │
+│    Ia_amps = (adc_a - offset) * (3.3/4095) / (0.002 * 20)                 │
+│    where 0.002 = sensor gain (V/A), 20 = amplifier gain                   │
+│                                                                              │
+│  d/q Current From Packet (int16 → Amps):                                   │
+│    Id_amps = double(typecast(uint16([pkt(18), pkt(19)]), 'int16')) / 3276.7 │
+│                                                                              │
+│  Voltage From Packet (int16 → Volts):                                      │
+│    Vd_volts = double(typecast(uint16([pkt(26), pkt(27)]), 'int16')) / 6553.4 │
+│                                                                              │
+│  Angle From Packet (uint16 → Radians):                                     │
+│    theta_rad = (double(pkt(22))*256 + pkt(23)) / 65535 * 2 * pi           │
+│                                                                              │
+│  Speed From Packet (int16 → RPM):                                          │
+│    speed_rpm = double(typecast(uint16([pkt(6), pkt(7)]), 'int16'))        │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+ESTIMATED TIME TO COMPLETE: ~90 minutes total
+  - Preparation & reading: 10 min
+  - Signal location & extraction: 20 min
+  - Create telemetry block: 20 min
+  - Build & deploy: 10 min
+  - Dashboard testing: 10 min
+  - Buffer for troubleshooting: 20 min
+
+SERIAL BANDWIDTH VERIFICATION:
+  Packet size: 32 bytes
+  Update rate: 1 kHz (FOC loop frequency)
+  Data rate: 32 B/s × 1000 Hz = 32,000 B/s = 256 kbit/s
+  Available: 5.625 Mbit/s
+  Utilization: 256/5625 = 4.5% ← SAFE!
+
+═════════════════════════════════════════════════════════════════════════════════
+Questions? See detailed guides: FOC_DASHBOARD_INTEGRATION_GUIDE.md

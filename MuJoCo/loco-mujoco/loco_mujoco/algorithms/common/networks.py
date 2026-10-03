@@ -101,7 +101,18 @@ class ActorCriticWithAlpha(nn.Module):
     hidden_layer_dims: Sequence[int] = (1024, 512)
     actor_obs_ind: jnp.ndarray = None
     critic_obs_ind: jnp.ndarray = None
-    alpha_init_bias: float = 2.0    # sigmoid(2.0) ≈ 0.88 — starts near-active, not at 0.5
+    alpha_init_bias: Sequence[float] = (
+        2.0,  # right_hip_pitch    -> sigmoid(2.0) ≈ 0.88
+        2.0,  # right_hip_roll     -> sigmoid(2.0) ≈ 0.88
+        2.0,  # right_hip_yaw      -> sigmoid(2.0) ≈ 0.88
+        1.5,  # right_knee         -> sigmoid(1.5) ≈ 0.82
+        2.2,  # right_ankle        -> sigmoid(2.2) ≈ 0.90
+        2.0,  # left_hip_pitch     -> sigmoid(2.0) ≈ 0.88
+        2.0,  # left_hip_roll      -> sigmoid(2.0) ≈ 0.88
+        2.0,  # left_hip_yaw       -> sigmoid(2.0) ≈ 0.88
+        1.5,  # left_knee          -> sigmoid(1.5) ≈ 0.82
+        2.2   # left_ankle         -> sigmoid(2.2) ≈ 0.90
+    )    # Joint-specific biases for appropriate initial stiffness
 
     def setup(self):
         self.activation_fn = get_activation_fn(self.activation)
