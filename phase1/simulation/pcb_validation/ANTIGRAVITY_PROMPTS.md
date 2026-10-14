@@ -4,7 +4,13 @@ Run the shared setup first, then one study at a time. Each study inherits the se
 
 ## Shared setup prompt
 
-Work in NicCusinato/96v-gan-humanoid-drive. Inspect README.md, phase0/specs/, phase1/simulation/VirtualSpeedDyno.slx, VirtualSpeedDynoParams.m, gait scripts, and existing FOC examples before changing anything. Discover the MATLAB/Simulink, PSIM, and LTspice MCP capabilities, installed versions, licenses, and available device models. Use actual advertised MCP tools; do not invent tool names or claim a run without output. If a tool cannot execute a study, generate runnable source and mark it NOT EXECUTED. Preserve existing models and create new studies under phase1/simulation/pcb_validation/<study>/.
+Work in NicCusinato/96v-gan-humanoid-drive. Inspect README.md, phase0/specs/, phase1/simulation/VirtualSpeedDyno.slx, VirtualSpeedDynoParams.m, gait scripts, existing FOC examples, and phase1/simulation/pcb_validation/mcp/ before changing anything.
+
+Discover the MATLAB/Simulink, PSIM, and LTspice MCP servers that are actually configured in this Antigravity environment. Use only tools advertised by those MCP servers. Do not invent tool names, simulate an MCP response, or claim a run without a returned artifact or log.
+
+Read phase1/simulation/pcb_validation/mcp/README.md and the per-tool requirement files. If a required MCP server or tool is unavailable, search online only for reputable, actively maintained MCP implementations and report installation requirements, supported tools, license implications, and security considerations. Do not install or configure anything without user approval. If no suitable MCP is available, generate runnable MATLAB/Simulink, PSIM, and LTspice source files plus automation scripts, and mark affected simulations NOT EXECUTED.
+
+Preserve existing models. Create new studies under phase1/simulation/pcb_validation/<study>/.
 
 Read pcb_validation/README.md. Build a shared parameter/provenance manifest identifying measured, supplier-provided, datasheet-derived, and assumed values. The motor is the custom 96 V rewound AKE90, not the stock winding. Treat 10 A RMS continuous, approximately 25 A transient, 84-100 V bus, and 100 kHz PWM as provisional. Define phase RMS, instantaneous peak, dq scaling, and DC input current explicitly. Do not hardcode a 30 A trip threshold. Confirm device voltage ratings and maximum bus including regeneration before proposing parts.
 

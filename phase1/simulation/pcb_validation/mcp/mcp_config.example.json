@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "matlab-simulink": {
+      "command": "<LOCAL_COMMAND>",
+      "args": ["<LOCAL_ARGUMENTS>"],
+      "env": {
+        "MATLAB_LICENSE": "<DO_NOT_COMMIT>"
+      }
+    },
+    "psim": {
+      "command": "<LOCAL_COMMAND>",
+      "args": ["<LOCAL_ARGUMENTS>"]
+    },
+    "ltspice": {
+      "command": "<LOCAL_COMMAND>",
+      "args": ["<LOCAL_ARGUMENTS>"]
+    }
+  }
+}
