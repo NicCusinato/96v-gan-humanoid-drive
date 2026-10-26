@@ -10,45 +10,127 @@ All boards under test (BUT) must use **the same motor, leg mechanism, and contro
 
 ---
 
+## 0. Validation Hierarchy: RL Load vs Motor-Coupled Bench
+
+To reduce dyno time and accelerate progression to robot-level testing, testing is divided into three evidence tiers. Each result must be labelled with the rig used.
+
+### Tier 1 — Inverter-only three-phase RL load
+
+**Purpose:** isolate and characterize the inverter as a power-processing subsystem.
+
+Use a calibrated three-phase air-core inductor/RL load whose inductance matches the motor winding under comparison. This rig is the primary platform for repetitive inverter characterization.
+
+Valid Tier 1 outputs:
+
+- Double-pulse switching characterization: \(E_{on}\), \(E_{off}\), switch-node overshoot, ringing, dv/dt, and estimated commutation-loop inductance.
+- Inverter conduction and switching loss versus \(V_{dc}\), RMS phase current, switching frequency, and dead time.
+- Phase-current ripple and THD versus \(V_{dc}\), load inductance, and \(f_{sw}\).
+- Dead-time distortion, especially low-current zero-crossing behaviour.
+- Gate-drive robustness, Miller-induced conduction, protection timing, and thermal maps at controlled electrical loading.
+- Conducted-EMI screening at matched electrical operating points.
+
+**Required calculations:**
+
+- DC input power: \(P_{dc} = V_{dc} I_{dc}\).
+- Three-phase RL load resistive loss: \(P_{load,R} = 3 I_{rms}^2 R_{load}(T)\), using load resistance measured at operating temperature.
+- Inverter loss: \(P_{inv} = P_{dc} - P_{load,R}\), with phase-terminal electrical power used as an independent cross-check where available.
+- Report **inverter efficiency/loss**, not drive efficiency.
+
+**Do not claim from Tier 1 alone:**
+
+- Mechanical/drive efficiency \(\eta_{drive} = P_{mech}/P_{dc}\).
+- Voltage-limited torque–speed boundary.
+- Regenerated energy or DC-bus rise under four-quadrant loading.
+- Torque ripple, torque-step response, torque bandwidth, backdrive drag, or impedance/Z-width.
+
+### Tier 2 — Motor-coupled bench / pendulum
+
+**Purpose:** validate the inverter with the real QDD motor and obtain actuator-relevant but lower-complexity evidence.
+
+Use the pendulum or equivalent mechanical load for:
+
+- Motor parameter calibration and current-loop commissioning.
+- Discrete efficiency points at known mechanical load.
+- Low-speed trajectory replay.
+- Thermal validation under representative current waveforms.
+- Initial torque-step and impedance screening.
+
+### Tier 3 — Dyno anchor and validation dataset
+
+**Purpose:** provide the smaller, decisive dataset required for actuator-level thesis claims.
+
+Reserve dyno time for:
+
+- Full torque–speed and \(V_{dc}\times f_{sw}\) efficiency maps.
+- Voltage-saturation boundary and back-EMF headroom measurements.
+- Four-quadrant regeneration and DC-bus-rise tests.
+- Torque-step response, current/torque bandwidth, and Z-width measurements.
+- Final thermal validation at representative joint-duty operating points.
+- Calibration points used to validate the RL-load inverter-loss model.
+
+### RL-load-to-dyno calibration
+
+At a minimum, repeat three matched operating points on both the RL load and dyno:
+
+1. Light load / low current.
+2. Mid load / nominal current.
+3. High load / peak continuous current.
+
+For each point, match \(V_{dc}\), RMS phase current, fundamental electrical frequency where practical, \(f_{sw}\), dead time, and thermal mounting condition. Compare inverter loss and device temperature. Use the residuals as a quantified correction/uncertainty term for Tier 1 results.
+
+---
+
 ## 1. Objectives
 
 1. Quantitatively compare **96V GaN** and **48V Si MOSFET** drive systems on the same legged platform.
-2. Benchmark across:
-   - Efficiency \(\eta = P_\text{out} / P_\text{in}\)
-   - Thermal performance (junction and case temperatures vs load)
-   - Output impedance bandwidth (Z-width)
-   - Current control bandwidth (closed-loop Bode)
-   - Switching loss indicators (waveforms, E\_on/E\_off estimates)
-   - EMI (conducted, and radiated if available)
-   - Power density (W/cm³ or W/kg of inverter)
-3. Produce plots and tables that can be dropped directly into thesis chapters and papers.
+2. Separate **inverter-level** performance from **actuator-level** performance using the Tier 1–3 validation hierarchy.
+3. Benchmark across:
+   - Inverter loss and efficiency on the RL load.
+   - Drive efficiency \(\eta_{drive} = P_{mech}/P_{dc}\) on motor-coupled tests.
+   - Thermal performance versus electrical and mechanical load.
+   - Output impedance bandwidth (Z-width).
+   - Current control bandwidth.
+   - Switching loss indicators and waveform quality.
+   - Current ripple and THD.
+   - EMI, where available.
+   - Power density.
+4. Produce plots and tables that can be dropped directly into thesis chapters and papers.
 
 ---
 
 ## 2. Test Matrix and Operating Points
 
-### 2.1 Operating Grid
+### 2.1 Electrical RL-load grid
 
-Define a torque–speed grid derived from humanoid gait requirements (MuJoCo WBC trajectories and Simscape models):
+Run this grid first on the three-phase RL load. It provides the majority of repeatable inverter characterization data.
 
-- Torques: e.g. \(T = [0.5, 1, 2, 3, 4]\) Nm (tune based on leg capability)
-- Speeds: e.g. \(\omega = [10, 50, 100, 200]\) rad/s equivalent joint speeds
+- Bus voltage: \(V_{dc} = [24, 48, 72, 96]\) V, subject to board and load ratings.
+- RMS phase current: selected to cover light, nominal, and peak continuous inverter current.
+- Switching frequency: \(f_{sw} = [20, 40, 60, 80, 100, 120]\) kHz, refined after initial loss-minimum screening.
+- Dead time: nominal value plus a bounded sweep around it.
+- Load inductance: matched to the relevant motor winding; record actual inductance and temperature-dependent resistance.
 
-For each \((T, \omega)\) pair, run steady-state tests on both boards.
+For each condition, log DC power, phase currents, phase-terminal power where available, gate/switch-node waveforms where required, and device/heatsink temperatures.
 
-### 2.2 Test Cases
+### 2.2 Motor-coupled operating grid
+
+Define a torque–speed grid derived from humanoid gait requirements, MuJoCo WBC trajectories, and Simscape models:
+
+- Torques: e.g. \(T = [0.5, 1, 2, 3, 4]\) Nm, tuned to the leg capability.
+- Speeds: e.g. \(\omega = [10, 50, 100, 200]\) rad/s equivalent joint speeds.
+
+Run the full grid on the dyno where available. Use the pendulum for representative low-speed and thermal points when dyno access is constrained.
+
+### 2.3 Test cases
 
 For each board:
 
-1. **Steady-state mapping:**
-   - Hold torque and speed (using impedance / torque control) and log voltages, currents, temperatures once steady state is reached.
-2. **Dynamic tests:**
-   - Step load changes (e.g. 50% → 100% torque) to probe current control loop bandwidth.
-   - Small-signal perturbations (current injection or commanded torque sinusoid) to measure Z-width.
-3. **Thermal soak:**
-   - Long-duration run at worst-case operating point until temperatures reach steady state.
-4. **EMI sweep:**
-   - Measure conducted emissions over the relevant frequency range under a standard operating condition.
+1. **RL-load inverter mapping:** loss, ripple, THD, dead-time sensitivity, thermal rise, and switching characterization.
+2. **Dyno steady-state mapping:** hold torque and speed, then log electrical, mechanical, and thermal variables after settling.
+3. **Dynamic tests:** torque/current steps and small-signal perturbations to measure current-loop bandwidth.
+4. **Trajectory replay:** replay representative single-joint gait-derived current/torque trajectories on the pendulum or dyno.
+5. **Thermal soak:** run the worst-case RL-load and motor-coupled points until temperatures converge.
+6. **EMI sweep:** measure conducted emissions at a fixed operating condition, preferably repeated at selected switching frequencies.
 
 ---
 
@@ -58,22 +140,22 @@ For each board:
 
 Minimum recommended instrumentation:
 
-- **Power analyzer** (or calibrated shunt + differential voltage sensing) for DC bus and mechanical output power.
-- **Current probes** (Hall-effect or Rogowski) for phase currents.
-- **Voltage probes** for DC bus and phase voltages.
-- **Temperature measurement:**
-  - Thermocouples on MOSFET/GaN case, heatsink, and key PCB hotspots.
-  - Optional thermal camera for hotspot mapping.
-- **DAQ / logging:**
-  - High-speed DAQ or MCU logging synchronized currents, voltages, temperatures, rotor position/velocity, and torque.
-- **EMI:**
-  - LISN + spectrum analyzer for conducted EMI; near-field probe if available for radiated noise around the board.
+- **Power analyzer** or calibrated DC shunt/differential voltage sensing for \(V_{dc}\) and \(I_{dc}\).
+- **PWM-capable three-phase power analyzer** for phase-terminal electrical power and loss separation.
+- **Current probes** with sufficient bandwidth for phase current, ripple, and switching-event verification.
+- **Voltage probes** for DC bus, phase voltages, and switch nodes.
+- **Temperature measurement:** thermocouples on GaN/MOSFET case or nearby PCB hotspot, heatsink, load inductor, and motor winding where accessible; optional thermal camera.
+- **DAQ / logging:** synchronized currents, voltages, temperatures, rotor position/velocity, and torque.
+- **Torque sensor:** required for Tier 3 efficiency, bandwidth, torque ripple, and Z-width measurements.
+- **EMI:** LISN and spectrum analyzer for conducted emissions; near-field probes if available.
 
 ### 3.2 Wiring and Safety
 
-- Use identical **DC bus wiring** and filtering for both boards where possible.
-- Ensure **proper isolation** for probes at 96V.
-- Include emergency stop and over-current protections.
+- Use identical DC bus wiring, DC-link capacitance, and filtering for both boards where possible.
+- Use a limited-energy double-pulse fixture for initial high-voltage switching tests.
+- Ensure proper isolation for probes at 96 V.
+- Include emergency stop, over-current protection, over-voltage protection, and thermal protection.
+- Treat 96 V DC testing under the applicable high-voltage safety procedure.
 
 ---
 
@@ -81,106 +163,152 @@ Minimum recommended instrumentation:
 
 ### 4.1 Common Pre-test Checklist
 
-For each board (GaN and MOSFET):
+For each board:
 
 1. Visually inspect board, connectors, and heatsinks.
-2. Verify gate drive supplies, logic rails, and bootstrap/charge pump outputs with no high-voltage applied.
-3. Verify dead time and switching waveforms at reduced bus voltage (e.g. 20–30 V) with no load.
-4. Confirm encoder/sensor readings are valid and correctly scaled.
+2. Verify gate-drive supplies, logic rails, and bootstrap/charge-pump outputs with no high voltage applied.
+3. Verify dead time and switching waveforms at reduced bus voltage with no power load.
+4. Confirm current-sensor offsets, voltage-sensor scaling, protection thresholds, and DAQ synchronization.
+5. For RL-load tests, measure load inductance and resistance, including resistance at operating temperature.
 
-Document any deviations in RESEARCH_LOG.md.
+Document deviations in `RESEARCH_LOG.md`.
 
-### 4.2 Steady-State Efficiency Mapping
+### 4.2 RL-Load Inverter Loss Mapping
 
-For each \((T, \omega)\) point and each board:
+For each RL-load grid point:
+
+1. Set \(V_{dc}\), \(f_{sw}\), dead time, and commanded current amplitude.
+2. Allow currents and temperatures to settle.
+3. Log a fixed window, typically 5–10 s or longer for thermal points.
+4. Record \(V_{dc}\), \(I_{dc}\), phase currents, phase-terminal power, load temperature/resistance, and device/heatsink temperatures.
+5. Compute:
+   - \(P_{dc} = V_{dc}I_{dc}\).
+   - \(P_{load,R} = 3I_{rms}^2R_{load}(T)\).
+   - \(P_{inv} = P_{dc} - P_{load,R}\).
+   - Inverter loss versus current, voltage, \(f_{sw}\), and dead time.
+6. Repeat for all boards using identical scripts and operating points.
+
+### 4.3 Switching Characterization
+
+1. Use a limited-energy double-pulse fixture.
+2. Step bus voltage through the planned ladder, for example 12, 24, 48, 72, and 96 V.
+3. Step turn-off current through the relevant range, for example 20–55 A, subject to device and board limits.
+4. Capture switch-node voltage, gate-source voltages, and phase/branch current.
+5. Extract \(E_{on}\), \(E_{off}\), overshoot, ringing frequency, dv/dt, and estimated loop inductance.
+6. Repeat identically for each board.
+
+### 4.4 Motor-Coupled Steady-State Efficiency Mapping
+
+For each \((T, \omega)\) point:
 
 1. Set the controller to track the desired torque and speed.
 2. Wait for temperatures and currents to settle.
-3. Log for a fixed window (e.g. 5–10 s):
-   - DC bus voltage \(V_\text{bus}\)
-   - DC bus current \(I_\text{bus}\)
-   - Phase currents \(i_a, i_b, i_c\)
-   - Motor electrical angle and mechanical speed
-   - Temperatures (devices and heatsink)
+3. Log for a fixed window:
+   - \(V_{dc}\), \(I_{dc}\).
+   - Phase currents and phase-terminal electrical power.
+   - Mechanical torque and speed.
+   - Device, heatsink, and winding temperatures.
 4. Compute:
-   - Electrical input power \(P_\text{in} = V_\text{bus} I_\text{bus}\)
-   - Mechanical output power \(P_\text{out} = T \omega\)
-   - Efficiency \(\eta = P_\text{out} / P_\text{in}\).
-5. Repeat for all grid points for both boards.
+   - \(P_{in} = V_{dc}I_{dc}\).
+   - \(P_{out} = T\omega\).
+   - \(\eta_{drive} = P_{out}/P_{in}\).
+   - Separated inverter loss using phase-terminal electrical measurements where available.
+5. Repeat for all grid points and boards.
 
-### 4.3 Thermal Performance
+### 4.5 Thermal Performance
 
-1. Choose 1–2 worst-case points from the efficiency map (highest losses).
-2. Run each board at those conditions until temperatures converge (e.g. 20–30 min, or until dT/dt is small).
-3. Log temperatures and electrical variables.
-4. Compute an approximate junction-to-ambient thermal resistance based on estimated device power loss and temperature rise.
+1. Select worst-case points from both the RL-load loss map and motor-coupled efficiency map.
+2. Run until temperatures converge or \(dT/dt\) becomes negligible.
+3. Log temperatures, electrical variables, mechanical load where applicable, and ambient temperature.
+4. Estimate thermal resistance only when the power dissipated in the measured thermal path is known or bounded.
+5. Compare boards at matched electrical loading for Tier 1 and matched mechanical operating points for Tier 2/3.
 
-### 4.4 Current Control Bandwidth
+### 4.6 Current Control Bandwidth
 
-1. Fix a nominal operating point (e.g. mid-speed, mid-torque).
-2. Inject a small step or sinusoidal modulation into the current reference (Id/Iq) while logging actual currents.
-3. Use MATLAB/Python to compute a Bode-like response of the current loop:
-   - Gain and phase vs frequency (for sinusoidal sweep) or equivalent bandwidth from step response.
-4. Repeat for both boards with identical control code (same sampling frequency, same loop gains where possible).
+1. Use a motor-coupled operating point; do not derive actuator current-loop bandwidth from the RL load alone.
+2. Inject a small step or sinusoidal modulation into the \(I_d/I_q\) reference.
+3. Log commanded and measured currents.
+4. Compute gain/phase versus frequency or equivalent bandwidth from the step response.
+5. Repeat with identical control code, sampling rate, and loop gains where possible.
 
-### 4.5 Z-width (Output Impedance) Measurement
+### 4.7 Z-Width / Output Impedance
 
-1. Operate the leg in a **virtual joint stiffness / impedance control** mode.
-2. Apply small external perturbations at the joint (either with a dedicated actuator, weights, or manual excitation with a force sensor).
-3. Measure joint torque and displacement, and derive joint impedance over frequency.
-4. Compare how “stiff but transparent” each drive feels—this is particularly relevant for interaction tasks.
+1. Operate the joint in virtual stiffness/damping control.
+2. Apply controlled external perturbations using a known inertia, weights, actuator, or instrumented manual excitation.
+3. Measure joint torque and displacement.
+4. Derive impedance over frequency and identify the stable stiffness/damping region.
+5. Compare boards only at matched control parameters and successful task execution.
 
-### 4.6 Switching Loss and Waveform Quality
+### 4.8 Switching Loss and Waveform Quality
 
-1. At a representative operating point, capture high-resolution waveforms of:
-   - Phase voltage, phase current
-   - Gate-source voltage
-2. Estimate turn-on and turn-off energy per event using datasheet curves + measured currents and voltages.
-3. Compare:
-   - Overshoot, ringing, and dv/dt between GaN and MOSFET boards.
+1. Use double-pulse results for device-level switching energy.
+2. Use RL-load and motor-coupled tests for in-circuit waveform quality at representative operating points.
+3. Capture phase voltage/current, gate-source voltage, and switch-node voltage.
+4. Compare overshoot, ringing, dv/dt, current ripple, and THD.
 
-### 4.7 EMI
+### 4.9 EMI
 
-1. With LISN and spectrum analyzer connected to the DC supply, run a fixed operating point on each board.
-2. Sweep the frequency range of interest and capture conducted emission spectra.
-3. If possible, repeat with different switching frequencies and filter configurations.
+1. Connect the LISN and spectrum analyzer to the DC supply.
+2. Run a fixed RL-load operating point for repeatable inverter-level screening.
+3. Sweep the frequency range of interest.
+4. Repeat selected motor-coupled points if actuator-level EMI behaviour is required.
+5. Compare boards at identical bus wiring, DC-link capacitance, load, and switching frequency.
 
 ---
 
 ## 5. Data Management and Post-Processing
 
-- Store all raw logs in `data_raw/YYYY-MM-DD_phaseX_<desc>/`.
-- Create a dedicated analysis script (MATLAB or Python) under `phase3/efficiency_maps/` and `phase3/sensitivity/` to:
-  - Generate efficiency heatmaps vs torque/speed for each board.
-  - Plot temperature vs time for thermal soaks.
-  - Plot Bode curves for current loop and Z-width.
-  - Compare EMI spectra.
-
-All plots should be generated from scripts (no manual Excel plots) for reproducibility.
+- Store raw logs in `data_raw/YYYY-MM-DD_phaseX_<rig>_<desc>/`, where `<rig>` is `rl_load`, `pendulum`, or `dyno`.
+- Store analysis scripts under `phase3/efficiency_maps/` and `phase3/sensitivity/`.
+- Generate from scripts:
+  - Inverter-loss heatmaps versus current, \(V_{dc}\), and \(f_{sw}\).
+  - Drive-efficiency heatmaps versus torque and speed.
+  - Temperature-versus-time plots.
+  - Ripple and THD plots.
+  - Current-loop Bode plots.
+  - Z-width plots.
+  - EMI spectra.
+- Every plot must record the rig, board ID, motor/winding, bus voltage, switching frequency, dead time, and uncertainty method.
 
 ---
 
 ## 6. Pass/Fail and Comparison Criteria
 
-Example criteria (to be refined as results come in):
+Criteria are separated by evidence tier.
 
-- **Efficiency:** GaN board achieves ≥X% absolute or ≥Y% relative improvement over MOSFET at key operating points.
-- **Thermals:** Lower device or heatsink temperature for the same operating point, or higher allowable continuous torque before thermal limit.
-- **Z-width:** Higher impedance bandwidth without instability for the same control parameters.
-- **Current loop:** Comparable or higher closed-loop bandwidth with sufficient phase margin.
-- **EMI:** No unacceptable increase in conducted emissions; ideally comparable or lower with appropriate filtering.
-- **Power density:** Higher W/cm³ or W/kg for GaN board.
+### Tier 1 — RL load
 
-These criteria will be translated directly into thesis figures and discussion.
+- Inverter loss at matched \(V_{dc}\), \(I_{rms}\), \(f_{sw}\), and dead time.
+- Switching-energy and overshoot margins.
+- Current ripple and THD.
+- Thermal rise at matched electrical loading.
+- Protection behaviour and waveform quality.
+
+### Tier 2/3 — Motor-coupled bench and dyno
+
+- Drive efficiency \(\eta_{drive}\) at matched torque–speed points.
+- Voltage-saturation time and voltage-headroom boundary.
+- Torque-step response and current/torque bandwidth.
+- Regenerated energy and DC-bus rise.
+- Stable impedance/Z-width region.
+- Thermal rise at representative joint-duty operating points.
+
+Example acceptance language:
+
+- **Inverter loss:** GaN board achieves a measured reduction in \(P_{inv}\) over the relevant operating region.
+- **Drive efficiency:** GaN board achieves a defined absolute or relative improvement at selected motor-coupled operating points.
+- **Thermal:** lower device/heatsink temperature at matched loading, or higher allowable continuous current/torque before thermal limit.
+- **Z-width:** larger stable impedance region without instability at matched control parameters.
+- **EMI:** no unacceptable increase in conducted emissions; ideally comparable or lower with appropriate filtering.
 
 ---
 
 ## 7. Re-use for Custom GaN Board
 
-When the custom GaN board is implemented, **re-run this entire test plan unchanged**, treating:
+When the custom GaN board is implemented, repeat the same Tier 1–3 procedures with identical scripts and operating points. Treat the following as a board-design-space comparison:
 
-- 96V GaN dev board
-- 48V MOSFET dev board
-- Custom 96V GaN board
+- 96V GaN dev board.
+- 48V Si MOSFET dev board.
+- Custom 96V GaN board.
 
-as three points in a design space. This preserves a clean A/B/C comparison and ties the final hardware contribution back to the original research questions.
+The RL-load campaign should be completed first for each board, followed by motor-coupled pendulum/dyno validation. This preserves a clean A/B/C comparison while minimizing dyno occupancy and tying the final hardware contribution back to the original research questions.
